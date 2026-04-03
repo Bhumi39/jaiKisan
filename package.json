@@ -1,0 +1,21 @@
+{
+  "name": "jai-kisan",
+  "version": "1.0.0",
+  "description": "Mobile-first agricultural assistant for farmers",
+  "main": "api/gemini.js",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  },
+  "keywords": [
+    "agriculture",
+    "ai",
+    "gemini",
+    "india"
+  ],
+  "author": "Team Root X",
+  "license": "MIT"
+}
