@@ -3,306 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BHUMIIQ - Smart Agriculture IQ</title>
+    <title>BHUMIIQ - Smart Agriculture Intelligence</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="app-viewport">
-        <div class="app-container">
-            
-            <!-- App Bar (Hidden on Home) -->
-            <div id="app-bar" class="app-bar hidden">
-                <button id="back-btn" class="icon-btn">
-                    <span class="material-symbols-outlined">arrow_back</span>
-                </button>
-                <h2 id="screen-title" class="app-bar-title">Title</h2>
+        
+        <!-- TOP NAVBAR (Agri AI Style) -->
+        <nav class="top-nav">
+            <div class="nav-brand" id="nav-logo">
+                <span class="material-symbols-outlined nav-icon">psychology_alt</span>
+                <span class="brand-name">BHUMIIQ</span>
             </div>
+            <div class="nav-links desktop-only">
+                <a href="#" data-target="screen-home">Home</a>
+                <a href="#" data-target="screen-photo">Plant IQ</a>
+                <a href="#" data-target="screen-soilgold">SoilGold</a>
+                <a href="#" data-target="screen-weather">Weather</a>
+            </div>
+            <button class="btn btn-nav-premium">Get Premium</button>
+        </nav>
 
-            <!-- SCREENS CONTAINER -->
-            <div id="screens">
+        <!-- APP BAR (Back Button + Title) -->
+        <div id="app-bar" class="app-bar hidden">
+            <button id="back-btn" class="icon-btn">
+                <span class="material-symbols-outlined">arrow_back_ios</span>
+            </button>
+            <h1 class="app-bar-title" id="screen-title">Screen Name</h1>
+        </div>
+
+        <div id="screens">
+            
+            <!-- 1. HOME SCREEN (Landing Page Style) -->
+            <div id="screen-home" class="screen active">
                 
-                <!-- 1. HOME SCREEN -->
-                    <header class="header">
-                        <div class="logo-container">
-                            <div class="logo-box">
-                                <span class="material-symbols-outlined logo-icon">psychology_alt</span>
-                                <div class="logo-glow"></div>
-                            </div>
-                            <h1 class="logo-title">BHUMIIQ</h1>
-                            <div class="iq-badge">INTEL PRO</div>
+                <!-- HERO SECTION -->
+                <section class="hero-section">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content">
+                        <div class="iq-pill">AI POWERED PRO</div>
+                        <h1 class="hero-title">Cultivating the Future with <span class="accent-text">AI Agriculture</span></h1>
+                        <p class="hero-subtitle">Fast, free, and smart crop problem solver — just snap a pic</p>
+                        <div class="hero-btns">
+                            <button class="btn btn-primary btn-pill px-32" onclick="document.getElementById('services-grid').scrollIntoView({behavior:'smooth'})">Download Free App</button>
+                            <button class="btn btn-outline btn-pill px-32" id="btn-see-how">See How It Works</button>
                         </div>
-                        <h2 class="subtitle">Smart Intelligence for Smart Farmers</h2>
-                        <p class="hindi-subtitle">किसान की समझ, तकनीक की शक्ति</p>
-                    </header>
+                    </div>
+                </section>
 
-                    <main class="grid-container">
-                        <div class="card interactive-surface" data-target="screen-photo" data-title="Photo Expert / फोटो विशेषज्ञ">
-                            <span class="material-symbols-outlined card-icon">image_search</span>
-                            <h3 class="card-title">Detect Disease<br><span class="hindi-text">(रोग की पहचान)</span></h3>
-                            <div class="ripple"></div>
+                <!-- SERVICE GRID -->
+                <section class="p-24">
+                    <div class="section-header text-center mb-32">
+                        <h2 class="section-title">Everything You Need to Start <span class="underline">Smart Farming</span></h2>
+                        <p class="section-subtitle">Access powerful AI-driven tools completely free. A comprehensive suite that helps farmers make informed decisions.</p>
+                    </div>
+                    
+                    <main class="grid-container" id="services-grid">
+                        <div class="card" data-target="screen-photo" data-title="Plant Health IQ">
+                            <div class="badge-free">Free</div>
+                            <span class="material-symbols-outlined card-icon">psychology</span>
+                            <h3 class="card-title">Plant Health IQ Scanner</h3>
+                            <p class="card-desc">Early detection to act faster and reduce spread.</p>
                         </div>
 
-                        <div class="card interactive-surface" data-target="screen-voice" data-title="Voice Assistant / आवाज़ सहायक">
+                        <div class="card" data-target="screen-soilgold" data-title="SoilGold Wealth">
+                            <div class="badge-free">Free</div>
+                            <span class="material-symbols-outlined card-icon">eco</span>
+                            <h3 class="card-title">SoilGold: Waste to Wealth</h3>
+                            <p class="card-desc">Transform farm waste into organic gold fertilizer.</p>
+                        </div>
+
+                        <div class="card" data-target="screen-voice" data-title="Voice Assistant">
+                            <div class="badge-free">Free</div>
                             <span class="material-symbols-outlined card-icon">mic</span>
-                            <h3 class="card-title">Voice Assistant<br><span class="hindi-text">(आवाज़ सहायक)</span></h3>
-                            <div class="ripple"></div>
+                            <h3 class="card-title">Virtual Agronomic Advisor</h3>
+                            <p class="card-desc">Get personalized, context-aware guidance 24/7.</p>
                         </div>
 
-                        <div class="card interactive-surface" data-target="screen-mandi" data-title="Mandi Prices / मंडी भाव">
-                            <span class="material-symbols-outlined card-icon">storefront</span>
-                            <h3 class="card-title">Mandi Prices<br><span class="hindi-text">(मंडी के भाव)</span></h3>
-                            <div class="ripple"></div>
+                        <div class="card" data-target="screen-mandi" data-title="Mandi Price Trends">
+                            <div class="badge-free">Free</div>
+                            <span class="material-symbols-outlined card-icon">monitoring</span>
+                            <h3 class="card-title">Mandi Price Intelligence</h3>
+                            <p class="card-desc">Real-time market insights and sell-time alerts.</p>
                         </div>
 
-                        <div class="card interactive-surface" data-target="screen-howto" data-title="How to Use / कैसे इस्तेमाल करे">
-                            <span class="material-symbols-outlined card-icon">help</span>
-                            <h3 class="card-title">How to Use<br><span class="hindi-text">(कैसे इस्तेमाल करे)</span></h3>
-                            <div class="ripple"></div>
+                        <div class="card" data-target="screen-weather" data-title="AI Weather Insights">
+                            <div class="badge-free">Free</div>
+                            <span class="material-symbols-outlined card-icon">cloud_sync</span>
+                            <h3 class="card-title">AgroWeather Intelligence</h3>
+                            <p class="card-desc">Hyperlocal forecasts and spraying window alerts.</p>
                         </div>
 
-                        <div class="card interactive-surface" data-target="screen-weather" data-title="Weather Info / मौसम जानकारी">
-                            <span class="material-symbols-outlined card-icon">weather_mix</span>
-                            <h3 class="card-title">Weather Info<br><span class="hindi-text">(मौसम जानकारी)</span></h3>
-                            <div class="ripple"></div>
-                        </div>
-
-                        <!-- Using Farming Tools dynamically later, currently links to how-to -->
-                        <div class="card interactive-surface" data-target="screen-howto" data-title="Farming Tools / खेती उपकरण">
-                            <span class="material-symbols-outlined card-icon">construction</span>
-                            <h3 class="card-title">Farming Tools<br><span class="hindi-text">(खेती उपकरण)</span></h3>
-                            <div class="ripple"></div>
-                        </div>
-
-                        <div class="card interactive-surface full-width-card" data-target="screen-about" data-title="About Us / हमारे बारे में">
-                            <span class="material-symbols-outlined card-icon">badge</span>
-                            <h3 class="card-title">About</h3>
-                            <div class="ripple"></div>
+                        <div class="card" data-target="screen-about" data-title="About BHUMIIQ">
+                            <div class="badge-free">Free</div>
+                            <span class="material-symbols-outlined card-icon">info</span>
+                            <h3 class="card-title">Knowledge Hub & Community</h3>
+                            <p class="card-desc">Connect with experts and fellow farmers.</p>
                         </div>
                     </main>
-                </div>
+                </section>
 
-                <!-- 2. PHOTO EXPERT SCREEN -->
-                <div id="screen-photo" class="screen">
-                    <div class="card text-center mb-16 px-16 py-24">
-                        <p style="font-size: 15px; font-weight: 500; margin-bottom: 8px;">Analyze any crop, leaf, or fruit. Capture or upload a photo for an expert report.</p>
-                        <p class="hindi-text" style="font-size: 14px;">किसी भी फसल, पत्ती या फल का विश्लेषण करें। विशेषज्ञ रिपोर्ट पाने के लिए फोटो खींचें या अपलोड करें।</p>
-                    </div>
-                    
-                    <div class="image-preview mb-16 text-center" id="img-preview-box" style="background:#F5F7FA; border-radius:12px; padding:24px; position:relative; min-height: 200px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                        <img id="leaf-image" src="" alt="Selected Image" style="display:none; max-width:100%; border-radius:12px; max-height:250px;">
-                        <span id="img-placeholder-icon" class="material-symbols-outlined" style="font-size: 48px; color: #ccc; margin-bottom: 8px;">hide_image</span>
-                        <p id="img-placeholder-text" style="color: #888;">No Image Selected<br><span class="hindi-text" style="color: #888;">कोई छवि चयनित नहीं</span></p>
-                    </div>
-                    
-                    <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none;">
-                    <input type="file" id="gallery-input" accept="image/*" style="display:none;">
-
-                    <div class="photo-actions mb-16">
-                        <button class="btn btn-secondary flex-1 interactive-surface" id="btn-camera">
-                            <span class="material-symbols-outlined">camera_alt</span> 
-                            <div>Capture<br><span class="hindi-text">फोटो लें</span></div>
-                        </button>
-                        <button class="btn btn-secondary flex-1 interactive-surface" id="btn-gallery">
-                            <span class="material-symbols-outlined">upload_file</span> 
-                            <div>Upload<br><span class="hindi-text">अपलोड करें</span></div>
-                        </button>
-                    </div>
-                    
-                    <button class="btn btn-primary full-btn interactive-surface" id="btn-analyze">
-                        <span class="material-symbols-outlined">search</span> 
-                        <div>Analyze Photo<br><span class="hindi-text" style="color: #fff;">फोटो का विश्लेषण करें</span></div>
-                    </button>
-
-                    <div id="ai-photo-result" class="card mt-16 text-left hidden" style="margin-top:16px;">
-                        <p style="white-space: pre-line;"></p>
-                    </div>
-
-                    <button class="btn btn-outline full-btn btn-back-home mt-24 mb-16">
-                        <span class="material-symbols-outlined">home</span> Back to Home / मुख्य पृष्ठ
-                    </button>
-                </div>
-
-                <!-- 3. VOICE ASSISTANT SCREEN -->
-                <div id="screen-voice" class="screen">
-                    <div class="voice-center">
-                        <h2 class="hindi-text" style="font-size:24px; color:#000;">पूछने के लिए टैप करें</h2>
-                        <h2 style="font-size:24px; color:#000; margin-bottom: 32px;">Tap to Ask</h2>
-                        <div class="mic-circle-large interactive-surface" id="voice-btn">
-                            <span class="material-symbols-outlined" style="font-size:64px; color:white;">mic</span>
-                            <div class="ripple"></div>
-                        </div>
-                    </div>
-                    <div id="chat-container">
-                        <div class="chat-bubble">
-                            <p class="hindi-text">नमस्ते! मैं आपकी कृषि सहायता के लिए यहाँ हूँ।</p>
-                            <hr class="divider">
-                            <p>Hello! I am here to assist you with agriculture.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="px-16 mt-24 mb-16">
-                        <button class="btn btn-outline full-btn btn-back-home">
-                            <span class="material-symbols-outlined">home</span> Back to Home / मुख्य पृष्ठ
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 4. MANDI PRICES SCREEN -->
-                <div id="screen-mandi" class="screen">
-                    <div class="card mb-16 text-left p-16" style="border: 1px solid #E0E0E0; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                        <div class="mandi-input-group">
-                            <span class="material-symbols-outlined mandi-input-icon">map</span>
-                            <select class="mandi-select" id="mandi-state">
-                                <option value="">State / राज्य *</option>
-                                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                <option value="Bihar">Bihar</option>
-                                <option value="Gujarat">Gujarat</option>
-                                <option value="Haryana">Haryana</option>
-                                <option value="Karnataka">Karnataka</option>
-                                <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                <option value="Maharashtra">Maharashtra</option>
-                                <option value="Punjab">Punjab</option>
-                                <option value="Rajasthan">Rajasthan</option>
-                                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                <option value="West Bengal">West Bengal</option>
-                            </select>
-                        </div>
-                        <div class="mandi-input-group">
-                            <span class="material-symbols-outlined mandi-input-icon">agriculture</span>
-                            <select class="mandi-select" id="mandi-comm">
-                                <option value="">Commodity / फसल *</option>
-                                <option value="Wheat">Wheat (गेहूँ)</option>
-                                <option value="Paddy(Dhan)">Paddy / Rice (धान)</option>
-                                <option value="Potato">Potato (आलू)</option>
-                                <option value="Onion">Onion (प्याज़)</option>
-                                <option value="Tomato">Tomato (टमाटर)</option>
-                                <option value="Cotton">Cotton (कपास)</option>
-                                <option value="Sugarcane">Sugarcane (गन्ना)</option>
-                                <option value="Soyabean">Soyabean (सोयाबीन)</option>
-                                <option value="Maize">Maize (मक्का)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="card mb-16 text-center p-16" style="background-color: #E8F0EA; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                        <div class="date-row mb-8" style="gap: 12px;">
-                            <div class="mandi-select-container flex-1">
-                                <label style="font-size: 11px; color:#666; text-align:left;">From / से</label>
-                                <input type="date" id="mandi-from-date" class="mandi-select-small" style="background-color: #FFF; border: 1px solid #CCC; padding: 10px;">
-                            </div>
-                            <div class="mandi-select-container flex-1">
-                                <label style="font-size: 11px; color:#666; text-align:left;">To / तक</label>
-                                <input type="date" id="mandi-to-date" class="mandi-select-small" style="background-color: #FFF; border: 1px solid #CCC; padding: 10px;">
+                <!-- NEW: PRO FOOTER -->
+                <footer class="pro-footer">
+                    <div class="footer-grid">
+                        <div class="footer-col">
+                            <h4 class="footer-logo">BHUMIIQ</h4>
+                            <p>Transforming agriculture through artificial intelligence and machine learning technologies.</p>
+                            <div class="social-icons">
+                                <span class="material-symbols-outlined">share</span>
+                                <span class="material-symbols-outlined">mail</span>
                             </div>
                         </div>
-                        <div class="date-row mb-8" style="gap: 12px;">
-                            <div class="mandi-select-container flex-1">
-                                <label style="font-size: 11px; color:#666; text-align:left;">Sort By / क्रमबद्ध करें</label>
-                                <select class="mandi-select-small" style="background-color: #FFF; padding: 10px;"><option>Date / तारीख</option><option>Price</option></select>
-                            </div>
-                            <div class="mandi-select-container flex-1">
-                                <label style="font-size: 11px; color:#666; text-align:left;">Order / क्रम</label>
-                                <select class="mandi-select-small" style="background-color: #FFF; padding: 10px;"><option>Des / अवरोही</option><option>Asc / आरोही</option></select>
-                            </div>
+                        <div class="footer-col">
+                            <h5>Quick Links</h5>
+                            <ul>
+                                <li>BHUMIIQ App</li>
+                                <li>Solutions</li>
+                                <li>Features</li>
+                                <li>News</li>
+                            </ul>
                         </div>
-                        <p style="font-size: 11px; color: #555;">Note: Date selection is optional.</p>
-                    </div>
-
-                    <div class="photo-actions mb-16">
-                        <button class="btn btn-outline flex-1" id="mandi-reset-btn"><span class="material-symbols-outlined">refresh</span> Reset / रीसेट</button>
-                        <button class="btn btn-accent flex-1" id="mandi-search-btn"><span class="material-symbols-outlined">search</span> Preview</button>
-                    </div>
-
-                    <div class="card p-16 text-center" id="mandi-results" style="background-color: #F8F5FB;">
-                        <p style="color: #666; font-size: 14px;">Prices will be shown here / यहाँ कीमतें दिखाई जाएँगी।</p>
-                    </div>
-
-                    <button class="btn btn-outline full-btn btn-back-home mt-24 mb-16">
-                        <span class="material-symbols-outlined">home</span> Back to Home / मुख्य पृष्ठ
-                    </button>
-                </div>
-
-                <!-- 5. WEATHER SCREEN -->
-                <div id="screen-weather" class="screen">
-                    <div class="card weather-card text-center mb-16 px-16 py-32" style="background: linear-gradient(135deg, #1976D2, #64B5F6); color: white;">
-                        <div id="weather-loading">
-                            <span class="material-symbols-outlined pulse-animation" style="font-size:64px; color:white; margin-bottom:16px; display:inline-block;">location_searching</span>
-                            <p style="color:white; font-size: 18px;">Fetching weather using GPS...<br><span class="hindi-text" style="color:#EEE;">जीपीएस से मौसम प्राप्त कर रहे हैं...</span></p>
+                        <div class="footer-col">
+                            <h5>Resources</h5>
+                            <ul>
+                                <li>Blog</li>
+                                <li>How to Use</li>
+                                <li>Testimonials</li>
+                            </ul>
                         </div>
-                        <div id="weather-result" class="hidden">
-                            <span class="material-symbols-outlined" id="w-icon" style="font-size:80px; color:white; margin-bottom:8px;">partly_cloudy_day</span>
-                            <h2 id="w-temp" style="font-size:64px; font-weight:700; color:white; line-height:1;">--°C</h2>
-                            <h3 id="w-desc" style="font-size:24px; color:white; margin-top:8px;">Loading...</h3>
-                            <p id="w-location" style="margin-top:16px; font-size:16px; color:#E3F2FD;">Locating...</p>
+                        <div class="footer-col">
+                            <h5>Contact Us</h5>
+                            <p><span class="material-symbols-outlined" style="font-size:14px;">email</span> support@bhumiiq.live</p>
                         </div>
                     </div>
-
-                    <button class="btn btn-outline full-btn btn-back-home mt-24 mb-16">
-                        <span class="material-symbols-outlined">home</span> Back to Home / मुख्य पृष्ठ
-                    </button>
-                </div>
-
-                <div id="screen-howto" class="screen">
-                    <div class="glass-card p-24">
-                        <h2 class="brand-text text-center">How to Use BHUMIIQ</h2>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="display:flex; align-items:center; gap:8px;"><span class="material-symbols-outlined" style="color:#558B58;">image_search</span> Photo Expert</h3>
-                            <p style="font-size:14px; color:#555; margin-top:4px;">Take a picture of any sick plant or fruit. Our AI will instantly scan the image, identify the disease, and offer a cure.</p>
-                        </div>
-
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="display:flex; align-items:center; gap:8px;"><span class="material-symbols-outlined" style="color:#558B58;">mic</span> Voice Assistant</h3>
-                            <p style="font-size:14px; color:#555; margin-top:4px;">Can't type? Just tap the microphone and speak your farming questions in English or Hindi. The AI will answer and read it back to you!</p>
-                        </div>
-
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="display:flex; align-items:center; gap:8px;"><span class="material-symbols-outlined" style="color:#558B58;">storefront</span> Mandi Prices</h3>
-                            <p style="font-size:14px; color:#555; margin-top:4px;">Select your State, District, and Crop to get real-time price updates direct from government markets so you never undersell your harvest.</p>
-                        </div>
-
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="display:flex; align-items:center; gap:8px;"><span class="material-symbols-outlined" style="color:#558B58;">weather_mix</span> Weather Info</h3>
-                            <p style="font-size:14px; color:#555; margin-top:4px;">We use your phone's GPS to find your exact field and look up the hyper-local weather. Best for planning crop irrigation.</p>
-                        </div>
+                    <div class="footer-bottom">
+                        © 2026 BHUMIIQ. All rights reserved.
                     </div>
-
-                    <button class="btn btn-outline full-btn btn-back-home mt-24 mb-16">
-                        <span class="material-symbols-outlined">home</span> Back to Home / मुख्य पृष्ठ
-                    </button>
-                </div>
-
-                <!-- 7. ABOUT SCREEN -->
-                <div id="screen-about" class="screen">
-                    <div class="card about-card text-left p-24">
-                        <h2 style="color:var(--md-sys-color-primary); margin-bottom: 4px; text-align: center;">We are Team Root X</h2>
-                        <img src="https://images.unsplash.com/photo-1592982537447-6f2c6a0c5980?auto=format&fit=crop&q=80&w=600&h=400" style="width:100%; border-radius:12px; margin-top:16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" alt="Team Root X Farming Tech">
-                        
-                        <h3 style="margin-bottom: 8px; color: #333;">Our Mission</h3>
-                        <p style="font-size:15px; line-height:1.6; color:#555; margin-bottom:16px;">
-                            At Team Root X, our mission is to leverage modern technology—AI, satellite weather data, and real-time agricultural APIs—to empower farmers and digitize agriculture.
-                        </p>
-                        
-                        <h3 style="margin-bottom: 8px; color: #333;">Problem Solving</h3>
-                        <p style="font-size:14px; line-height:1.6; color:#555;">
-                            Millions of farmers struggle with crop diseases and unpredictable market changes. 
-                            <strong>BHUMIIQ</strong> provides instant AI-driven health scores, recovery roadmaps, and hyper-local insights.
-                        </p>
-                    </div>
-
-                    <button class="btn btn-outline full-btn btn-back-home mt-24 mb-16">
-                        <span class="material-symbols-outlined">home</span> Back to Home / मुख्य पृष्ठ
-                    </button>
-                </div>
-
+                </footer>
             </div>
+
+            <!-- 2. PHOTO EXPERT SCREEN (PLANT HEALTH IQ) -->
+            <div id="screen-photo" class="screen">
+                <div class="glass-card mb-24 p-24 text-center">
+                    <div id="image-preview-area" class="image-placeholder">
+                        <span id="img-placeholder-icon" class="material-symbols-outlined" style="font-size: 64px; color: #CCC;">add_a_photo</span>
+                        <p id="img-placeholder-text" style="color: #999; margin-top: 12px;">Take a photo of your leaf or plant <br><span class="hindi-text">पत्ते या पौधे की फोटो लें</span></p>
+                        <img id="leaf-image" src="" alt="Captured Image" style="display:none; width:100%; border-radius:16px;">
+                    </div>
+
+                    <div class="photo-actions mt-24">
+                        <button class="btn btn-outline flex-1 btn-pill" id="btn-camera">
+                            <span class="material-symbols-outlined">photo_camera</span> Camera
+                        </button>
+                        <button class="btn btn-outline flex-1 btn-pill" id="btn-gallery">
+                            <span class="material-symbols-outlined">image</span> Gallery
+                        </button>
+                        <input type="file" id="camera-input" accept="image/*" capture="environment" hidden>
+                        <input type="file" id="gallery-input" accept="image/*" hidden>
+                    </div>
+
+                    <button class="btn btn-primary full-btn btn-pill" id="btn-analyze">
+                        <span class="material-symbols-outlined">bolt</span> Analyze with AI Intelligence
+                    </button>
+                </div>
+
+                <div id="ai-photo-result" class="glass-card hidden">
+                    <div class="p-16">
+                        <p>Analysis will appear here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. SOILGOLD SCREEN (Waste to Wealth) -->
+            <div id="screen-soilgold" class="screen">
+                <div class="glass-card p-24 mb-16">
+                    <h2 class="brand-text text-center" style="color:var(--brand-primary);">SoilGold: Waste to Wealth</h2>
+                    <p class="text-center mb-16">Turn your farm waste into Organic Gold fertilizer.</p>
+                    <div class="compost-tool shimmer-border p-16" style="background:#F0FDF4; border-radius:16px;">
+                        <h4 style="margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+                            <span class="material-symbols-outlined" style="color:var(--brand-primary);">chat</span> SoilGold Advisor
+                        </h4>
+                        <p style="font-size:14px; color:#555;">Ask AI how to compost specific waste (e.g., Rice husk, Kitchen scraps).</p>
+                        <textarea id="soilgold-query" placeholder="Tell me what waste you have..." class="mandi-input-group p-12 w-full mt-8" style="height:80px; border-radius:12px; border:1.5px solid #eee;"></textarea>
+                        <button class="btn btn-primary w-full btn-pill mt-8" id="btn-ask-soilgold">Consult Advisor</button>
+                    </div>
+                </div>
+                <div id="soilgold-results" class="glass-card hidden">
+                    <div class="p-16"></div>
+                </div>
+            </div>
+
+            <!-- 4. VOICE ASSISTANT SCREEN -->
+            <div id="screen-voice" class="screen">
+                <div class="voice-center">
+                    <div class="mic-circle-large ripple-wave" id="voice-btn">
+                        <span class="material-symbols-outlined" style="font-size: 56px; color: white;">mic</span>
+                    </div>
+                    <label style="font-weight:700; font-size:18px; color:var(--brand-dark);">TAP TO SPEAK</label>
+                    <p class="hindi-text" style="font-size:16px; margin-top:4px;">बोलने के लिए दबाएं (English/Hindi)</p>
+                </div>
+                <div id="chat-container"></div>
+            </div>
+
+            <!-- 5. MANDI PRICES SCREEN -->
+            <div id="screen-mandi" class="screen">
+                <div class="glass-card p-24">
+                    <div class="mandi-select-container mb-16">
+                        <label class="mb-8 block font-bold">Select State</label>
+                        <div class="mandi-input-group">
+                            <span class="material-symbols-outlined mandi-input-icon">location_on</span>
+                            <select id="mandi-state" class="mandi-select">
+                                <option value="">CHOOSE STATE</option>
+                                <option value="Punjab">PUNJAB</option>
+                                <option value="Haryana">HARYANA</option>
+                                <option value="Uttar Pradesh">UTTAR PRADESH</option>
+                                <option value="Rajasthan">RAJASTHAN</option>
+                                <option value="Maharashtra">MAHARASHTRA</option>
+                                <option value="Gujarat">GUJARAT</option>
+                                <option value="Bihar">BIHAR</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mandi-select-container mb-24">
+                        <label class="mb-8 block font-bold">Select Commodity</label>
+                        <div class="mandi-input-group">
+                            <span class="material-symbols-outlined mandi-input-icon">potted_plant</span>
+                            <select id="mandi-comm" class="mandi-select">
+                                <option value="">CHOOSE CROP</option>
+                                <option value="Wheat">WHEAT (गेहूं)</option>
+                                <option value="Rice (Paddy)">RICE (धान)</option>
+                                <option value="Cotton">COTTON (कपास)</option>
+                                <option value="Maize">MAIZE (मक्का)</option>
+                                <option value="Mustard">MUSTARD (सरसों)</option>
+                                <option value="Potato">POTATO (आलू)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="date-row mb-24">
+                        <div class="flex-1">
+                            <label class="mb-8 block font-bold">From Date</label>
+                            <input type="date" id="mandi-from-date" class="mandi-select-small">
+                        </div>
+                        <div class="flex-1">
+                            <label class="mb-8 block font-bold">To Date</label>
+                            <input type="date" id="mandi-to-date" class="mandi-select-small">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:12px;">
+                        <button class="btn btn-primary flex-1 btn-pill" id="mandi-search-btn">
+                            <span class="material-symbols-outlined">finance</span> Get Price Report
+                        </button>
+                        <button class="btn btn-outline btn-pill" id="mandi-reset-btn">Reset</button>
+                    </div>
+                </div>
+
+                <div id="mandi-results" class="mt-24">
+                    <p class="text-center" style="color: #666; font-size: 14px;">Results will appear here...</p>
+                </div>
+            </div>
+
+            <!-- 6. WEATHER SCREEN -->
+            <div id="screen-weather" class="screen">
+                <div id="weather-loading" class="text-center py-32 shimmer" style="border-radius:24px;">
+                    <span class="material-symbols-outlined" style="font-size: 48px; color: var(--brand-primary);">cloud_queue</span>
+                    <p class="mt-8">Accessing GPS Satellite...<br><span class="hindi-text">सैटेलाइट डेटा प्राप्त कर रहे हैं...</span></p>
+                </div>
+                <div id="weather-result" class="glass-card p-32 text-center hidden">
+                    <span id="w-icon" class="material-symbols-outlined pulse-animation" style="font-size: 80px; color: #FFB74D;">sunny</span>
+                    <h1 id="w-temp" style="font-size: 56px; font-weight: 800; color: #333; margin: 16px 0;">--°C</h1>
+                    <p id="w-desc" style="font-size: 20px; font-weight: 600; color: #555;">Weather Condition</p>
+                    <hr style="margin: 24px auto; width: 40px; border: 2px solid #EEE;">
+                    <p id="w-location" style="font-size: 14px; color: #888;">Fetching GPS location...</p>
+                </div>
+            </div>
+
         </div>
+
     </div>
-    
+
     <script src="script.js"></script>
 </body>
 </html>

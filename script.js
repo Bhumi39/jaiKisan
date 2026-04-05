@@ -11,34 +11,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const screenTitle = document.getElementById('screen-title');
     const screens = document.querySelectorAll('.screen');
     const navCards = document.querySelectorAll('.grid-container .card');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const navLogo = document.getElementById('nav-logo');
 
-    function navigateTo(targetId, title, themeColor = "#10B981") {
+    function navigateTo(targetId, title) {
         screens.forEach(s => s.classList.remove('active'));
         const targetScreen = document.getElementById(targetId);
         if (targetScreen) targetScreen.classList.add('active');
+
+        // Scroll to top of the screen contents
+        appBox.scrollTo({ top: 0, behavior: 'smooth' });
 
         if (targetId === 'screen-home') {
             appBar.classList.add('hidden');
         } else {
             appBar.classList.remove('hidden');
             screenTitle.innerText = title;
-            appBar.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
         }
         
         if (targetId === 'screen-weather') fetchWeather();
     }
 
+    // Initialize Home
     navigateTo('screen-home', 'BHUMIIQ');
 
+    // Grid Card Clicks
     navCards.forEach(card => {
         card.addEventListener('click', () => {
             const target = card.getAttribute('data-target');
             const title = card.getAttribute('data-title');
-            card.classList.add('active');
-            setTimeout(() => navigateTo(target, title), 200);
+            navigateTo(target, title);
         });
     });
 
+    // Navbar Link Clicks
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = link.getAttribute('data-target');
+            const title = link.textContent;
+            navigateTo(target, title);
+        });
+    });
+
+    // Logo click goes home
+    navLogo.addEventListener('click', () => navigateTo('screen-home', 'BHUMIIQ'));
+
+    // Back Buttons
     const goBack = () => {
         navigateTo('screen-home', 'BHUMIIQ');
         if (recognition && isListening) recognition.stop();
@@ -74,31 +93,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     const code = data.current_weather.weathercode;
                     wTemp.innerText = `${temp}°C`;
                     
-                    if (code <= 3) { wDesc.innerText = "Clear Skies"; wIcon.innerText = "sunny"; }
+                    if (code <= 3) { wDesc.innerText = "Clear / Partly Cloudy"; wIcon.innerText = "sunny"; }
                     else if (code <= 48) { wDesc.innerText = "Foggy Condition"; wIcon.innerText = "foggy"; }
-                    else if (code <= 69) { wDesc.innerText = "Rainy Day (बारिश)"; wIcon.innerText = "rainy"; }
-                    else { wDesc.innerText = "Storm Warning"; wIcon.innerText = "thunderstorm"; }
+                    else if (code <= 69) { wDesc.innerText = "Rainy (बारिश)"; wIcon.innerText = "rainy"; }
+                    else { wDesc.innerText = "Thunderstorm / Snow"; wIcon.innerText = "thunderstorm"; }
 
                     const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
                     const geoData = await geoRes.json();
-                    let placeName = geoData.address.city || geoData.address.town || geoData.address.village || "Local Area";
-                    wLoc.innerText = `Field: ${placeName}, ${geoData.address.country}`;
+                    let placeName = geoData.address.city || geoData.address.town || geoData.address.village || "Current Location";
+                    wLoc.innerText = `Location: ${placeName}, ${geoData.address.country}`;
                     
                     weatherLoading.classList.add('hidden');
                     weatherResult.classList.remove('hidden');
                 } catch (e) {
-                    wDesc.innerText = "Connection lost.";
+                    wDesc.innerText = "Weather unavailable.";
                     weatherLoading.classList.add('hidden');
                 }
             }, () => {
-                wDesc.innerText = "Enable GPS for local weather.";
+                wDesc.innerText = "Enable Location for Weather.";
                 weatherLoading.classList.add('hidden');
             });
         }
     }
 
     /* ===============================
-       3. PLANT HEALTH IQ (Enhanced Gemini Vision)
+       3. PLANT HEALTH IQ (Enhanced Vision)
        =============================== */
     const cameraInput = document.getElementById('camera-input');
     const galleryInput = document.getElementById('gallery-input');
@@ -133,24 +152,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnAnalyze.addEventListener('click', async () => {
         if (!base64ImageString) {
-            alert('Please select a photo first!');
+            alert('Capture or Upload a photo first!');
             return;
         }
 
         aiPhotoResult.classList.remove('hidden');
-        aiPhotoText.innerHTML = `<div class="text-center p-24"><div class="shimmer" style="height:20px; border-radius:10px; margin-bottom:10px;"></div><p>Calculating Health IQ...</p></div>`;
+        aiPhotoText.innerHTML = `<div class="text-center p-24"><div class="shimmer" style="height:20px; border-radius:10px;"></div><p>Performing Satellite Analysis...</p></div>`;
 
         try {
-            const prompt = `You are BHUMIIQ, a professional AI Agricultural Consultant. 
-            Analyze this plant image deeply.
-            1. Determine if it is a plant. If not, reject.
-            2. Calculate a "Health Score" from 0 to 100.
-            3. Provide a Status: [EXCELLENT, GOOD, CRITICAL, or DANGER].
-            4. Identify any diseases or pests.
-            5. Provide a "Recovery Roadmap": Step-by-step process to improve health.
-            6. "Safety Check": Is the crop currently safe or at risk?
-            
-            Return your response in a structured format with English and Hindi translations. Use bullet points for steps.`;
+            const prompt = `You are BHUMIIQ, an AI Agricultural Scientist. 
+            Analyze this image:
+            - Is it a plant or agricultural crop?
+            - Determine Health Score (percentage 0-100%).
+            - Identify Diseases and suggest specific treatments.
+            - Provide a step-by-step 'Recovery Roadmap'.
+            - Safety status: [EXCELLENT, GOOD, ALERT, DANGER].
+            Provide response in English and clear Hindi.`;
 
             const payload = {
                 contents: [{
@@ -168,41 +185,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload)
             });
 
-            if (!response.ok) throw new Error("Intelligence Service Offline");
-
             const data = await response.json();
             const replyText = data.candidates[0].content.parts[0].text;
             
-            // Extract a possible score (0-100) if mentioned, otherwise mock for UI
-            const scoreMatch = replyText.match(/(\d+)%/);
-            const score = scoreMatch ? scoreMatch[1] : 75;
-
             aiPhotoText.innerHTML = `
-                <div class="health-gauge-container">
-                    <div class="health-gauge">
-                        <span class="health-value">${score}%</span>
+                <div class="p-24">
+                    <button class="btn btn-primary btn-pill mb-16" id="btn-listen-photo"><span class="material-symbols-outlined">volume_up</span> Listen Report</button>
+                    <div class="report-content" style="line-height:1.6; font-size:14px;">
+                        ${replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
                     </div>
-                    <div class="status-badge" style="background:${score > 70 ? '#10B981' : '#F59E0B'}; color:white;">
-                        ${score > 70 ? 'HEALTHY' : 'RECOVERY NEEDED'}
-                    </div>
-                </div>
-                <div class="p-16">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                        <span class="btn btn-tertiary" id="btn-listen-photo"><span class="material-symbols-outlined">volume_up</span> Listen</span>
-                    </div>
-                    <div class="report-content">${replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
                 </div>
             `;
 
             document.getElementById('btn-listen-photo').addEventListener('click', () => speakText(replyText));
 
         } catch (error) {
-            aiPhotoText.innerHTML = `<p class="p-24 text-center" style="color:#EF4444;">Error analyzed: ${error.message}</p>`;
+            aiPhotoText.innerHTML = `<p class="p-24 text-center" style="color:red;">Error: ${error.message}</p>`;
         }
     });
 
     /* ===============================
-       4. MANDI PRICE TRENDS
+       4. SOILGOLD (Waste to Wealth)
+       =============================== */
+    const soilgoldBtn = document.getElementById('btn-ask-soilgold');
+    const soilgoldInput = document.getElementById('soilgold-query');
+    const soilgoldResults = document.getElementById('soilgold-results');
+
+    soilgoldBtn.addEventListener('click', async () => {
+        const query = soilgoldInput.value;
+        if (!query) return;
+
+        soilgoldResults.classList.remove('hidden');
+        soilgoldResults.innerHTML = `<div class="p-24 shimmer">AI Calculating Organic Intelligence...</div>`;
+
+        try {
+            const prompt = `You are BHUMIIQ Soil Scientist. User has this waste: "${query}". 
+            Explain:
+            - Best way to turn this into organic fertilizer/compost.
+            - Time required.
+            - Benefits for the plant.
+            - Safety precautions.
+            Answer in English and Hindi.`;
+
+            const payload = { contents: [{ parts: [{ text: prompt }] }], type: 'text' };
+            const res = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json();
+            const reply = data.candidates[0].content.parts[0].text;
+
+            soilgoldResults.innerHTML = `
+                <div class="p-24">
+                    <h4 style="color:var(--brand-emerald); margin-bottom:12px;">SoilGold Recovery Plan</h4>
+                    <div style="font-size:14px; line-height:1.6;">${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                </div>
+            `;
+        } catch (e) {
+            soilgoldResults.innerHTML = `<p class="p-24">Error consulting Advisor.</p>`;
+        }
+    });
+
+    /* ===============================
+       5. MANDI PRICES
        =============================== */
     const mandiPreviewBtn = document.getElementById('mandi-search-btn');
     const mandiResults = document.getElementById('mandi-results');
@@ -212,32 +254,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const comm = document.getElementById('mandi-comm').value;
         if (!state || !comm) { alert("Select State & Crop"); return; }
 
-        mandiResults.innerHTML = `<div class="p-24 shimmer" style="border-radius:20px;">Analyzing Price Intelligence...</div>`;
+        mandiResults.innerHTML = `<div class="p-24 shimmer" style="border-radius:24px;">Gathering Market Intelligence...</div>`;
 
         try {
-            const prompt = `You are BHUMIIQ Market AI. Analyze current price trends for ${comm} in ${state}. Suggest if it's a good time to sell. English and Hindi.`;
+            const prompt = `BHUMIIQ Market Analysis: Predict price trends for ${comm} in ${state}. Suggest best selling window. English/Hindi.`;
             const payload = { contents: [{ parts: [{ text: prompt }] }], type: 'text' };
-            const response = await fetch(GEMINI_API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await response.json();
+            const res = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json();
             const replyText = data.candidates[0].content.parts[0].text;
 
             mandiResults.innerHTML = `
-                <div class="glass-card p-20 text-left border-glow">
-                    <h4 style="color:var(--brand-primary); margin-bottom:8px;">Intelligence Report</h4>
+                <div class="glass-card p-24 text-left">
+                    <h4 style="color:var(--brand-emerald); margin-bottom:12px;">Market Prediction</h4>
                     <div style="font-size:14px; line-height:1.6;">${replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
                 </div>
             `;
         } catch (e) {
-            mandiResults.innerHTML = "Market Service unavailable.";
+            mandiResults.innerHTML = "Price Intelligence Offline.";
         }
     });
 
+    const mandiResetBtn = document.getElementById('mandi-reset-btn');
+    mandiResetBtn.addEventListener('click', () => {
+        document.getElementById('mandi-state').value = "";
+        document.getElementById('mandi-comm').value = "";
+        mandiResults.innerHTML = `<p class="text-center" style="color: #666; font-size: 14px;">Results will appear here...</p>`;
+    });
+
     /* ===============================
-       5. VOICE IQ (Gemma-3-4B)
+       6. VOICE ASSISTANT (Gemma AI)
        =============================== */
     const voiceBtn = document.getElementById('voice-btn');
     const chatContainer = document.getElementById('chat-container');
@@ -248,13 +293,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
         recognition.lang = 'hi-IN';
-        recognition.onstart = () => { isListening = true; voiceBtn.style.boxShadow = '0 0 40px var(--brand-primary)'; };
+        recognition.onstart = () => { isListening = true; voiceBtn.style.background = '#10B981'; };
         recognition.onresult = async (e) => {
             const text = e.results[0][0].transcript;
             appendChat('User', text);
             await askVoiceGemini(text);
         };
-        recognition.onend = () => { isListening = false; voiceBtn.style.boxShadow = ''; };
+        recognition.onend = () => { isListening = false; voiceBtn.style.background = '#06402B'; };
     }
 
     voiceBtn.addEventListener('click', () => recognition && recognition.start());
@@ -275,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const reply = data.candidates[0].content.parts[0].text;
             appendChat('BHUMIIQ', reply);
             speakText(reply);
-        } catch (e) { appendChat('BHUMIIQ', 'क्षमा करें, त्रुटि हुई।'); }
+        } catch (e) { appendChat('BHUMIIQ', 'क्षमा करें, नेटवर्क त्रुटि।'); }
     }
 
     function speakText(text) {
