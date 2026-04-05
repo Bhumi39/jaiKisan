@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BHUMIIQ - Professional Agriculture Intelligence</title>
+    <title>BHUMIIQ - Enterprise Agri-Intelligence</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,7 +12,21 @@
 </head>
 <body>
 
-    <!-- TOP NAVBAR (Enterprise Header) -->
+    <!-- 🏔️ GLOBAL CINEMATIC BACKGROUND -->
+    <div class="global-bg"></div>
+
+    <!-- 🌀 CINEMATIC LOADING OVERLAY (For Search/Analyze) -->
+    <div id="cinematic-loader" class="cinematic-overlay hidden">
+        <div class="loader-bg"></div>
+        <div class="loader-content">
+            <div class="pulse-ring"></div>
+            <span class="material-symbols-outlined loader-icon">psychology_alt</span>
+            <h2 class="loader-text">Analyzing Satellite Data...</h2>
+            <p class="loader-subtext">Connecting to Agri-Intelligence Network</p>
+        </div>
+    </div>
+
+    <!-- 🧭 ENTERPRISE HEADER -->
     <header class="main-header">
         <div class="container nav-container">
             <div class="nav-brand" id="nav-logo">
@@ -21,13 +35,13 @@
             </div>
             <nav class="desktop-nav">
                 <a href="#" data-target="screen-home">Home</a>
-                <a href="#" data-target="screen-photo">AI Plant Doctor</a>
+                <a href="#" data-target="screen-photo">Plant Doctor IQ</a>
+                <a href="#" data-target="screen-sowing">Sowing Advisor</a>
                 <a href="#" data-target="screen-soilgold">SoilGold</a>
-                <a href="#" data-target="screen-mandi">Market Trends</a>
             </nav>
             <div class="nav-actions">
                 <a href="https://play.google.com/store/apps/details?id=com.jaikisan" class="btn btn-primary btn-pill btn-sm">
-                    <span class="material-symbols-outlined">download</span> Download Jai Kisan App
+                    <span class="material-symbols-outlined">download</span> Download Jai Kisan
                 </a>
             </div>
         </div>
@@ -35,82 +49,65 @@
 
     <main id="screens">
         
-        <!-- 1. LANDING PAGE (DEXTOP OPTIMIZED) -->
+        <!-- 1. HOME SCREEN (WOW Landing Page) -->
         <section id="screen-home" class="screen active">
             
             <!-- HERO SECTION -->
-            <div class="hero-v4">
+            <div class="hero-v5">
                 <div class="container hero-grid">
                     <div class="hero-text-block">
-                        <div class="iq-tag">AGRICULTURE IQ PRO</div>
-                        <h1 class="hero-main-title">Cultivating the Future with <span class="green-glow">AI-Powered Agriculture</span></h1>
-                        <p class="hero-desc">The ultimate intelligent portal for modern farmers. Snap a crop photo, get a survival roadmap, and manage your farm tools all in one place.</p>
+                        <div class="iq-tag-animated">PREMIUM AGRI AI</div>
+                        <h1 class="hero-main-title">Cultivate the Future with <br><span class="gradient-text">Bhumi Intelligence</span></h1>
+                        <p class="hero-desc">The world's most advanced agricultural portal. Powered by Gemini AI to predict diseases, suggest crops, and transform waste into gold.</p>
                         <div class="hero-cta-group">
-                            <button class="btn btn-primary btn-lg btn-pill" onclick="document.getElementById('tool-suite').scrollIntoView({behavior:'smooth'})">Explore All Tools</button>
+                            <button class="btn btn-primary btn-lg btn-pill btn-glow" onclick="document.getElementById('services-grid').scrollIntoView({behavior:'smooth'})">Get Started Today</button>
                             <a href="https://play.google.com/store/apps/details?id=com.jaikisan" class="btn btn-outline btn-lg btn-pill">Play Store App</a>
                         </div>
                     </div>
-                    <div class="hero-visual">
-                        <!-- Background image handles this through CSS -->
-                    </div>
                 </div>
             </div>
 
-            <!-- FARMING TOOLSET (New from Screenshot) -->
-            <section class="container py-60" id="tool-suite">
-                <div class="section-header text-center mb-40">
-                    <h2 class="section-title">Essential <span class="underline">Farming Tools</span></h2>
-                    <p class="section-subtitle">Auto-filled intelligent calculators to optimize your harvest and yield.</p>
+            <!-- SERVICE GRID (Animated Cards) -->
+            <section class="container py-80" id="services-grid">
+                <div class="section-header text-center mb-60">
+                    <h2 class="section-title">Agriculture <span class="underline-animated">Reimagined</span></h2>
+                    <p class="section-subtitle">Real-time intelligence tools that make every farmer an expert.</p>
                 </div>
                 
-                <div class="tool-grid">
-                    <div class="tool-card" data-target="screen-tools" data-tool="fertilizer">
-                        <span class="material-symbols-outlined tool-icon" style="color:#4CAF50;">eco</span>
-                        <h3>Fertilizer Calculator</h3>
-                        <p class="hindi-text">उर्वरक कैलकुलेटर</p>
+                <div class="pro-grid">
+                    <div class="pro-card" data-target="screen-photo">
+                        <div class="card-image-bg doctor-bg"></div>
+                        <div class="card-content">
+                            <span class="material-symbols-outlined card-icon">medical_services</span>
+                            <h3>Plant Doctor IQ</h3>
+                            <p>Deep-learning leaf analysis with 99% accuracy across 100+ crops.</p>
+                        </div>
                     </div>
-                    <div class="tool-card" data-target="screen-tools" data-tool="yield">
-                        <span class="material-symbols-outlined tool-icon" style="color:#2196F3;">trending_up</span>
-                        <h3>Yield Estimator</h3>
-                        <p class="hindi-text">उपज अनुमानक</p>
-                    </div>
-                    <div class="tool-card" data-target="screen-tools" data-tool="irrigation">
-                        <span class="material-symbols-outlined tool-icon" style="color:#03A9F4;">water_drop</span>
-                        <h3>Irrigation Planner</h3>
-                        <p class="hindi-text">सिंचाई योजनाकार</p>
-                    </div>
-                    <div class="tool-card" data-target="screen-tools" data-tool="cost">
-                        <span class="material-symbols-outlined tool-icon" style="color:#FF5722;">grid_view</span>
-                        <h3>Cost Calculator</h3>
-                        <p class="hindi-text">लागत कैलकुलेटर</p>
-                    </div>
-                </div>
-            </section>
 
-            <!-- SERVICE GRID -->
-            <section class="bg-smoke py-60">
-                <div class="container">
-                    <div class="section-header text-center mb-40">
-                        <h2 class="section-title">Everything You Need for <span class="underline">Success</span></h2>
+                    <div class="pro-card" data-target="screen-sowing">
+                        <div class="card-image-bg sowing-bg"></div>
+                        <div class="card-content">
+                            <span class="material-symbols-outlined card-icon">tsunami</span>
+                            <h3>Sowing Advisor</h3>
+                            <p>Real-time weather sowing suggestions. Know what to plant and when.</p>
+                        </div>
                     </div>
-                    <div class="services-row">
-                        <div class="service-card" data-target="screen-photo">
-                            <span class="material-symbols-outlined s-icon">psychology</span>
-                            <h4>AI Plant Health IQ</h4>
-                            <p>Early detection to act faster and reduce spread.</p>
-                            <span class="btn-text">Try Doctor IQ <span class="material-symbols-outlined">arrow_forward</span></span>
+
+                    <div class="pro-card" data-target="screen-soilgold">
+                        <div class="card-image-bg soil-bg"></div>
+                        <div class="card-content">
+                            <span class="material-symbols-outlined card-icon">recycling</span>
+                            <h3>SoilGold Advisor</h3>
+                            <p>Transform crop residue and farm waste into organic gold fertilizer.</p>
                         </div>
-                        <div class="service-card" data-target="screen-soilgold">
-                            <span class="material-symbols-outlined s-icon">nature</span>
-                            <h4>SoilGold Advisor</h4>
-                            <p>Turn farm waste into high-quality organic fertiliser.</p>
-                            <span class="btn-text">Check Waste <span class="material-symbols-outlined">arrow_forward</span></span>
-                        </div>
-                        <div class="service-card" data-target="screen-mandi">
-                            <span class="material-symbols-outlined s-icon">analytics</span>
-                            <h4>Market Intelligence</h4>
-                            <p>Real-time mandi prices and market trend analytics.</p>
-                            <span class="btn-text">View Prices <span class="material-symbols-outlined">arrow_forward</span></span>
+                    </div>
+
+                    <div class="pro-card" data-target="screen-mandi">
+                        <div class="card-image-bg mandi-bg"></div>
+                        <div class="card-content">
+                            <span class="material-symbols-outlined card-icon">trending_up</span>
+                            <h3>Mandi Market IQ</h3>
+                            <p>Satellite-based price trends and seller-window predictions.</p>
                         </div>
                     </div>
                 </div>
@@ -118,130 +115,129 @@
 
         </section>
 
-        <!-- 2. AI PLANT DOCTOR PAGE (Enhanced from Screenshot) -->
-        <section id="screen-photo" class="screen container py-40">
-            <div class="doctor-layout">
-                <div class="doctor-form-panel glass-card p-32">
-                    <h2 class="mb-24">Photo Expert Analysis</h2>
-                    <div id="image-preview-area" class="image-upload-box">
-                        <span id="img-placeholder-icon" class="material-symbols-outlined">add_a_photo</span>
-                        <p id="img-placeholder-text">Click Camera or Gallery to start <br><span class="hindi-text">फोटो के लिए कैमरा दबाएं</span></p>
-                        <img id="leaf-image" src="" alt="Captured Image" style="display:none; width:100%; border-radius:16px;">
+        <!-- 2. AI PLANT DOCTOR (Animated & Fixed) -->
+        <section id="screen-photo" class="screen container py-60">
+            <div class="glass-container max-w-1000 mx-auto">
+                <div class="doctor-split">
+                    <div class="upload-zone-v5" id="upload-clickable">
+                        <div id="image-preview-v5" class="preview-area">
+                            <div class="upload-prompt" id="upload-prompt">
+                                <span class="material-symbols-outlined upload-pulse">add_a_photo</span>
+                                <h3>Click or Drag to Upload Leaf</h3>
+                                <p>Support: JPEG, PNG | <span class="hindi-text">पत्ते की फोटो यहाँ डालें</span></p>
+                            </div>
+                            <img id="leaf-image-v5" src="" class="hidden-img">
+                        </div>
+                        <div class="upload-buttons">
+                            <button class="btn btn-secondary btn-pill" id="btn-camera-v5"><span class="material-symbols-outlined">photo_camera</span> Camera</button>
+                            <button class="btn btn-secondary btn-pill" id="btn-gallery-v5"><span class="material-symbols-outlined">image</span> Gallery</button>
+                        </div>
+                        <input type="file" id="doctor-camera" accept="image/*" capture="environment" hidden>
+                        <input type="file" id="doctor-gallery" accept="image/*" hidden>
                     </div>
-                    <div class="photo-actions mt-24">
-                        <button class="btn btn-outline flex-1" id="btn-camera"><span class="material-symbols-outlined">photo_camera</span> Camera</button>
-                        <button class="btn btn-outline flex-1" id="btn-gallery"><span class="material-symbols-outlined">image</span> Gallery</button>
-                        <input type="file" id="camera-input" accept="image/*" capture="environment" hidden>
-                        <input type="file" id="gallery-input" accept="image/*" hidden>
-                    </div>
-                    <button class="btn btn-primary full-btn py-16" id="btn-analyze">
-                        <span class="material-symbols-outlined">shutter_speed</span> Analyze Photo Now
-                    </button>
-                </div>
 
-                <div id="ai-photo-result" class="doctor-results-panel hidden">
-                    <div class="shimmer p-40" style="border-radius:24px;">Gathering AI Intelligence...</div>
+                    <div class="analysis-panel">
+                        <h2 class="mb-16">Intelligence Center</h2>
+                        <p class="text-muted mb-24">Upload a photo to see the Survival IQ and Detailed Roadmap.</p>
+                        <button class="btn btn-primary full-btn py-20 btn-glow" id="btn-analyze-v5">
+                            <span class="material-symbols-outlined">analytics</span> Start Deep Analysis
+                        </button>
+                        <div id="doctor-results" class="mt-32"></div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 3. SOILGOLD: WASTE TO WEALTH -->
-        <section id="screen-soilgold" class="screen container py-40">
-            <div class="glass-card p-40 max-w-800 mx-auto">
-                <h2 class="text-center mb-16">SoilGold: Waste to Wealth 🌿</h2>
-                <p class="text-center text-muted mb-32">I will help you turn farm waste and kitchen scraps into high-quality organic fertiliser (SoilGold).</p>
+        <!-- 3. SOWING ADVISOR (Weather Intelligence) -->
+        <section id="screen-sowing" class="screen container py-60">
+            <div class="glass-container max-w-800 mx-auto p-40">
+                <div class="sowing-banner">
+                    <h2 class="text-white text-center">Sowing IQ Advisor</h2>
+                    <p class="text-white opacity-8 text-center">Real-time Weather Analysis for your location.</p>
+                </div>
                 
-                <div class="advisor-chat-box">
-                    <label class="block mb-8 font-bold">What waste do you have today?</label>
-                    <textarea id="soilgold-query" placeholder="Ex: I have 2kg Rice husk and some kitchen scraps..." class="form-input"></textarea>
-                    <button class="btn btn-primary full-btn" id="btn-ask-soilgold">Consult Soil Scientist</button>
+                <div class="weather-box mt-32 shimmer" id="weather-display">
+                    <!-- Dynamic Weather Card -->
+                    <p class="text-center p-24">Detecting Location GPS...</p>
                 </div>
-                <div id="soilgold-results" class="mt-24"></div>
+
+                <div class="advisor-box mt-24">
+                    <button class="btn btn-primary full-btn btn-glow" id="btn-get-sowing-advice">Analyze Sowing Conditions</button>
+                </div>
+
+                <div id="sowing-results" class="mt-32"></div>
             </div>
         </section>
 
-        <!-- 4. MANDI PRICE INTELLIGENCE -->
-        <section id="screen-mandi" class="screen container py-40">
-            <div class="glass-card p-40 max-w-600 mx-auto">
-                <h2 class="mb-32 text-center">Market Price IQ</h2>
-                <div class="form-group mb-24">
-                    <label>Select State</label>
-                    <select id="mandi-state" class="form-select">
-                        <option value="">CHOOSE STATE</option>
-                        <option value="Punjab">PUNJAB (पंजाब)</option>
-                        <option value="Haryana">HARYANA (हरियाणा)</option>
-                        <option value="Uttar Pradesh">UTTAR PRADESH (उत्तर प्रदेश)</option>
-                        <option value="Rajasthan">RAJASTHAN (राजस्थान)</option>
-                    </select>
+        <!-- 4. SOILGOLD: WASTE TO WEALTH -->
+        <section id="screen-soilgold" class="screen container py-60">
+            <div class="glass-container max-w-800 mx-auto p-40">
+                <h2 class="text-center mb-24 brand-text">SoilGold Advisor 🌿</h2>
+                <div class="chat-interface">
+                    <textarea id="soilgold-query" placeholder="Ex: I have 2kg Stubble & kitchen waste..." class="chat-input"></textarea>
+                    <button class="btn btn-primary full-btn btn-glow mt-16" id="btn-ask-soilgold">Calculate SoilGold</button>
                 </div>
-                <div class="form-group mb-24">
-                    <label>Crop / Commodity</label>
-                    <select id="mandi-comm" class="form-select">
-                        <option value="">CHOOSE CROP</option>
-                        <option value="Wheat">WHEAT (गेहूं)</option>
-                        <option value="Rice (Paddy)">RICE (धान)</option>
-                        <option value="Cotton">COTTON (कपास)</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary full-btn" id="mandi-search-btn">Analyze Price Trends</button>
+                <div id="soilgold-results" class="mt-32"></div>
             </div>
-            <div id="mandi-results" class="mt-40 max-w-600 mx-auto"></div>
         </section>
 
-        <!-- 5. FARMING TOOLS CALCULATORS (New Screen from Screenshot) -->
-        <section id="screen-tools" class="screen container py-40">
-            <div class="glass-card p-40 max-w-800 mx-auto">
-                <button class="btn btn-back mb-16" onclick="navigateTo('screen-home','Home')"><span class="material-symbols-outlined">arrow_back</span> Back to Tools Grid</button>
-                <h2 id="tool-calc-title">Fertilizer Calculator</h2>
-                <hr class="mb-24">
-                <div id="calculator-ui">
-                    <!-- Dynamic form based on tool -->
-                    <p class="text-muted">Loading calculator intelligence...</p>
+        <!-- 5. MANDI PRICE Trends -->
+        <section id="screen-mandi" class="screen container py-60">
+            <div class="glass-container max-w-700 mx-auto p-40">
+                <h2 class="text-center mb-32">Market Price Intelligence</h2>
+                <div class="mandi-form">
+                    <div class="form-group mb-20">
+                        <label>State (राज्य)</label>
+                        <select id="mandi-state" class="chat-input">
+                            <option value="">Select State</option>
+                            <option value="Punjab">PUNJAB</option>
+                            <option value="Haryana">HARYANA</option>
+                            <option value="Uttar Pradesh">UTTAR PRADESH</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-32">
+                        <label>Crop (फसल)</label>
+                        <select id="mandi-comm" class="chat-input">
+                            <option value="">Select Crop</option>
+                            <option value="Wheat">WHEAT (गेहूं)</option>
+                            <option value="Rice">RICE (धान)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary full-btn btn-glow" id="mandi-search-btn">Analyze Price Window</button>
                 </div>
-                <button class="btn btn-primary full-btn mt-24" id="btn-calc-run">Auto-filled Estimation</button>
-                <div id="calc-results" class="mt-24"></div>
+                <div id="mandi-results" class="mt-32"></div>
             </div>
         </section>
 
     </main>
 
-    <!-- FOOTER (Enterprise 4-Column) -->
+    <!-- 👣 PROFESSIONAL FOOTER -->
     <footer class="main-footer">
         <div class="container footer-grid">
-            <div class="footer-col branding">
-                <h3>BHUMIIQ</h3>
-                <p>Revolutionizing farming with artificial intelligence and machine learning. Empowering farmers to cultivate the future.</p>
-                <div class="socials">
-                    <span class="material-symbols-outlined">mail</span>
-                    <span class="material-symbols-outlined">share</span>
+            <div class="footer-col">
+                <h3 class="brand-text">BHUMIIQ</h3>
+                <p>Empowering the world's farmers through advanced artificial intelligence. Grow smarter, better, and cheaper.</p>
+                <div class="store-links mt-20">
+                    <a href="https://play.google.com/store/apps/details?id=com.jaikisan" class="play-badge">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" height="40" alt="Get it on Google Play">
+                    </a>
                 </div>
             </div>
             <div class="footer-col">
-                <h4>Solutions</h4>
-                <ul>
-                    <li>AI Disease Diagnosis</li>
-                    <li>Soil Engineering</li>
-                    <li>Market Predictions</li>
-                    <li>Weather Intelligence</li>
-                </ul>
+                <h4>BHUMIIQ Pro</h4>
+                <p>Available on Mobile & Web. Connect your farm with satellite intelligence today.</p>
+                <p class="mt-12 opacity-7">Email: help@bhumiiq.live</p>
             </div>
             <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li>Services</li>
-                    <li>PhytoData Hub</li>
-                    <li>About Us</li>
-                    <li>How to Use</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Get the App</h4>
-                <p>Available now on Play Store.</p>
-                <a href="https://play.google.com/store/apps/details?id=com.jaikisan" class="btn btn-outline btn-sm btn-pill mt-12">Jai Kisan Android</a>
+                <h4>Social Community</h4>
+                <div class="social-circles">
+                    <span class="material-symbols-outlined">group</span>
+                    <span class="material-symbols-outlined">forum</span>
+                </div>
             </div>
         </div>
         <div class="footer-bottom text-center">
-            <p>© 2026 BHUMIIQ. All rights reserved. | <span class="material-symbols-outlined" style="font-size:12px;">psychology</span> AI Excellence</p>
+            <p>© 2026 BHUMIIQ Global. All Rights Reserved.</p>
         </div>
     </footer>
 

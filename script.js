@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
        1. NAVIGATION LOGIC (Desktop SPA)
        ============================== */
     const screens = document.querySelectorAll('.screen');
-    const navLinks = document.querySelectorAll('.desktop-nav a, .nav-brand, .service-card, .tool-card');
+    const navLinks = document.querySelectorAll('.desktop-nav a, .nav-brand, .pro-card');
 
-    function navigateTo(targetId, title) {
+    function navigateTo(targetId) {
         screens.forEach(s => s.classList.remove('active'));
         const targetScreen = document.getElementById(targetId);
         if (targetScreen) targetScreen.classList.add('active');
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // Update header highlighting if needed
+        // Update header highlighting
         document.querySelectorAll('.desktop-nav a').forEach(a => {
             if (a.getAttribute('data-target') === targetId) a.style.color = 'var(--brand-emerald)';
             else a.style.color = 'var(--text-muted)';
@@ -38,128 +38,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* ===============================
-       2. FARMING TOOLS (Calculator Logic)
+       2. CINEMATIC LOADER UTILS
        ============================== */
-    const calcContainer = document.getElementById('calculator-ui');
-    const calcTitle = document.getElementById('tool-calc-title');
-    const calcBtn = document.getElementById('btn-calc-run');
-    const calcResults = document.getElementById('calc-results');
+    const loader = document.getElementById('cinematic-loader');
+    const loaderText = loader.querySelector('.loader-text');
 
-    const toolConfig = {
-        fertilizer: {
-            title: "Fertilizer Requirement Calculator",
-            fields: ['Crop Type (फसल)', 'Land Area (Acres)', 'Soil Type (मिट्टी)'],
-            prompt: "Calculate required Nitrogen, Phosphorus, and Potassium for [CROP] in [AREA] acres of [SOIL] soil. Give a precise table."
-        },
-        yield: {
-            title: "Crop Yield Estimator",
-            fields: ['Crop Type', 'Seeds used (kg)', 'Current Growth Month'],
-            prompt: "Estimate the harvest yield (in quintals) for [CROP] given [SEEDS] kg of seeds planted."
-        },
-        irrigation: {
-            title: "Irrigation Schedule Planner",
-            fields: ['Crop Type', 'Last Rain (Days ago)', 'Soil Moisture level'],
-            prompt: "Suggest an irrigation schedule for [CROP] based on [MOISTURE] moisture and [RAIN] days since last rain."
-        },
-        cost: {
-            title: "Farm Expense & Cost Manager",
-            fields: ['Crop Type', 'Seed Cost', 'Labor Cost', 'Fertilizer Cost'],
-            prompt: "Analyze the total investment and suggest ways to reduce input costs for [CROP]."
-        }
-    };
-
-    let activeTool = 'fertilizer';
-
-    document.querySelectorAll('.tool-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const toolKey = card.getAttribute('data-tool');
-            activeTool = toolKey;
-            setupCalculator(toolKey);
-            navigateTo('screen-tools');
-        });
-    });
-
-    function setupCalculator(key) {
-        const config = toolConfig[key];
-        calcTitle.innerText = config.title;
-        calcResults.innerHTML = "";
-        
-        calcContainer.innerHTML = config.fields.map(f => `
-            <div class="mb-16">
-                <label class="block mb-8 font-bold">${f}</label>
-                <input type="text" class="form-input calc-field" placeholder="Enter ${f}...">
-            </div>
-        `).join('');
+    function showLoader(text = "Analyzing Satellite Data...") {
+        loaderText.innerText = text;
+        loader.classList.remove('hidden');
     }
-
-    calcBtn.addEventListener('click', async () => {
-        const values = Array.from(document.querySelectorAll('.calc-field')).map(i => i.value);
-        if (values.some(v => !v)) { alert("Please fill all fields!"); return; }
-
-        calcResults.innerHTML = `<div class="shimmer p-24" style="border-radius:16px;">Processing AI Calculation...</div>`;
-
-        try {
-            const config = toolConfig[activeTool];
-            const query = `Analyze this farming data for ${config.title}: ${values.join(', ')}. Provide a detailed report in English and Hindi.`;
-            
-            const payload = { contents: [{ parts: [{ text: query }] }], type: 'text' };
-            const res = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            const data = await res.json();
-            const reply = data.candidates[0].content.parts[0].text;
-
-            calcResults.innerHTML = `
-                <div class="p-24 glass-card" style="border-left: 4px solid var(--brand-emerald);">
-                    <div style="font-size:14px; line-height:1.8;">${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
-                </div>
-            `;
-        } catch (e) { calcResults.innerHTML = "Error in calculation."; }
-    });
+    function hideLoader() { loader.classList.add('hidden'); }
 
 
     /* ===============================
-       3. AI PLANT DOCTOR (Vision IQ)
+       3. AI DOCTOR IQ (Fixed Uploads)
        ============================== */
-    const cameraInput = document.getElementById('camera-input');
-    const galleryInput = document.getElementById('gallery-input');
-    const leafImage = document.getElementById('leaf-image');
-    const btnAnalyze = document.getElementById('btn-analyze');
-    const aiPhotoResult = document.getElementById('ai-photo-result');
+    const uploadArea = document.getElementById('upload-clickable');
+    const camInput = document.getElementById('doctor-camera');
+    const galInput = document.getElementById('doctor-gallery');
+    const leafImg = document.getElementById('leaf-image-v5');
+    const uploadPrompt = document.getElementById('upload-prompt');
+    const btnAnalyze = document.getElementById('btn-analyze-v5');
+    const doctorResults = document.getElementById('doctor-results');
 
-    let base64ImageString = null;
-    let imageMimeType = null;
+    let base64Image = null;
+    let mimeType = null;
 
-    document.getElementById('btn-camera').addEventListener('click', () => cameraInput.click());
-    document.getElementById('btn-gallery').addEventListener('click', () => galleryInput.click());
+    // Fix: Clicking the zone triggers selection
+    uploadArea.addEventListener('click', (e) => {
+        if (!e.target.closest('button')) galInput.click();
+    });
 
-    function handleImageUpload(e) {
+    document.getElementById('btn-camera-v5').addEventListener('click', (e) => { e.stopPropagation(); camInput.click(); });
+    document.getElementById('btn-gallery-v5').addEventListener('click', (e) => { e.stopPropagation(); galInput.click(); });
+
+    function handleImage(e) {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (evt) => {
-            document.getElementById('img-placeholder-icon').classList.add('hidden');
-            document.getElementById('img-placeholder-text').classList.add('hidden');
-            leafImage.style.display = 'block';
-            leafImage.src = evt.target.result;
-            base64ImageString = evt.target.result.split(',')[1];
-            imageMimeType = file.type;
-            aiPhotoResult.classList.add('hidden');
+            uploadPrompt.classList.add('hidden');
+            leafImg.classList.remove('hidden-img');
+            leafImg.src = evt.target.result;
+            base64Image = evt.target.result.split(',')[1];
+            mimeType = file.type;
         }
         reader.readAsDataURL(file);
     }
-    cameraInput.addEventListener('change', handleImageUpload);
-    galleryInput.addEventListener('change', handleImageUpload);
+    camInput.addEventListener('change', handleImage);
+    galInput.addEventListener('change', handleImage);
 
     btnAnalyze.addEventListener('click', async () => {
-        if (!base64ImageString) { alert('Upload a photo first!'); return; }
-
-        aiPhotoResult.classList.remove('hidden');
-        aiPhotoResult.innerHTML = `<div class="shimmer p-40" style="border-radius:24px;">Diagnosing Crop Health...</div>`;
+        if (!base64Image) { alert('Upload a photo first!'); return; }
+        
+        showLoader("Scanning Leaf Health...");
 
         try {
             const prompt = `You are BHUMIIQ Global Crop Expert. Analyze this plant photo:
             1. Identify Crop and Health Score (0-100%).
             2. PROVIDE 'SURVIVAL CHANCE' as a percentage.
-            3. Detailed 'DOS' (Green Card) and 'DON'TS' (Red Card) for the farmer.
+            3. Detailed 'DOS' and 'DON'TS' for the farmer.
             4. Suggested Cures and Chemicals.
             Answer clearly in English and Hindi.`;
 
@@ -167,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 contents: [{
                     parts: [
                         { text: prompt },
-                        { inlineData: { mimeType: imageMimeType, data: base64ImageString } }
+                        { inlineData: { mimeType: mimeType, data: base64Image } }
                     ]
                 }],
                 type: 'vision'
@@ -180,81 +118,114 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
-            const replyText = data.candidates[0].content.parts[0].text;
+            const reply = data.candidates[0].content.parts[0].text;
             
-            const chanceMatch = replyText.match(/(\d+)%/);
+            const chanceMatch = reply.match(/(\d+)%/);
             const chance = chanceMatch ? chanceMatch[1] : 75;
 
-            aiPhotoResult.innerHTML = `
-                <div class="p-32 glass-card">
-                    <div class="mb-24">
-                        <h3 class="mb-8">Health IQ Result: <span style="color:var(--brand-emerald);">${chance}% Survival</span></h3>
-                        <div class="survival-chance-bar"><div class="survival-progress" style="width:${chance}%"></div></div>
-                    </div>
-                    
-                    <div class="dos-donts-grid">
-                        <div class="card-do">
-                            <h5><span class="material-symbols-outlined">check_circle</span> DO'S / क्या करें</h5>
-                            <div style="font-size:13px; line-height:1.6;">${replyText.split(/DON'TS|क्या न करें/i)[0].replace(/\n/g, '<br>')}</div>
-                        </div>
-                        <div class="card-dont">
-                            <h5><span class="material-symbols-outlined">cancel</span> DON'TS / क्या न करें</h5>
-                            <div style="font-size:13px; line-height:1.6;">${replyText.includes("DON'TS") ? replyText.split(/DON'TS|क्या न करें/i)[1].replace(/\n/g, '<br>') : "Avoid over-irrigation."}</div>
-                        </div>
-                    </div>
-
-                    <div class="mt-32 p-24" style="background:#F0FDF4; border-radius:16px;">
-                        <h4 class="mb-12">Expert Cures & Recommendations</h4>
-                        <div style="font-size:14px;">${replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
-                        <button class="btn btn-primary mt-16 btn-pill" id="btn-listen-doctor"><span class="material-symbols-outlined">volume_up</span> Listen Report</button>
+            doctorResults.innerHTML = `
+                <div class="result-card p-32 glass-container" style="margin-top:0;">
+                    <h3>Diagnosis Result: <span style="color:var(--brand-emerald);">${chance}% Health</span></h3>
+                    <div style="font-size:14px; line-height:1.8; margin-top:16px;">
+                        ${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
                     </div>
                 </div>
             `;
-
-            document.getElementById('btn-listen-doctor').addEventListener('click', () => speakText(replyText));
-
-        } catch (error) { aiPhotoResult.innerHTML = `<p class="p-40 text-center">Connection Error.</p>`; }
+        } catch (e) { alert("Analysis failed."); }
+        finally { hideLoader(); }
     });
 
-    /* ===============================
-       4. SOILGOLD & MANDI PRICE
-       ============================== */
-    const soilgoldBtn = document.getElementById('btn-ask-soilgold');
-    const mandiBtn = document.getElementById('mandi-search-btn');
 
-    soilgoldBtn.addEventListener('click', async () => {
-        const query = document.getElementById('soilgold-query').value;
-        if (!query) return;
-        const results = document.getElementById('soilgold-results');
-        results.innerHTML = `<div class="shimmer p-24">Consulting Scientist...</div>`;
+    /* ===============================
+       4. SOWING IQ (Weather Logic)
+       ============================== */
+    const weatherSowingBtn = document.getElementById('btn-get-sowing-advice');
+    const weatherDisplay = document.getElementById('weather-display');
+    const sowingResults = document.getElementById('sowing-results');
+    
+    let currentTemp = null;
+    let currentHumidity = null;
+    let currentLocation = "Detected Region";
+
+    async function initWeather() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                try {
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&relative_humidity_2m=true`);
+                    const data = await res.json();
+                    currentTemp = data.current_weather.temperature;
+                    currentHumidity = data.current_weather.windspeed; // Proxy for the demo if humidity isn't directly in current_weather
+                    
+                    const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                    const geoData = await geoRes.json();
+                    currentLocation = geoData.address.city || geoData.address.state || "Your Area";
+
+                    weatherDisplay.innerHTML = `
+                        <div class="text-center">
+                            <span class="material-symbols-outlined" style="font-size:64px; color:var(--brand-emerald);">wb_sunny</span>
+                            <h2 style="font-size:48px;">${currentTemp}°C</h2>
+                            <p style="font-size:18px; color:var(--text-muted);">${currentLocation}</p>
+                        </div>
+                    `;
+                } catch (e) { weatherDisplay.innerText = "Weather Check Offline."; }
+            });
+        }
+    }
+    initWeather();
+
+    weatherSowingBtn.addEventListener('click', async () => {
+        showLoader("Calculating Best Sowing Window...");
+
         try {
-            const payload = { contents: [{ parts: [{ text: `You are BHUMIIQ Soil Specialist. Answer: ${query}` }] }], type: 'text' };
+            const prompt = `You are BHUMIIQ Agri-Weather Expert. Current conditions in ${currentLocation} are ${currentTemp}°C and moisture is high. 
+            Suggest exactly 3 crops to sow right now. Provide 'Why' and 'Expected Yield'. Explain in English and Hindi.`;
+
+            const payload = { contents: [{ parts: [{ text: prompt }] }], type: 'text' };
             const res = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await res.json();
-            results.innerHTML = `<div class="p-24 glass-card mt-16">${data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>')}</div>`;
-        } catch(e) { results.innerHTML = "Error."; }
+            const reply = data.candidates[0].content.parts[0].text;
+
+            sowingResults.innerHTML = `
+                <div class="glass-container p-32">
+                    <h3 class="mb-16" style="color:var(--brand-emerald);">Sowing Recommendation</h3>
+                    <div style="font-size:14px; line-height:1.8;">${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                </div>
+            `;
+        } catch (e) { alert("Sowing IQ Offline."); }
+        finally { hideLoader(); }
+    });
+
+
+    /* ===============================
+       5. SOILGOLD & MANDI IQ
+       ============================== */
+    const soilBtn = document.getElementById('btn-ask-soilgold');
+    const mandiBtn = document.getElementById('mandi-search-btn');
+
+    soilBtn.addEventListener('click', async () => {
+        const query = document.getElementById('soilgold-query').value;
+        if (!query) return;
+        showLoader("Engineering Organic Formula...");
+        try {
+            const payload = { contents: [{ parts: [{ text: `BHUMIIQ Soil Scientist: Turn ${query} into SoilGold.` }] }], type: 'text' };
+            const res = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json();
+            document.getElementById('soilgold-results').innerHTML = `<div class="glass-container p-32">${data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>')}</div>`;
+        } catch(e) {} finally { hideLoader(); }
     });
 
     mandiBtn.addEventListener('click', async () => {
         const state = document.getElementById('mandi-state').value;
         const comm = document.getElementById('mandi-comm').value;
-        if (!state || !comm) return;
-        const results = document.getElementById('mandi-results');
-        results.innerHTML = `<div class="shimmer p-24">Analyzing Market Satellite Data...</div>`;
+        showLoader("Scanning Market Satellite...");
         try {
-            const payload = { contents: [{ parts: [{ text: `Predict current price trends for ${comm} in ${state}.` }] }], type: 'text' };
+            const payload = { contents: [{ parts: [{ text: `Mandi Price Expert: Trends for ${comm} in ${state}.` }] }], type: 'text' };
             const res = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await res.json();
-            results.innerHTML = `<div class="p-24 glass-card mt-16">${data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>')}</div>`;
-        } catch(e) { results.innerHTML = "Market offline."; }
+            document.getElementById('mandi-results').innerHTML = `<div class="glass-container p-32">${data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>')}</div>`;
+        } catch(e) {} finally { hideLoader(); }
     });
 
-    function speakText(text) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'hi-IN';
-            window.speechSynthesis.speak(utterance);
-        }
-    }
 });
