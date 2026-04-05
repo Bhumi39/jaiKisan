@@ -12,56 +12,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const screens = document.querySelectorAll('.screen');
     const navCards = document.querySelectorAll('.grid-container .card');
 
-    function navigateTo(targetId, title, themeColor = "#FFB74D") {
+    function navigateTo(targetId, title, themeColor = "#10B981") {
         screens.forEach(s => s.classList.remove('active'));
         const targetScreen = document.getElementById(targetId);
         if (targetScreen) targetScreen.classList.add('active');
 
         if (targetId === 'screen-home') {
             appBar.classList.add('hidden');
-            appBox.style.backgroundColor = '#FDFBF7';
         } else {
             appBar.classList.remove('hidden');
             screenTitle.innerText = title;
-            appBar.style.backgroundColor = themeColor;
-            appBox.style.backgroundColor = '#FDFBF7';
+            appBar.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
         }
-
+        
         if (targetId === 'screen-weather') fetchWeather();
     }
 
-    navigateTo('screen-home', 'Home');
+    navigateTo('screen-home', 'BHUMIIQ');
 
     navCards.forEach(card => {
         card.addEventListener('click', () => {
             const target = card.getAttribute('data-target');
             const title = card.getAttribute('data-title');
-
-            card.classList.remove('active');
-            void card.offsetWidth;
             card.classList.add('active');
-
             setTimeout(() => navigateTo(target, title), 200);
         });
     });
 
-    backBtn.addEventListener('click', () => {
-        navigateTo('screen-home', 'Home');
+    const goBack = () => {
+        navigateTo('screen-home', 'BHUMIIQ');
         if (recognition && isListening) recognition.stop();
         window.speechSynthesis.cancel();
-    });
+    };
 
-    document.querySelectorAll('.btn-back-home').forEach(btn => {
-        btn.addEventListener('click', () => {
-            navigateTo('screen-home', 'Home');
-            if (recognition && isListening) recognition.stop();
-            window.speechSynthesis.cancel();
-        });
-    });
+    backBtn.addEventListener('click', goBack);
+    document.querySelectorAll('.btn-back-home').forEach(btn => btn.addEventListener('click', goBack));
 
 
     /* ===============================
-       2. WEATHER API (Open-Meteo + NOMINATIM)
+       2. WEATHER API (Open-Meteo)
        =============================== */
     const weatherLoading = document.getElementById('weather-loading');
     const weatherResult = document.getElementById('weather-result');
@@ -78,61 +67,42 @@ document.addEventListener('DOMContentLoaded', () => {
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-
                 try {
-                    // Fetch temperature
                     const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
                     const data = await res.json();
-
-                    const temp = data.current_weather.temperature;
+                    const temp = Math.round(data.current_weather.temperature);
                     const code = data.current_weather.weathercode;
                     wTemp.innerText = `${temp}°C`;
+                    
+                    if (code <= 3) { wDesc.innerText = "Clear Skies"; wIcon.innerText = "sunny"; }
+                    else if (code <= 48) { wDesc.innerText = "Foggy Condition"; wIcon.innerText = "foggy"; }
+                    else if (code <= 69) { wDesc.innerText = "Rainy Day (बारिश)"; wIcon.innerText = "rainy"; }
+                    else { wDesc.innerText = "Storm Warning"; wIcon.innerText = "thunderstorm"; }
 
-                    // Basic conditions mapping
-                    if (code <= 3) { wDesc.innerText = "Clear / Partially Cloudy"; wIcon.innerText = "partly_cloudy_day"; }
-                    else if (code <= 48) { wDesc.innerText = "Foggy"; wIcon.innerText = "foggy"; }
-                    else if (code <= 69) { wDesc.innerText = "Rainy (बारिश)"; wIcon.innerText = "rainy"; }
-                    else { wDesc.innerText = "Stormy / Snow"; wIcon.innerText = "thunderstorm"; }
-
-                    // REVERSE GEOCODING to get the City/Village name!
                     const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
                     const geoData = await geoRes.json();
-                    let placeName = geoData.address.city || geoData.address.town || geoData.address.village || geoData.address.county || geoData.address.state;
-                    wLoc.innerText = `Location: ${placeName} (${geoData.address.country})`;
-
+                    let placeName = geoData.address.city || geoData.address.town || geoData.address.village || "Local Area";
+                    wLoc.innerText = `Field: ${placeName}, ${geoData.address.country}`;
+                    
                     weatherLoading.classList.add('hidden');
                     weatherResult.classList.remove('hidden');
-
                 } catch (e) {
-                    wDesc.innerText = "Failed to load weather.";
-                    wLoc.innerText = "Check your connection.";
+                    wDesc.innerText = "Connection lost.";
                     weatherLoading.classList.add('hidden');
-                    weatherResult.classList.remove('hidden');
                 }
-
             }, () => {
-                wDesc.innerText = "Location permission denied.";
-                wLoc.innerText = "Please allow GPS to see local weather.";
+                wDesc.innerText = "Enable GPS for local weather.";
                 weatherLoading.classList.add('hidden');
-                weatherResult.classList.remove('hidden');
             });
-        } else {
-            wDesc.innerText = "Geolocation not supported.";
-            weatherLoading.classList.add('hidden');
-            weatherResult.classList.remove('hidden');
         }
     }
 
     /* ===============================
-       3. PHOTO EXPERT (Gemini Vision)
+       3. PLANT HEALTH IQ (Enhanced Gemini Vision)
        =============================== */
-    const btnCamera = document.getElementById('btn-camera');
-    const btnGallery = document.getElementById('btn-gallery');
     const cameraInput = document.getElementById('camera-input');
     const galleryInput = document.getElementById('gallery-input');
     const leafImage = document.getElementById('leaf-image');
-    const imgPlaceholderIcon = document.getElementById('img-placeholder-icon');
-    const imgPlaceholderText = document.getElementById('img-placeholder-text');
     const btnAnalyze = document.getElementById('btn-analyze');
     const aiPhotoResult = document.getElementById('ai-photo-result');
     const aiPhotoText = aiPhotoResult.querySelector('p');
@@ -140,76 +110,53 @@ document.addEventListener('DOMContentLoaded', () => {
     let base64ImageString = null;
     let imageMimeType = null;
 
-    btnCamera.addEventListener('click', () => cameraInput.click());
-    btnGallery.addEventListener('click', () => galleryInput.click());
+    document.getElementById('btn-camera').addEventListener('click', () => cameraInput.click());
+    document.getElementById('btn-gallery').addEventListener('click', () => galleryInput.click());
 
     function handleImageUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = (evt) => {
-            imgPlaceholderIcon.style.display = 'none';
-            imgPlaceholderText.style.display = 'none';
+            document.getElementById('img-placeholder-icon').style.display = 'none';
+            document.getElementById('img-placeholder-text').style.display = 'none';
             leafImage.style.display = 'block';
             leafImage.src = evt.target.result;
-
-            // Extract pure base64 for Gemini (remove data:image/jpeg;base64,)
-            const resultStr = evt.target.result;
-            base64ImageString = resultStr.split(',')[1];
+            base64ImageString = evt.target.result.split(',')[1];
             imageMimeType = file.type;
-
             aiPhotoResult.classList.add('hidden');
         }
         reader.readAsDataURL(file);
     }
-
     cameraInput.addEventListener('change', handleImageUpload);
     galleryInput.addEventListener('change', handleImageUpload);
 
     btnAnalyze.addEventListener('click', async () => {
         if (!base64ImageString) {
-            alert('Please capture or upload an image first!');
+            alert('Please select a photo first!');
             return;
         }
 
-        const quotes = [
-            "Healthy soil, healthy life. (स्वस्थ मिट्टी, स्वस्थ जीवन।)",
-            "The farmer is the only man in our economy who buys everything at retail, sells everything at wholesale. (किसान ही हमारी अर्थव्यवस्था का वह व्यक्ति है जो सब कुछ फुटकर में खरीदता है और थोक में बेचता है।)",
-            "Agriculture is the most healthful, most useful and most noble employment of man. (कृषि मनुष्य का सबसे स्वस्थ, सबसे उपयोगी और सबसे महान कार्य है।)",
-            "Farming is a profession of hope. (खेती आशा का व्यवसाय है।)",
-            "A farmer is a magician who produces money from the mud. (किसान वह जादूगर है जो कीचड़ से पैसा पैदा करता है।)"
-        ];
-        let quoteIndex = 0;
-
         aiPhotoResult.classList.remove('hidden');
-        aiPhotoResult.style.backgroundColor = '#F5F7FA';
-
-        const updateLoadingQuote = () => {
-            aiPhotoText.innerHTML = `
-                <div class="text-center">
-                    <span class="material-symbols-outlined pulse-animation" style="font-size:32px; color:var(--md-sys-color-primary);">psychology</span>
-                    <p style="font-style:italic; color:#555; margin-top:8px;">"${quotes[quoteIndex]}"</p>
-                    <p style="font-size:12px; color:#888;">Analyzing your crop... (आपकी फसल का विश्लेषण कर रहे हैं...)</p>
-                </div>
-            `;
-            quoteIndex = (quoteIndex + 1) % quotes.length;
-        };
-
-        updateLoadingQuote();
-        const quoteInterval = setInterval(updateLoadingQuote, 3000);
+        aiPhotoText.innerHTML = `<div class="text-center p-24"><div class="shimmer" style="height:20px; border-radius:10px; margin-bottom:10px;"></div><p>Calculating Health IQ...</p></div>`;
 
         try {
+            const prompt = `You are BHUMIIQ, a professional AI Agricultural Consultant. 
+            Analyze this plant image deeply.
+            1. Determine if it is a plant. If not, reject.
+            2. Calculate a "Health Score" from 0 to 100.
+            3. Provide a Status: [EXCELLENT, GOOD, CRITICAL, or DANGER].
+            4. Identify any diseases or pests.
+            5. Provide a "Recovery Roadmap": Step-by-step process to improve health.
+            6. "Safety Check": Is the crop currently safe or at risk?
+            
+            Return your response in a structured format with English and Hindi translations. Use bullet points for steps.`;
+
             const payload = {
                 contents: [{
                     parts: [
-                        { text: "You are an expert agricultural botanist named Jai Kisan. FIRST, deeply analyze the image. If the photo does NOT clearly contain a plant, leaf, crop, or agricultural vegetable, OR if the photo is entirely blurred/unreadable, you must stop and reply EXACTLY with: 'यह छवि किसी पौधे/फसल की नहीं है, या बहुत धुंधली है। कृपया पौधे की साफ फोटो अपलोड करें।\n\n(This image is not related to a plant or is too blurry. Please upload a clear photo.)' Do not add anything else. IF the photo IS a valid plant, identify any diseases and suggest a short remedy. Return your answer cleanly formatted with English and Hindi bullet points." },
-                        {
-                            inlineData: {
-                                mimeType: imageMimeType,
-                                data: base64ImageString
-                            }
-                        }
+                        { text: prompt },
+                        { inlineData: { mimeType: imageMimeType, data: base64ImageString } }
                     ]
                 }],
                 type: 'vision'
@@ -221,41 +168,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload)
             });
 
-            if (!response.ok) {
-                const errDetails = await response.json();
-                console.error("Gemini Error Details:", errDetails);
-                throw new Error(errDetails.error?.message || response.statusText);
-            }
+            if (!response.ok) throw new Error("Intelligence Service Offline");
 
             const data = await response.json();
             const replyText = data.candidates[0].content.parts[0].text;
-            clearInterval(quoteInterval);
+            
+            // Extract a possible score (0-100) if mentioned, otherwise mock for UI
+            const scoreMatch = replyText.match(/(\d+)%/);
+            const score = scoreMatch ? scoreMatch[1] : 75;
 
-            aiPhotoResult.style.backgroundColor = '#E8F5E9'; // success green tint
             aiPhotoText.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-                    <strong>Expert Diagnosis:</strong>
-                    <button class="btn btn-tertiary" id="btn-listen-photo" style="padding:4px 12px; font-size:12px; display:flex; align-items:center; gap:4px;">
-                        <span class="material-symbols-outlined" style="font-size:18px;">volume_up</span> Listen
-                    </button>
+                <div class="health-gauge-container">
+                    <div class="health-gauge">
+                        <span class="health-value">${score}%</span>
+                    </div>
+                    <div class="status-badge" style="background:${score > 70 ? '#10B981' : '#F59E0B'}; color:white;">
+                        ${score > 70 ? 'HEALTHY' : 'RECOVERY NEEDED'}
+                    </div>
                 </div>
-                <div id="photo-reply-content">${replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                <div class="p-16">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <span class="btn btn-tertiary" id="btn-listen-photo"><span class="material-symbols-outlined">volume_up</span> Listen</span>
+                    </div>
+                    <div class="report-content">${replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                </div>
             `;
 
-            document.getElementById('btn-listen-photo').addEventListener('click', () => {
-                speakText(replyText);
-            });
+            document.getElementById('btn-listen-photo').addEventListener('click', () => speakText(replyText));
 
         } catch (error) {
-            clearInterval(quoteInterval);
-            aiPhotoResult.style.backgroundColor = '#FFEBEE';
-            aiPhotoText.innerHTML = `<strong>Error analyzed:</strong><br><br>${error.message}<br><br><small>If payload is too large, try uploading a smaller image.</small>`;
-            console.error(error);
+            aiPhotoText.innerHTML = `<p class="p-24 text-center" style="color:#EF4444;">Error analyzed: ${error.message}</p>`;
         }
     });
 
     /* ===============================
-       4. MANDI PRICES (Gemini AI Powered)
+       4. MANDI PRICE TRENDS
        =============================== */
     const mandiPreviewBtn = document.getElementById('mandi-search-btn');
     const mandiResults = document.getElementById('mandi-results');
@@ -263,176 +210,79 @@ document.addEventListener('DOMContentLoaded', () => {
     mandiPreviewBtn.addEventListener('click', async () => {
         const state = document.getElementById('mandi-state').value;
         const comm = document.getElementById('mandi-comm').value;
-        const fromDate = document.getElementById('mandi-from-date').value;
-        const toDate = document.getElementById('mandi-to-date').value;
+        if (!state || !comm) { alert("Select State & Crop"); return; }
 
-        if (!state || !comm) {
-            alert("Please select both State and Commodity.");
-            return;
-        }
-
-        mandiResults.innerHTML = `
-            <div class="text-center">
-                <span class="material-symbols-outlined pulse-animation" style="font-size: 40px; color: var(--md-sys-color-primary);">analytics</span>
-                <p>AI is analyzing market trends...<br><span class="hindi-text">AI बाजार के रुझानों का विश्लेषण कर रहा है...</span></p>
-            </div>
-        `;
+        mandiResults.innerHTML = `<div class="p-24 shimmer" style="border-radius:20px;">Analyzing Price Intelligence...</div>`;
 
         try {
-            const prompt = `You are an expert Jai Kisan Market Analyst. Provide detailed market price information, trends, and advice for ${comm} in ${state} ${fromDate && toDate ? `between ${fromDate} and ${toDate}` : 'currently'}. 
-            Format the response for a farmer. Use bullet points. 
-            Provide the answer in both English and clear Hindi. 
-            Include:
-            - Estimated Price Range (₹ per Quintal)
-            - Market Trend (Rising/Stable/Falling)
-            - Quick Advice for the farmer.`;
-
-            const payload = {
-                contents: [{
-                    parts: [{ text: prompt }]
-                }],
-                type: 'text'
-            };
-
+            const prompt = `You are BHUMIIQ Market AI. Analyze current price trends for ${comm} in ${state}. Suggest if it's a good time to sell. English and Hindi.`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }], type: 'text' };
             const response = await fetch(GEMINI_API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
-            if (!response.ok) throw new Error("AI Market Service unavailable");
-
             const data = await response.json();
             const replyText = data.candidates[0].content.parts[0].text;
 
             mandiResults.innerHTML = `
-                <div style="background:white; padding:20px; border-radius:16px; text-align:left; border-left: 6px solid var(--md-sys-color-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    <h3 style="margin-bottom:12px; color:var(--md-sys-color-primary); display:flex; align-items:center; gap:8px;">
-                        <span class="material-symbols-outlined">trending_up</span>
-                        Market Report
-                    </h3>
-                    <div style="font-size:14px; line-height:1.6; color:#333;">
-                        ${replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
-                    </div>
-                    <p style="font-size:10px; color:#999; margin-top:16px; text-align:right;">Powered by Gemini AI</p>
+                <div class="glass-card p-20 text-left border-glow">
+                    <h4 style="color:var(--brand-primary); margin-bottom:8px;">Intelligence Report</h4>
+                    <div style="font-size:14px; line-height:1.6;">${replyText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
                 </div>
             `;
-
-        } catch (error) {
-            mandiResults.innerHTML = `<p style="color: #D32F2F;">Failed to fetch AI market report. Please try again later.</p>`;
-            console.error(error);
+        } catch (e) {
+            mandiResults.innerHTML = "Market Service unavailable.";
         }
     });
 
-    const mandiResetBtn = document.getElementById('mandi-reset-btn');
-    mandiResetBtn.addEventListener('click', () => {
-        document.getElementById('mandi-state').value = "";
-        document.getElementById('mandi-comm').value = "";
-        document.getElementById('mandi-from-date').value = "";
-        document.getElementById('mandi-to-date').value = "";
-        mandiResults.innerHTML = `<p style="color: #666; font-size: 14px;">Prices will be shown here / यहाँ कीमतें दिखाई जाएँगी।</p>`;
-    });
-
     /* ===============================
-       5. VOICE ASSISTANT
+       5. VOICE IQ (Gemma-3-4B)
        =============================== */
     const voiceBtn = document.getElementById('voice-btn');
     const chatContainer = document.getElementById('chat-container');
-
     let recognition = null;
     let isListening = false;
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
         recognition.lang = 'hi-IN';
-
-        recognition.onstart = () => {
-            isListening = true;
-            voiceBtn.classList.add('pulse-animation');
-            appendChat('User', 'Listening... / सुन रहा है...');
+        recognition.onstart = () => { isListening = true; voiceBtn.style.boxShadow = '0 0 40px var(--brand-primary)'; };
+        recognition.onresult = async (e) => {
+            const text = e.results[0][0].transcript;
+            appendChat('User', text);
+            await askVoiceGemini(text);
         };
-
-        recognition.onresult = async (event) => {
-            const transcript = event.results[0][0].transcript;
-            voiceBtn.classList.remove('pulse-animation');
-            chatContainer.removeChild(chatContainer.lastChild); // remove listening bubble
-            appendChat('User', transcript);
-            await askVoiceGemini(transcript);
-        };
-
-        recognition.onerror = () => {
-            voiceBtn.classList.remove('pulse-animation');
-            isListening = false;
-        };
-
-        recognition.onend = () => {
-            isListening = false;
-            voiceBtn.classList.remove('pulse-animation');
-        };
+        recognition.onend = () => { isListening = false; voiceBtn.style.boxShadow = ''; };
     }
 
-    voiceBtn.addEventListener('click', () => {
-        if (recognition) {
-            if (!isListening) recognition.start();
-        } else {
-            alert('Speech Recognition not supported in this browser.');
-        }
-    });
+    voiceBtn.addEventListener('click', () => recognition && recognition.start());
 
-    function appendChat(sender, text) {
+    function appendChat(user, text) {
         const div = document.createElement('div');
-        div.className = sender === 'User' ? 'chat-bubble chat-user' : 'chat-bubble';
-
-        let innerHtml = sender === 'Bot'
-            ? `<p class="hindi-text">${text} <span class="material-symbols-outlined chat-icon" style="color:#F57C00;">volume_up</span></p>`
-            : `<p>${text}</p>`;
-
-        div.innerHTML = innerHtml;
+        div.className = user === 'User' ? 'chat-bubble chat-user' : 'chat-bubble glass-card';
+        div.innerHTML = `<p>${text}</p>`;
         chatContainer.appendChild(div);
-        document.getElementById('screen-voice').scrollTop = document.getElementById('screen-voice').scrollHeight;
+        chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
     async function askVoiceGemini(query) {
         try {
-            const payload = {
-                contents: [{
-                    parts: [{ text: `You are an AI assistant for Indian farmers named Jai Kisan. Answer briefly (1 sentence) in clear Hindi: ${query}` }]
-                }],
-                type: 'text'
-            };
-
-            const response = await fetch(GEMINI_API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) throw new Error('API Error');
-
-            const data = await response.json();
-            let replyText = data.candidates[0].content.parts[0].text;
-
-            appendChat('Bot', replyText);
-            speakText(replyText);
-
-        } catch (error) {
-            appendChat('Bot', 'मुझे समझ नहीं आया। क्रिपया पुनः प्रयास करें। (Could not reach API)');
-        }
+            const payload = { contents: [{ parts: [{ text: `You are BHUMIIQ AI. Answer in 1 short Hindi sentence: ${query}` }] }], type: 'text' };
+            const res = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json();
+            const reply = data.candidates[0].content.parts[0].text;
+            appendChat('BHUMIIQ', reply);
+            speakText(reply);
+        } catch (e) { appendChat('BHUMIIQ', 'क्षमा करें, त्रुटि हुई।'); }
     }
 
     function speakText(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
-            const voices = window.speechSynthesis.getVoices();
-            const hiVoice = voices.find(v => v.lang === 'hi-IN' || v.lang.includes('hi'));
-            if (hiVoice) {
-                utterance.voice = hiVoice;
-                utterance.lang = 'hi-IN';
-            }
+            utterance.lang = 'hi-IN';
             window.speechSynthesis.speak(utterance);
         }
     }
