@@ -3,21 +3,36 @@ const GEMINI_API_URL = '/api/gemini';
 document.addEventListener('DOMContentLoaded', () => {
 
     /* ===============================
-       1. NAVIGATION & BACK NAVIGATION
+       1. MULTI-PAGE NAVIGATION IQ
        ============================== */
     const screens = document.querySelectorAll('.screen');
-    const navLinks = document.querySelectorAll('.desktop-nav a, .nav-brand, .f-panel, .mini-card, .btn');
+    const navLinks = document.querySelectorAll('[data-target]');
     const backBtn = document.getElementById('back-home-btn');
+    const navbar = document.querySelector('.main-header');
 
     function navigateTo(targetId) {
         if (!targetId) return;
-        screens.forEach(s => s.classList.remove('active'));
-        const targetScreen = document.getElementById(targetId);
-        if (targetScreen) targetScreen.classList.add('active');
+        
+        // Handle transitions
+        screens.forEach(s => {
+            s.classList.remove('active');
+            s.style.opacity = '0';
+        });
 
-        // Toggle Back Button
-        if (targetId === 'screen-home') backBtn.classList.add('hidden');
-        else backBtn.classList.remove('hidden');
+        const targetScreen = document.getElementById(targetId);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
+            setTimeout(() => targetScreen.style.opacity = '1', 50);
+        }
+
+        // Toggle Back Button & Header Style
+        if (targetId === 'screen-home') {
+            backBtn.classList.add('hidden');
+            navbar.style.background = "rgba(255, 255, 255, 0.9)";
+        } else {
+            backBtn.classList.remove('hidden');
+            navbar.style.background = "white";
+        }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -33,6 +48,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     backBtn.addEventListener('click', () => navigateTo('screen-home'));
+
+    // Smooth scroll for internal anchors
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href.startsWith('#section')) {
+                e.preventDefault();
+                const targetEl = document.querySelector(href);
+                if (targetEl) {
+                    targetEl.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    });
+
+    // Default Starting View
     navigateTo('screen-home');
 
 
@@ -40,125 +71,60 @@ document.addEventListener('DOMContentLoaded', () => {
        2. CINEMATIC LOADER
        ============================== */
     const loader = document.getElementById('cinematic-loader');
-    function showLoader(txt) { loader.querySelector('.loader-text').innerText = txt; loader.classList.remove('hidden'); }
+    function showLoader(txt) { 
+        loader.querySelector('.loader-text').innerText = txt; 
+        loader.classList.remove('hidden'); 
+    }
     function hideLoader() { loader.classList.add('hidden'); }
 
 
     /* ===============================
-       3. 🎙️ LIVE VOICE ASSISTANT (Speech-to-Text)
-       ============================== */
-    const voiceTrigger = document.getElementById('voice-trigger-v6');
-    const voiceModal = document.getElementById('voice-overlay');
-    const voiceStatus = document.getElementById('voice-status');
-    const voiceText = document.getElementById('voice-transcript');
-    const closeVoice = document.getElementById('close-voice');
-
-    let recognition;
-    if ('webkitSpeechRecognition' in window) {
-        recognition = new webkitSpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = 'hi-IN'; // Default to Hindi-In
-
-        recognition.onstart = () => {
-             voiceStatus.innerText = "Listening...";
-             voiceText.innerText = "Please ask your farming question...";
-        };
-
-        recognition.onresult = async (event) => {
-            const transcript = event.results[0][0].transcript;
-            voiceText.innerText = `Recognized: "${transcript}"`;
-            voiceStatus.innerText = "Thinking...";
-            
-            // Send to Gemini
-            try {
-                const payload = { contents: [{ parts: [{ text: `User asked by voice: ${transcript}. Provide a short bilingual reply (English & Hindi).` }] }], type: 'text' };
-                const res = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                const data = await res.json();
-                const reply = data.candidates[0].content.parts[0].text;
-                
-                voiceStatus.innerText = "BHUMIIQ Speaking...";
-                voiceText.innerText = reply;
-                speakBilingual(reply);
-            } catch (e) { voiceStatus.innerText = "Error in Voice IQ."; }
-        };
-
-        recognition.onerror = () => {  voiceModal.classList.add('hidden'); };
-        recognition.onend = () => { voiceStatus.innerText = "Processing Complete."; };
-    }
-
-    voiceTrigger.addEventListener('click', () => {
-        voiceModal.classList.remove('hidden');
-        if (recognition) recognition.start();
-        else alert("Speech Recognition not supported in this browser.");
-    });
-
-    closeVoice.addEventListener('click', () => {
-        voiceModal.classList.add('hidden');
-        if (recognition) recognition.stop();
-        window.speechSynthesis.cancel();
-    });
-
-    function speakBilingual(text) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'hi-IN';
-            window.speechSynthesis.speak(utterance);
-        }
-    }
-
-
-    /* ===============================
-       4. 🩺 BILINGUAL DOCTOR IQ (Advanced Roadmap)
+       3. AI DOCTOR IQ (Bilingual Roadmap)
        ============================== */
     const uploadArea = document.getElementById('upload-clickable');
-    const analyzeBtn = document.getElementById('btn-analyze-v6');
-    const resultsArea = document.getElementById('doctor-results-v6');
-    const camIn = document.getElementById('doctor-camera');
-    const galIn = document.getElementById('doctor-gallery');
-    const previewImg = document.getElementById('leaf-image-v6');
-    const promptTag = document.getElementById('upload-prompt');
+    const analyzeBtn = document.getElementById('btn-analyze-v7');
+    const resultsArea = document.getElementById('doctor-results-v7');
+    const galInput = document.getElementById('doctor-gallery');
+    const previewImg = document.getElementById('leaf-image-v7');
+    const promptBox = document.getElementById('upload-prompt');
 
-    let base64 = null;
-    let type = null;
+    let base64Data = null;
+    let mimeType = null;
 
-    uploadArea.addEventListener('click', () => galIn.click());
+    uploadArea.addEventListener('click', () => galInput.click());
 
-    function handleImg(e) {
+    galInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (evt) => {
-            promptTag.classList.add('hidden');
-            previewImg.classList.remove('hidden-img-v6');
+            promptBox.classList.add('hidden');
+            previewImg.classList.remove('hidden-img-v7');
             previewImg.src = evt.target.result;
-            base64 = evt.target.result.split(',')[1];
-            type = file.type;
-        }
+            base64Data = evt.target.result.split(',')[1];
+            mimeType = file.type;
+        };
         reader.readAsDataURL(file);
-    }
-    camIn.addEventListener('change', handleImg);
-    galIn.addEventListener('change', handleImg);
+    });
 
     analyzeBtn.addEventListener('click', async () => {
-        if (!base64) return;
-        showLoader("Generating Bilingual Roadmap...");
+        if (!base64Data) return alert("Please upload a leaf image first.");
+        showLoader("Generating Bilingual Expert Roadmap...");
 
-        const prompt = `You are BHUMIIQ Global Expert. Analyze this plant photo:
-        1. MANDATORY: FOR EVERY SENTENCE, PROVIDE ENGLISH THEN HINDI TRANSLATION.
-        2. Diagnosis of the issue.
-        3. HEALTH SCORE (0-100%).
-        4. BILINGUAL Dos & Don'ts.
-        5. FERTILIZER IQ LIBRARY: Provide exactly 10 suggested treatments/cures (Chemical & Organic choices). Explain exactly how to apply each.
-        Format this as a professional roadmap.`;
+        const prompt = `You are BHUMIIQ Pro Global Expert. Analyze this plant photo:
+        1. MANDATORY: FOR EVERY SINGLE SENTENCE, PROVIDE ENGLISH THEN THE HINDI TRANSLATION (हिंदी अनुवाद).
+        2. Diagnosis Summary (Bilingual).
+        3. HEALTH SCORE PERCENTAGE (0-100%).
+        4. BILINGUAL Dos & Don'ts list.
+        5. FERTILIZER IQ PORTFOLIO: Provide exactly 10 suggested treatments/cures. Explain exactly how to apply each.
+        Format this as a stunning enterprise roadmap report.`;
 
         try {
             const payload = {
                 contents: [{
                     parts: [
                         { text: prompt },
-                        { inlineData: { mimeType: type, data: base64 } }
+                        { inlineData: { mimeType, data: base64Data } }
                     ]
                 }],
                 type: 'vision'
@@ -168,51 +134,72 @@ document.addEventListener('DOMContentLoaded', () => {
             const reply = data.candidates[0].content.parts[0].text;
 
             const chanceMatch = reply.match(/(\d+)%/);
-            const chance = chanceMatch ? chanceMatch[1] : 75;
+            const chance = chanceMatch ? chanceMatch[1] : 85;
 
             resultsArea.innerHTML = `
-                <div class="roadmap-container mt-40">
-                    <div class="roadmap-card">
-                         <h3>Health IQ: ${chance}% Survival Probability</h3>
+                <div class="roadmap-result">
+                    <div class="service-card mb-32" style="border-left:10px solid var(--brand-emerald)">
+                         <h3 class="mb-12">Health IQ Check: ${chance}% Survival</h3>
                          <div class="survival-chance-bar"><div class="survival-progress" style="width:${chance}%"></div></div>
                     </div>
                     
-                    <div class="roadmap-card">
-                        <h4 class="mb-20">Diagnostic Roadmap (Bilingual)</h4>
-                        <div class="roadmap-step">
-                            ${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<span class="hi-text-result">$1</span>')}
-                        </div>
-                    </div>
-
-                    <div class="roadmap-card">
-                        <h4 class="mb-20">Fertilizer IQ Library (10+ Options)</h4>
-                        <div class="fertilizer-library">
-                            <!-- In a real app we'd parse the 10 items into cards -->
-                            ${reply.includes('Fertilizer') ? '<div class="f-cure-item"><h5>Scientific Treatments Found</h5><p>See expert roadmap below for the full 10-item library.</p></div>' : ''}
+                    <div class="service-card py-40">
+                        <h4 class="mb-24" style="color:var(--brand-emerald)">Expert Analysis (Bilingual)</h4>
+                        <div class="roadmap-body" style="font-size:15px; line-height:1.8;">
+                            ${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--brand-primary); font-size:17px; display:block; margin-top:10px;">$1</strong>')}
                         </div>
                     </div>
                 </div>
             `;
-        } catch (e) { alert("Error in Scan IQ."); }
-        finally { hideLoader(); }
+        } catch (e) {
+            resultsArea.innerHTML = `<p class="text-danger">Intelligence connection error. Please try again.</p>`;
+        } finally {
+            hideLoader();
+        }
     });
 
 
     /* ===============================
-       5. ⛈️ SOWING IQ & OTHERS
+       4. SOWING IQ (Workspace)
        ============================== */
-    const getSowingBtn = document.getElementById('btn-get-sowing-v6');
-    const sowingResult = document.getElementById('sowing-results-v6');
-    
+    const getSowingBtn = document.getElementById('btn-get-sowing-v7');
+    const sowingResult = document.getElementById('sowing-results-v7');
+
+    async function initWeather() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                try {
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true`);
+                    const data = await res.json();
+                    document.getElementById('weather-display-v7').innerHTML = `
+                        <h2 style="font-size:64px; color:var(--brand-emerald); font-weight:900;">${data.current_weather.temperature}°C</h2>
+                        <p style="font-weight:700; opacity:0.7;">Detected Local Climate</p>
+                    `;
+                } catch(e) {}
+            });
+        }
+    }
+    initWeather();
+
     getSowingBtn.addEventListener('click', async () => {
-        showLoader("Calculating Sowing Intelligence...");
+        showLoader("Calculating Sowing Windows...");
         try {
-           const prompt = `Based on current weather, recommend exactly 3 crops for high yield. Provide bilingual English/Hindi output.`;
-           const payload = { contents: [{ parts: [{ text: prompt }] }], type: 'text' };
-           const res = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-           const data = await res.json();
-           sowingResult.innerHTML = `<div class="roadmap-card">${data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>')}</div>`;
+            const prompt = `Based on current climate, provide a bilingual (English/Hindi) report for 3 ideal crops to sow right now to maximize yield.`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }], type: 'text' };
+            const res = await fetch(GEMINI_API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+            const data = await res.json();
+            sowingResult.innerHTML = `<div class="service-card p-40">${data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>')}</div>`;
         } catch(e) {} finally { hideLoader(); }
     });
+
+    /* ===============================
+       5. CONTACT FORM MOCKUP
+       ============================== */
+    const submitBtn = document.querySelector('#section-contact .btn-primary');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', () => {
+            alert("Success! Your farm transformation request has been sent to Aman Kumar's team. We will contact you at +91 6206000925 shortly.");
+        });
+    }
 
 });

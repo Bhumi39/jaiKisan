@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BHUMIIQ - Enterprise Agri-Intelligence</title>
+    <title>BHUMIIQ - Sustainable Agri-Intelligence Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="large-ui">
+<body class="enterprise-ui">
 
     <!-- 🏔️ GLOBAL CINEMATIC BACKGROUND -->
     <div class="global-bg"></div>
@@ -24,163 +24,240 @@
         </div>
     </div>
 
-    <!-- 🎙️ LIVE VOICE ASSISTANT MODAL -->
-    <div id="voice-overlay" class="voice-modal hidden">
-        <div class="voice-modal-content">
-            <div class="voice-waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-            <h2 id="voice-status">Speak Now...</h2>
-            <p id="voice-transcript" class="text-muted"> Listening to your question...</p>
-            <button id="close-voice" class="btn btn-secondary btn-pill mt-32">Cancel</button>
-        </div>
-    </div>
-
-    <!-- 🧭 ENTERPRISE HEADER -->
+    <!-- 🧭 ENTERPRISE STICKY HEADER -->
     <header class="main-header">
-        <div class="container-large nav-container">
-            <div class="header-header-left">
-                <button id="back-home-btn" class="back-arrow-v6 hidden">
+        <div class="container-xl nav-container">
+            <div class="header-left">
+                <button id="back-home-btn" class="back-link hidden">
                     <span class="material-symbols-outlined">arrow_back_ios_new</span> Back to Hub
                 </button>
                 <div class="nav-brand" id="nav-logo">
-                    <span class="material-symbols-outlined nav-icon">psychology_alt</span>
-                    <span class="brand-name">BHUMIIQ PRO</span>
+                    <span class="material-symbols-outlined nav-icon">local_florist</span>
+                    <span class="brand-name">BHUMIIQ</span>
                 </div>
             </div>
             <nav class="desktop-nav">
-                <a href="#" data-target="screen-home">Dashboard</a>
-                <a href="#" data-target="screen-photo">Doctor IQ Scan</a>
-                <a href="#" data-target="screen-sowing">Sowing Advisor</a>
-                <a href="#" data-target="screen-soilgold">SoilGold IQ</a>
+                <a href="#section-hero">Home</a>
+                <a href="#section-services" data-target="screen-home">Services</a>
+                <a href="#section-about">About</a>
+                <a href="#section-contact">Contact</a>
             </nav>
             <div class="nav-actions">
-                <a href="https://play.google.com/store/apps/details?id=com.rcc.jai_kisan" class="btn btn-primary btn-pill px-32">
-                    <span class="material-symbols-outlined">download</span> Download App
-                </a>
+                <a href="#" data-target="screen-photo" class="btn btn-primary btn-pill px-32">Get Started</a>
             </div>
         </div>
     </header>
 
     <main id="screens">
         
-        <!-- 1. DASHBOARD HUB (Large Scale) -->
+        <!-- 1. HOME SCREEN (LONG-FORM LANDING PAGE) -->
         <section id="screen-home" class="screen active">
-            <div class="hero-v6">
-                <div class="container-large">
-                    <div class="hero-content">
-                        <div class="iq-badge">VERSION 6.0 LIVE</div>
-                        <h1 class="hero-title">Intelligent Farming <span class="gradient-text">for the New Era.</span></h1>
-                        <p class="hero-subtitle">The world's first AI-powered agricultural intelligence portal. 1400px Multi-Screen IQ.</p>
-                        <div class="hero-actions mt-40">
-                             <button class="btn btn-primary btn-lg btn-pill btn-glow" data-target="screen-photo">Analyze Crop Scan</button>
-                             <button class="btn btn-outline btn-lg btn-pill ml-16" data-target="screen-sowing">Ask Sowing Advisor</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FEATURE PANELS -->
-            <section class="container-large py-80">
-                <div class="feature-grid-v6">
-                    <div class="f-panel" data-target="screen-photo">
-                        <div class="f-overlay"></div>
-                        <div class="f-info">
-                            <span class="material-symbols-outlined">medical_services</span>
-                            <h3>Doctor IQ Scan</h3>
-                            <p>Photo Analysis & Bilingual Roadmap</p>
-                        </div>
-                    </div>
-                    <div class="f-panel" data-target="screen-sowing">
-                        <div class="f-overlay"></div>
-                        <div class="f-info">
-                            <span class="material-symbols-outlined">wb_sunny</span>
-                            <h3>Sowing IQ</h3>
-                            <p>Weather Insights & Sowing Windows</p>
-                        </div>
-                    </div>
-                    <div class="f-panel" data-target="screen-soilgold">
-                        <div class="f-overlay"></div>
-                        <div class="f-info">
-                            <span class="material-symbols-outlined">recycling</span>
-                            <h3>SoilGold Advisor</h3>
-                            <p>Waste to Organic Gold IQ</p>
+            
+            <!-- HERO SECTION (Cinematic Restoration) -->
+            <section id="section-hero" class="hero-v7">
+                <div class="hero-overlay"></div>
+                <div class="container-xl">
+                    <div class="hero-content-box">
+                        <div class="iq-pro-tag">AI POWERED PRO</div>
+                        <h1>Cultivating the Future <br>with <span class="gradient-text">AI Agriculture</span></h1>
+                        <p class="hero-subtitle">Fast, free, and smart crop problem solver — just snap a pic. Your intelligent farming companion.</p>
+                        <div class="hero-btns mt-40">
+                             <a href="https://play.google.com/store/apps/details?id=com.rcc.jai_kisan" class="btn btn-primary btn-lg btn-pill btn-glow">Download Free App</a>
+                             <a href="#section-ai-guide" class="btn btn-outline btn-lg btn-pill ml-16">See How It Works</a>
                         </div>
                     </div>
                 </div>
             </section>
+
+            <!-- SMART FARMING SERVICES (8-CARD GRID) -->
+            <section id="section-services" class="py-120 bg-smoke">
+                <div class="container-xl text-center mb-80">
+                    <h2 class="section-title">Everything You Need to Start <span class="underline">Smart Farming</span></h2>
+                    <p class="section-subtitle">Access powerful AI-driven tools completely free. A comprehensive suite to help farmers make informed decisions.</p>
+                </div>
+                <div class="container-xl grid-8-services">
+                    <div class="service-card" data-target="screen-photo">
+                        <div class="free-badge">Free</div>
+                        <span class="material-symbols-outlined service-icon">psychology</span>
+                        <h3>Virtual Agronomic Advisor</h3>
+                        <p>Get personalized, context-aware agronomy guidance 24/7.</p>
+                    </div>
+                    <div class="service-card" data-target="screen-photo">
+                        <div class="free-badge">Free</div>
+                        <span class="material-symbols-outlined service-icon">eco</span>
+                        <h3>Nutrient Deficiency Scanner</h3>
+                        <p>Identify key nutrient imbalances from a simple crop photo.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="free-badge">Free</div>
+                        <span class="material-symbols-outlined service-icon">database</span>
+                        <h3>Data Archiving & Management</h3>
+                        <p>Secure, structured records to track patterns across seasons.</p>
+                    </div>
+                    <div class="service-card" data-target="screen-photo">
+                        <div class="free-badge">Free</div>
+                        <span class="material-symbols-outlined service-icon">settings_suggest</span>
+                        <h3>Disease Detection</h3>
+                        <p>Early detection to act faster and reduce spread.</p>
+                    </div>
+                    <div class="service-card" data-target="screen-photo">
+                        <div class="free-badge">Free</div>
+                        <span class="material-symbols-outlined service-icon">pest_control</span>
+                        <h3>Pest Identification</h3>
+                        <p>Recognize harmful insects and choose targeted treatments.</p>
+                    </div>
+                    <div class="service-card" data-target="screen-photo">
+                        <div class="free-badge">Free</div>
+                        <span class="material-symbols-outlined service-icon">park</span>
+                        <h3>Weed Detection</h3>
+                        <p>Spot problem weeds and get precise control insights.</p>
+                    </div>
+                    <div class="service-card" data-target="screen-sowing">
+                        <div class="free-badge">Free</div>
+                        <span class="material-symbols-outlined service-icon">cloud_circle</span>
+                        <h3>AgroWeather Intelligence</h3>
+                        <p>Hyperlocal forecasts and farming-specific alerts.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="free-badge">Free</div>
+                        <span class="material-symbols-outlined service-icon">newspaper</span>
+                        <h3>Latest Agri News</h3>
+                        <p>Stay updated on markets, policy, climate, and news.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI SCANNER GUIDE (1-2-3-4 STEP VISUALS) -->
+            <section id="section-ai-guide" class="py-120 bg-dark-green">
+                <div class="container-xl split-layout">
+                    <div class="image-showcase">
+                        <div class="mockup-grid">
+                            <!-- Image placeholders representing the 1-4 step visuals -->
+                            <img src="https://images.unsplash.com/photo-1589923188900-85dae523342b?w=600" class="step-img" alt="Step 1">
+                            <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600" class="step-img" alt="Step 2">
+                        </div>
+                    </div>
+                    <div class="text-showcase text-white">
+                        <h2 class="mb-32">AI Disease Scanner</h2>
+                        <ul class="check-list-v7">
+                            <li><span class="material-symbols-outlined">check_circle</span> Instant diagnosis within seconds</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Comprehensive treatment recommendations</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Organic and conventional solutions</li>
+                        </ul>
+                        <button class="btn btn-primary btn-lg mt-40 btn-pill" data-target="screen-photo">Try It Now</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WEATHER FORECASTING SECTION -->
+            <section id="section-weather" class="py-120">
+                <div class="container-xl split-layout reverse">
+                    <div class="image-showcase">
+                        <img src="https://images.unsplash.com/photo-1558449028-b53a39d100fc?w=800" class="full-radius-img" alt="Weather IQ">
+                    </div>
+                    <div class="text-showcase">
+                        <h2>Weather Insights & Forecasting</h2>
+                        <ul class="check-list-v7 dark">
+                            <li><span class="material-symbols-outlined">check_circle</span> Precision weather forecasting</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Farming-specific alerts</li>
+                            <li><span class="material-symbols-outlined">check_circle</span> Optimal planting/harvesting times</li>
+                        </ul>
+                        <button class="btn btn-outline btn-lg mt-40 btn-pill" data-target="screen-sowing">Get Forecast</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- READY TO TRANSFORM (CONTACT FORM) -->
+            <section id="section-contact" class="py-120 bg-smoke">
+                <div class="container-xl max-w-1000 mx-auto text-center mb-60">
+                    <h2 class="section-title">Ready to Transform Your Farm?</h2>
+                    <p class="section-subtitle">Get in touch with our team to learn how Agri AI can help your agricultural business.</p>
+                </div>
+                <div class="container-xl max-w-1000 mx-auto contact-form-v7">
+                    <div class="form-grid">
+                        <input type="text" placeholder="Your Name" class="field-v7">
+                        <input type="email" placeholder="Email Address" class="field-v7">
+                        <input type="text" placeholder="Company/Farm Name" class="field-v7">
+                        <input type="tel" placeholder="Phone Number" class="field-v7">
+                        <textarea placeholder="How can we help you?" class="field-v7 span-2"></textarea>
+                    </div>
+                    <button class="btn btn-primary full-btn py-20 mt-32 btn-pill">Submit Request</button>
+                </div>
+            </section>
         </section>
 
-        <!-- 2. AI DOCTOR IQ (Large Result Roadmap) -->
-        <section id="screen-photo" class="screen container-large py-60">
-            <div class="glass-card-large">
-                <div class="doctor-layout-v6">
-                    <div class="upload-center" id="upload-clickable">
-                        <div class="upload-box-v6" id="upload-prompt">
-                            <span class="material-symbols-outlined upload-mic-pulse">add_a_photo</span>
-                            <h2>Scan Leaf for Intelligence</h2>
-                            <p>Bilingual analysis will start instantly | <span class="hindi-text">पत्ते की फोटो यहाँ डालें</span></p>
+        <!-- 2. AI CROP SCANNER WORKSPACE -->
+        <section id="screen-photo" class="screen container-xl py-80">
+            <div class="glass-workspace">
+                <div class="workspace-header text-center mb-60">
+                    <h1>AI Disease Intelligence Scanner</h1>
+                    <p>Bilingual (English/Hindi) Roadmap | <span class="hindi-text">पत्ते की फोटो यहाँ डालें</span></p>
+                </div>
+                <div class="scanner-dual-layout">
+                    <div class="upload-area-v7" id="upload-clickable">
+                        <div id="upload-prompt" class="upload-content">
+                            <span class="material-symbols-outlined upload-icon-pulse">add_a_photo</span>
+                            <h3>Upload Leaf Image</h3>
+                            <p>Drag or Click to Select</p>
                         </div>
-                        <img id="leaf-image-v6" class="hidden-img-v6" style="border-radius:24px;">
-                        <input type="file" id="doctor-camera" accept="image/*" capture="environment" hidden>
+                        <img id="leaf-image-v7" class="hidden-img-v7">
                         <input type="file" id="doctor-gallery" accept="image/*" hidden>
                     </div>
-
-                    <div class="action-panel-v6">
-                        <h2 class="mb-24">Precision Roadmap</h2>
-                        <button class="btn btn-primary full-btn py-24 btn-lg btn-glow" id="btn-analyze-v6">
-                            <span class="material-symbols-outlined">rocket_launch</span> INITIATE BILINGUAL SCAN
-                        </button>
-                        <div id="doctor-results-v6" class="mt-40"></div>
+                    <div class="results-area-v7">
+                        <button class="btn btn-primary full-btn py-20 btn-lg btn-glow" id="btn-analyze-v7">Initiate Scan IQ</button>
+                        <div id="doctor-results-v7" class="mt-40"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 3. SOWING IQ (Large Weather Intelligence) -->
-        <section id="screen-sowing" class="screen container-large py-60">
-            <div class="glass-card-large p-60">
-                <h2 class="text-center mb-40">Sowing IQ Intelligence</h2>
-                <div id="weather-dashboard-v6" class="weather-grid-v6 shimmer">
-                     <div class="w-stat">Detecting Location...</div>
-                </div>
-                <button class="btn btn-primary full-btn btn-lg btn-glow mt-40" id="btn-get-sowing-v6">Analyze Sowing IQ</button>
-                <div id="sowing-results-v6" class="mt-40"></div>
+        <!-- 3. SOWING IQ WORKSPACE -->
+        <section id="screen-sowing" class="screen container-xl py-80">
+            <div class="glass-workspace p-60 text-center">
+                <h2>Hyperlocal Weather Sowing IQ</h2>
+                <div id="weather-display-v7" class="weather-box-v7 shimmer mt-40">Detecting location...</div>
+                <button class="btn btn-primary full-btn mt-40 btn-pill" id="btn-get-sowing-v7">Analyze Sowing IQ</button>
+                <div id="sowing-results-v7" class="mt-40"></div>
             </div>
         </section>
-
-        <!-- (Other Screens Omitted for Brevity in CodeContent, will keep them stable) -->
 
     </main>
 
-    <!-- 🎙️ FLOATING VOICE ASSISTANT (PRO Version) -->
-    <div id="voice-trigger-v6" class="floating-voice-ai">
-        <div class="voice-help-bubble">May I help you? <br><span>Speak to BHUMIIQ...</span></div>
-        <div class="voice-mic-glow">
-            <span class="material-symbols-outlined">mic</span>
+    <!-- 👣 MASTER ENTERPRISE FOOTER -->
+    <footer class="main-footer-v7">
+        <div class="container-xl footer-layout">
+            <div class="footer-col branding-col">
+                <h3 class="brand-text">BHUMIIQ</h3>
+                <p>Transforming agriculture through artificial intelligence and machine learning technologies. Professional, sustainable, future-ready.</p>
+                <div class="social-links mt-24">
+                    <span class="material-symbols-outlined">public</span>
+                    <span class="material-symbols-outlined">video_library</span>
+                    <span class="material-symbols-outlined">chat</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul><li>Agri AI App</li><li>Solutions</li><li>Features</li><li>Contact</li></ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul><li>Blog</li><li>How to Use</li><li>Testimonials</li></ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <p>support@agriai.live</p>
+                <p class="mt-16 branding-text">Aman Kumar | +91 6206000925</p>
+            </div>
         </div>
-    </div>
-
-    <!-- 👣 PROFESSIONAL ENTERPRISE FOOTER -->
-    <footer class="main-footer-v6">
-        <div class="container-large footer-grid">
-            <div class="footer-col-main">
-                <h3 class="brand-text">BHUMIIQ PRO</h3>
-                <p>Global leader in AI-driven agricultural sustainability. Multi-screen intelligence for one-world farming.</p>
-                <h4 class="mt-24" style="color:var(--brand-emerald);">👨‍💼 Team Lead: Aman Kumar | +91 6206000925</h4>
-            </div>
-            <div class="footer-col">
-                <h4>Quick IQ Access</h4>
-                <ul>
-                    <li>Doctor Scan IQ</li>
-                    <li>Sowing Window</li>
-                    <li>SoilGold Calculation</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Official App</h4>
-                <a href="https://play.google.com/store/apps/details?id=com.rcc.jai_kisan" class="btn btn-outline btn-pill mt-12 pb-badge">Jai Kisan Android</a>
-            </div>
+        <div class="footer-bottom text-center mt-60">
+            <p>© 2026 BHUMIIQ. All Rights Reserved.</p>
         </div>
     </footer>
+
+    <!-- 🎙️ FLOATING VOICE ASSISTANT -->
+    <div id="voice-trigger" class="voice-fab">
+        <span class="material-symbols-outlined">mic</span>
+    </div>
 
     <script src="script.js"></script>
 </body>
