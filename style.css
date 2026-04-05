@@ -107,6 +107,7 @@ body {
 }
 
 /* Utils */
+.mt-24 { margin-top: 24px; }
 .mb-16 { margin-bottom: 16px; }
 .mb-8 { margin-bottom: 8px; }
 .px-16 { padding-left: 16px; padding-right: 16px; }

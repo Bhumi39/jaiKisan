@@ -51,6 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
         window.speechSynthesis.cancel();
     });
 
+    document.querySelectorAll('.btn-back-home').forEach(btn => {
+        btn.addEventListener('click', () => {
+            navigateTo('screen-home', 'Home');
+            if (recognition && isListening) recognition.stop();
+            window.speechSynthesis.cancel();
+        });
+    });
+
 
     /* ===============================
        2. WEATHER API (Open-Meteo + NOMINATIM)
