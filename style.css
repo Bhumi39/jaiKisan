@@ -168,34 +168,64 @@ body.enterprise-ui {
 .voice-modal-content p { font-size: 16px; color: var(--muted); line-height: 1.6; }
 
 /* ========================
-   HERO V9 (CINEMATIC SUNRISE)
+   HERO V9 (CINEMATIC VIDEO BG)
 ======================== */
 .hero-v9 {
   min-height: 100vh; position: relative; display: flex; align-items: center;
   background: var(--green-dark);
   overflow: hidden;
 }
-/* Animated sunrise glow */
+
+/* 🎬 VIDEO BACKGROUND */
+.hero-video-bg {
+  position: absolute; top: 50%; left: 50%;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  filter: saturate(0.8) brightness(0.75);
+}
+
+/* Dark overlay on video */
+.hero-video-overlay {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(1, 42, 26, 0.82) 0%,
+    rgba(1, 42, 26, 0.55) 50%,
+    rgba(1, 42, 26, 0.75) 100%
+  );
+  z-index: 1;
+}
+
+/* Animated sunrise glow on top of video */
 .hero-v9::before {
   content: '';
   position: absolute; top: -20%; right: -10%; width: 800px; height: 800px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(245,158,11,0.25) 0%, rgba(16,185,129,0.1) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(245,158,11,0.2) 0%, rgba(16,185,129,0.08) 50%, transparent 70%);
   animation: sunriseFloat 10s ease-in-out infinite alternate;
+  z-index: 2;
 }
 .hero-v9::after {
   content: '';
   position: absolute; bottom: -30%; left: -10%; width: 600px; height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
   animation: sunriseFloat 14s ease-in-out infinite alternate-reverse;
+  z-index: 2;
 }
 @keyframes sunriseFloat {
   0% { transform: translate(0,0) scale(1); }
   100% { transform: translate(40px, -40px) scale(1.1); }
 }
-.hero-flex { position: relative; z-index: 2; padding: 120px 0; }
+
+.hero-sunrise-gradient { display: none; } /* replaced by video, keep for fallback */
+
+.hero-flex { position: relative; z-index: 3; padding: 120px 0; }
 .hero-text-v9 { max-width: 900px; }
+
 .iq-enterprise-tag {
   background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4);
   color: var(--green-bright); padding: 8px 20px; border-radius: 100px;

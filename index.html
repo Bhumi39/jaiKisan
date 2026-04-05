@@ -66,9 +66,18 @@
         <!-- 1. HOME SCREEN (ALIVE REVEAL) -->
         <section id="screen-home" class="screen active">
             
-            <!-- HERO V9 (Sunrise Cinematic) -->
+            <!-- HERO V9 (Cinematic Video Background) -->
             <section id="section-hero" class="hero-v9">
+                <!-- 🎬 BACKGROUND VIDEO -->
+                <video class="hero-video-bg" autoplay muted loop playsinline>
+                    <source src="https://videos.pexels.com/video-files/3629116/3629116-uhd_2560_1440_25fps.mp4" type="video/mp4">
+                    <source src="https://videos.pexels.com/video-files/2169880/2169880-hd_1920_1080_30fps.mp4" type="video/mp4">
+                </video>
+                <!-- Dark overlay so text is readable -->
+                <div class="hero-video-overlay"></div>
+                <!-- Animated gradient accent on top -->
                 <div class="hero-sunrise-gradient"></div>
+
                 <div class="container-xl hero-flex">
                     <div class="hero-text-v9 reveal-up">
                         <div class="iq-enterprise-tag">VERSION 9.0 ENTERPRISE</div>
