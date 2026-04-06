@@ -339,7 +339,24 @@ Answer in both English and Hindi for each point.`;
                 body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
             });
             if (!res.ok) throw new Error('Network error');
+            const data = await res.json();
+            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No results.';
             
+            // 🃏 RENDER CROP CARDS
+            sowingResults.innerHTML = `
+        <div class="sowing-result-container">
+          ${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:#012A1A;">$1</strong>')}
+        </div>`;
+            sowingResults.scrollIntoView({ behavior: 'smooth' });
+
+        } catch (e) {
+            sowingResults.innerHTML = `<div style="padding:24px;background:#FFF1F2;border-radius:16px;color:#9F1239;font-weight:700;">Intelligence error. Please try again.</div>`;
+        } finally {
+            hideLoader();
+        }
+    });
+
+
     /* ===================================================
        6. LIVE VOICE ASSISTANT (CONVERSATIONAL IQ)
     =================================================== */
@@ -532,10 +549,8 @@ Answer in both English and Hindi for each point.`;
     chatHistoryBox.addEventListener('click', (e) => {
         const btn = e.target.closest('.btn-small-listen');
         if (!btn) return;
-        
-        chatHistoryBox.appendChild(bubble);
-        chatHistoryBox.scrollTop = chatHistoryBox.scrollHeight;
-    }
+        window.playbackText(btn.dataset.text, btn.dataset.lang);
+    });
 
     document.getElementById('close-voice').addEventListener('click', () => {
         voiceModal.classList.add('hidden');
@@ -547,7 +562,6 @@ Answer in both English and Hindi for each point.`;
     /* ===================================================
        7. CONTACT FORM — ONE-CLICK AUTOMATIC SEND
     =================================================== */
-    // ⚡ INSTRUCTIONS: Go to https://formspree.io/ and get your unique ID
     const FORM_ENDPOINT = "https://formspree.io/f/meepvzwn"; // Live Formspree ID
     const submitBtn = document.getElementById('btn-submit-v9');
     const successBox = document.getElementById('contact-success');
@@ -576,31 +590,23 @@ Answer in both English and Hindi for each point.`;
             const data = getFormData();
             if (!validateForm(data)) return;
 
-            // 1. Visual Feedback
             const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="material-symbols-outlined loader-spin">sync</span> DISPATCHING INTELLIGENCE...';
+            submitBtn.innerHTML = '<span class="material-symbols-outlined loader-spin">sync</span> DISPATCHING...';
 
             try {
-                // 2. Background Send (Fetch)
                 const response = await fetch(FORM_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify(data)
                 });
-
                 if (response.ok) {
-                    // 3. Success State
-                    submitBtn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> DISPATCHED SUCCESS';
+                    submitBtn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> SENT';
                     submitBtn.style.background = "var(--brand-emerald)";
                     successBox.classList.remove('hidden');
                     successBox.scrollIntoView({ behavior: 'smooth' });
-                    
-                    // Clear form
                     document.querySelectorAll('.form-grid-v9 input, .form-grid-v9 textarea').forEach(el => el.value = '');
-                } else {
-                    throw new Error();
-                }
+                } else { throw new Error(); }
             } catch (err) {
                 alert("Dispatch Failed. Please verify YOUR_ID_HERE in script.js (Formspree).");
                 submitBtn.disabled = false;
