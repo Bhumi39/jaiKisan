@@ -53,28 +53,25 @@
             <div class="voice-waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
             <h2 id="voice-status" style="color:var(--green-dark);">Listening...</h2>
             
-            <!-- Bilingual Transcript Display -->
-            <div id="voice-transcript-wrapper" class="mt-20 px-24">
-                <p id="voice-transcript" class="native-voice-text" style="color:var(--green-dark); font-size:20px; font-weight:700;">Please ask your farming query.</p>
-                <p id="voice-translation" class="english-voice-text hidden" style="color:var(--muted); font-size:14px; margin-top:8px; border-top:1px solid rgba(0,0,0,0.05); padding-top:8px;"></p>
+            <!-- 💬 SCROLLABLE CHAT HISTORY -->
+            <div id="voice-chat-history" class="chat-container mb-24">
+                <div class="chat-bubble ai-bubble intro">
+                    <p class="native-voice-text">Please ask your farming query.</p>
+                </div>
             </div>
 
-            <!-- Dual-Action Buttons -->
-            <div id="voice-actions" class="mt-32 hidden" style="display:flex; flex-direction:column; gap:12px; align-items:center;">
-                <div class="dual-listen-row" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%;">
-                    <button id="repeat-native" class="btn btn-outline btn-pill">
-                        <span class="material-symbols-outlined">volume_up</span> Hear Native
-                    </button>
-                    <button id="repeat-english" class="btn btn-outline btn-pill">
-                        <span class="material-symbols-outlined">translate</span> Hear English
-                    </button>
-                </div>
-                <button id="ask-again-voice" class="btn btn-primary btn-pill full-btn btn-glow mt-8">
+            <!-- Dual-Action Buttons & Controls -->
+            <div id="voice-actions" class="mt-20 px-24">
+                <button id="ask-again-voice" class="btn btn-primary btn-pill full-btn btn-glow mb-12">
                     <span class="material-symbols-outlined">add_circle</span> Next Question | अगला सवाल
                 </button>
+                <div style="display:flex; gap:8px; justify-content:center;">
+                    <button id="clear-voice-history" class="btn btn-outline btn-pill" style="font-size:11px; padding:8px 16px;">
+                        <span class="material-symbols-outlined" style="font-size:14px;">delete</span> Clear History
+                    </button>
+                    <button id="close-voice" class="btn btn-secondary btn-pill" style="font-size:11px; padding:8px 16px;">Close</button>
+                </div>
             </div>
-
-            <button id="close-voice" class="btn btn-secondary btn-pill mt-32">Close | बंद करें</button>
         </div>
     </div>
 
