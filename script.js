@@ -356,6 +356,7 @@ Answer in both English and Hindi for each point.`;
     /* ===================================================
        6. LIVE VOICE ASSISTANT (CONVERSATIONAL IQ)
     =================================================== */
+    const voiceEngineStatus = document.getElementById('voice-engine-status');
     const voiceTrigger = document.getElementById('voice-trigger');
     const voiceModal = document.getElementById('voice-overlay');
     const voiceStatus = document.getElementById('voice-status');
@@ -378,7 +379,7 @@ Answer in both English and Hindi for each point.`;
     const langNames = {
         'hi-IN': { en: 'Hindi', native: 'हिन्दी', prompt: 'You MUST reply in both Hindi and English. Format: NA: [Hindi Text] | EN: [English Text]' },
         'en-IN': { en: 'English', native: 'English', prompt: 'You MUST reply in English twice. Format: NA: [English Text] | EN: [English Text]' },
-        'pa-IN': { en: 'Punjabi', native: 'ਪੰਜਾਬੀ', prompt: 'You MUST reply in both Punjabi and English. Format: NA: [Punjabi Text] | EN: [English Text]' },
+        'pa-IN': { en: 'Punjabi', native: 'पੰਜਾਬी', prompt: 'You MUST reply in both Punjabi and English. Format: NA: [Punjabi Text] | EN: [English Text]' },
         'mr-IN': { en: 'Marathi', native: 'मराठी', prompt: 'You MUST reply in both Marathi and English. Format: NA: [Marathi Text] | EN: [English Text]' },
         'bn-IN': { en: 'Bengali', native: 'বাংলা', prompt: 'You MUST reply in both Bengali and English. Format: NA: [Bengali Text] | EN: [English Text]' },
         'te-IN': { en: 'Telugu', native: 'తెలుగు', prompt: 'You MUST reply in both Telugu and English. Format: NA: [Telugu Text] | EN: [English Text]' },
@@ -393,10 +394,34 @@ Answer in both English and Hindi for each point.`;
         synth.speak(dummy);
     }
 
+    // 📡 STATUS UPDATER: Check if voice exists for current selection
+    function updateVoiceEngineStatus() {
+        if (!synth) return;
+        const voices = synth.getVoices();
+        const langCode = currentVoiceLang.split('-')[0]; // eg 'pa' for 'pa-IN'
+        const hasVoice = voices.some(v => v.lang.startsWith(langCode));
+
+        if (hasVoice) {
+            voiceEngineStatus.innerHTML = `<span class="material-symbols-outlined" style="color:var(--brand-emerald); vertical-align:middle; font-size:14px;">check_circle</span> Voice Ready (${langNames[currentVoiceLang].native})`;
+            voiceEngineStatus.style.color = 'var(--brand-emerald)';
+        } else {
+            voiceEngineStatus.innerHTML = `<span class="material-symbols-outlined" style="color:#ef4444; vertical-align:middle; font-size:14px;">error_outline</span> Voice Missing (Text Only)`;
+            voiceEngineStatus.style.color = '#ef4444';
+        }
+    }
+
+    // Load voices if not already available
+    if (synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = updateVoiceEngineStatus;
+    }
+
     function getRegionalVoice(langCode) {
         const voices = synth.getVoices();
-        let best = voices.find(v => v.lang.includes(langCode) && (v.name.includes('Google') || v.name.includes('Premium') || v.name.includes('Microsoft')));
-        if (!best) best = voices.find(v => v.lang.includes(langCode));
+        const base = langCode.split('-')[0];
+        // Exact + Quality match
+        let best = voices.find(v => v.lang.startsWith(base) && (v.name.includes('Google') || v.name.includes('Premium') || v.name.includes('Microsoft')));
+        // Base match
+        if (!best) best = voices.find(v => v.lang.startsWith(base));
         return best;
     }
 
@@ -415,6 +440,7 @@ Answer in both English and Hindi for each point.`;
 
         recognition.onresult = async e => {
             const q = e.results[0][0].transcript;
+            voiceTranscript.innerHTML = `Recognized: <span style="color:var(--brand-emerald); font-weight:700;">"${q}"</span>`;
             voiceStatus.textContent = '🧠 Thinking...';
             voiceWaves.classList.remove('speaking-pulse');
 
@@ -442,7 +468,7 @@ Answer in both English and Hindi for each point.`;
                 voiceActions.classList.remove('hidden');
                 
                 // Update button text for Native lang
-                repeatNativeBtn.innerHTML = `<span class="material-symbols-outlined">volume_up</span> Hear ${langNames[currentVoiceLang].en}`;
+                repeatNativeBtn.innerHTML = `<span class="material-symbols-outlined">volume_up</span> Hear ${langNames[currentVoiceLang].native}`;
 
                 // Speak Native version automatically
                 speak(lastNativeResponse, currentVoiceLang);
@@ -475,6 +501,7 @@ Answer in both English and Hindi for each point.`;
     voiceTrigger.addEventListener('click', () => {
         primeAudio();
         voiceModal.classList.remove('hidden');
+        updateVoiceEngineStatus();
         if (recognition) {
             recognition.lang = currentVoiceLang;
             try { recognition.start(); } catch(e) { recognition.stop(); setTimeout(() => recognition.start(), 200); }
@@ -486,6 +513,7 @@ Answer in both English and Hindi for each point.`;
             langChips.forEach(c => c.classList.remove('active'));
             chip.classList.add('active');
             currentVoiceLang = chip.dataset.lang;
+            updateVoiceEngineStatus();
             if (recognition) { 
                 try { recognition.stop(); } catch(e){} 
                 setTimeout(() => {
@@ -497,9 +525,8 @@ Answer in both English and Hindi for each point.`;
         });
     });
 
-    repeatBtn.addEventListener('click', () => {
-        if (lastAIResponse) speak(lastAIResponse);
-    });
+    repeatNativeBtn.addEventListener('click', () => speak(lastNativeResponse, currentVoiceLang));
+    repeatEnglishBtn.addEventListener('click', () => speak(lastEnglishResponse, 'en-IN'));
     
     askAgainBtn.addEventListener('click', () => {
         if (recognition) {
