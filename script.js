@@ -433,7 +433,7 @@ Answer in both English and Hindi for each point.`;
        7. CONTACT FORM — ONE-CLICK AUTOMATIC SEND
     =================================================== */
     // ⚡ INSTRUCTIONS: Go to https://formspree.io/ and get your unique ID
-    const FORM_ENDPOINT = "https://formspree.io/f/YOUR_ID_HERE"; // Replace with your Formspree ID
+    const FORM_ENDPOINT = "https://formspree.io/f/meepvzwn"; // Live Formspree ID
     const submitBtn = document.getElementById('btn-submit-v9');
     const successBox = document.getElementById('contact-success');
 
