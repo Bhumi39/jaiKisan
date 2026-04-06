@@ -170,8 +170,15 @@ body.enterprise-ui {
   50% { height: 48px; background: var(--green-bright); }
 }
 
-.voice-modal-content h2 { font-size: 28px; color: var(--green-dark); margin-bottom: 16px; }
-.voice-modal-content p { font-size: 16px; color: var(--muted); line-height: 1.6; }
+.voice-modal-content h2 { font-size: 28px; color: var(--green-dark); margin-bottom: 8px; }
+.bilingual-voice-text { margin-bottom: 24px; }
+.native-voice-text { font-size: 20px; font-weight: 700; color: var(--green-dark); line-height: 1.4; }
+.english-voice-text { font-size: 14px; font-weight: 500; color: var(--muted); line-height: 1.5; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 12px; margin-top: 12px; }
+
+.dual-listen-row .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 16px; font-size: 13px; font-weight: 700;
+}
 
 /* 🌐 Language Selector Chips (Horizontal Slider) */
 .lang-chips {

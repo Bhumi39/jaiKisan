@@ -360,39 +360,39 @@ Answer in both English and Hindi for each point.`;
     const voiceModal = document.getElementById('voice-overlay');
     const voiceStatus = document.getElementById('voice-status');
     const voiceTranscript = document.getElementById('voice-transcript');
-    const closeVoice = document.getElementById('close-voice');
+    const voiceTranslation = document.getElementById('voice-translation');
     const voiceActions = document.getElementById('voice-actions');
-    const repeatBtn = document.getElementById('repeat-voice');
+    const repeatNativeBtn = document.getElementById('repeat-native');
+    const repeatEnglishBtn = document.getElementById('repeat-english');
     const askAgainBtn = document.getElementById('ask-again-voice');
     const langChips = document.querySelectorAll('.lang-chip');
     const voiceWaves = document.querySelector('.voice-waves');
 
     let currentVoiceLang = 'hi-IN';
-    let lastAIResponse = '';
+    let lastNativeResponse = '';
+    let lastEnglishResponse = '';
     let recognition = null;
     let synth = window.speechSynthesis;
     const SpeechReco = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     const langNames = {
-        'hi-IN': { en: 'Hindi', native: 'हिन्दी', prompt: 'You MUST reply ONLY in Hindi language and Devanagari script.' },
-        'en-IN': { en: 'English', native: 'English', prompt: 'You MUST reply ONLY in English.' },
-        'pa-IN': { en: 'Punjabi', native: 'ਪੰਜਾਬੀ', prompt: 'You MUST reply ONLY in Punjabi language and Gurmukhi script.' },
-        'mr-IN': { en: 'Marathi', native: 'मराठी', prompt: 'You MUST reply ONLY in Marathi language and Devanagari script.' },
-        'bn-IN': { en: 'Bengali', native: 'বাংলা', prompt: 'You MUST reply ONLY in Bengali language and Bengali script.' },
-        'te-IN': { en: 'Telugu', native: 'తెలుగు', prompt: 'You MUST reply ONLY in Telugu language and Telugu script.' },
-        'ta-IN': { en: 'Tamil', native: 'தமிழ்', prompt: 'You MUST reply ONLY in Tamil language and Tamil script.' },
-        'kn-IN': { en: 'Kannada', native: 'ಕನ್ನಡ', prompt: 'You MUST reply ONLY in Kannada language and Kannada script.' },
-        'ml-IN': { en: 'Malayalam', native: 'മലയാളം', prompt: 'You MUST reply ONLY in Malayalam language and Malayalam script.' }
+        'hi-IN': { en: 'Hindi', native: 'हिन्दी', prompt: 'You MUST reply in both Hindi and English. Format: NA: [Hindi Text] | EN: [English Text]' },
+        'en-IN': { en: 'English', native: 'English', prompt: 'You MUST reply in English twice. Format: NA: [English Text] | EN: [English Text]' },
+        'pa-IN': { en: 'Punjabi', native: 'ਪੰਜਾਬੀ', prompt: 'You MUST reply in both Punjabi and English. Format: NA: [Punjabi Text] | EN: [English Text]' },
+        'mr-IN': { en: 'Marathi', native: 'मराठी', prompt: 'You MUST reply in both Marathi and English. Format: NA: [Marathi Text] | EN: [English Text]' },
+        'bn-IN': { en: 'Bengali', native: 'বাংলা', prompt: 'You MUST reply in both Bengali and English. Format: NA: [Bengali Text] | EN: [English Text]' },
+        'te-IN': { en: 'Telugu', native: 'తెలుగు', prompt: 'You MUST reply in both Telugu and English. Format: NA: [Telugu Text] | EN: [English Text]' },
+        'ta-IN': { en: 'Tamil', native: 'தமிழ்', prompt: 'You MUST reply in both Tamil and English. Format: NA: [Tamil Text] | EN: [English Text]' },
+        'kn-IN': { en: 'Kannada', native: 'ಕನ್ನಡ', prompt: 'You MUST reply in both Kannada and English. Format: NA: [Kannada Text] | EN: [English Text]' },
+        'ml-IN': { en: 'Malayalam', native: 'മലയാളം', prompt: 'You MUST reply in both Malayalam and English. Format: NA: [Malayalam Text] | EN: [English Text]' }
     };
 
-    // 🔊 AUDIO UNLOCKER: Prime the engine on first interaction
     function primeAudio() {
         const dummy = new SpeechSynthesisUtterance('');
         dummy.volume = 0;
         synth.speak(dummy);
     }
 
-    // 🧠 VOICE MATCHER: Find best local voice
     function getRegionalVoice(langCode) {
         const voices = synth.getVoices();
         let best = voices.find(v => v.lang.includes(langCode) && (v.name.includes('Google') || v.name.includes('Premium') || v.name.includes('Microsoft')));
@@ -408,13 +408,13 @@ Answer in both English and Hindi for each point.`;
         recognition.onstart = () => {
             voiceWaves.classList.add('speaking-pulse');
             voiceStatus.textContent = `🎙️ Listening (${langNames[currentVoiceLang].native})...`;
-            voiceTranscript.textContent = "Please speak clearly now...";
+            voiceTranscript.textContent = "Please speak now...";
+            voiceTranslation.classList.add('hidden');
             voiceActions.classList.add('hidden');
         };
 
         recognition.onresult = async e => {
             const q = e.results[0][0].transcript;
-            voiceTranscript.innerHTML = `Recognized: <span style="color:var(--brand-emerald); font-weight:700;">"${q}"</span>`;
             voiceStatus.textContent = '🧠 Thinking...';
             voiceWaves.classList.remove('speaking-pulse');
 
@@ -424,49 +424,46 @@ Answer in both English and Hindi for each point.`;
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         type: 'text',
-                        contents: [{ parts: [{ text: `You are BHUMIIQ assistant. User spoke: "${q}". ${langNames[currentVoiceLang].prompt} Be helpful and concise. Answer must be in ${langNames[currentVoiceLang].en}.` }] }]
+                        contents: [{ parts: [{ text: `You are BHUMIIQ assistant. User said: "${q}". ${langNames[currentVoiceLang].prompt}. Do not include any other text.` }] }]
                     })
                 });
                 const data = await res.json();
-                lastAIResponse = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'I am sorry, I could not generate a response.';
+                const rawResponse = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'NA: Processing Error | EN: Processing Error';
                 
-                voiceStatus.textContent = `🌿 BHUMIIQ Answer (${langNames[currentVoiceLang].native})`;
-                voiceTranscript.textContent = lastAIResponse;
+                // Parse Bilingual Response
+                const parts = rawResponse.split('|');
+                lastNativeResponse = (parts[0] || '').replace('NA:', '').trim();
+                lastEnglishResponse = (parts[1] || '').replace('EN:', '').trim();
+
+                voiceStatus.textContent = `🌿 BHUMIIQ Bilingual Result`;
+                voiceTranscript.textContent = lastNativeResponse;
+                voiceTranslation.textContent = lastEnglishResponse;
+                voiceTranslation.classList.remove('hidden');
                 voiceActions.classList.remove('hidden');
                 
-                speak(lastAIResponse);
+                // Update button text for Native lang
+                repeatNativeBtn.innerHTML = `<span class="material-symbols-outlined">volume_up</span> Hear ${langNames[currentVoiceLang].en}`;
+
+                // Speak Native version automatically
+                speak(lastNativeResponse, currentVoiceLang);
             } catch (err) {
                 voiceStatus.textContent = 'Connection Error';
             }
         };
 
-        recognition.onnomatch = () => {
-            voiceStatus.textContent = 'Could not understand speech.';
-            voiceActions.classList.remove('hidden');
-        };
-
         recognition.onerror = () => { 
             voiceStatus.textContent = 'Mic Error. Tap to Retry.'; 
             voiceActions.classList.remove('hidden');
-            voiceWaves.classList.remove('speaking-pulse');
-        };
-
-        recognition.onend = () => {
-            if (voiceStatus.textContent.includes('Listening')) {
-                voiceStatus.textContent = 'Ready';
-                voiceWaves.classList.remove('speaking-pulse');
-                voiceActions.classList.remove('hidden');
-            }
         };
     }
 
-    function speak(text) {
+    function speak(text, lang) {
         if (!synth) return;
         synth.cancel();
         
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = currentVoiceLang;
-        u.voice = getRegionalVoice(currentVoiceLang);
+        u.lang = lang;
+        u.voice = getRegionalVoice(lang);
         u.rate = 0.95;
         
         u.onstart = () => voiceWaves.classList.add('speaking-pulse');
@@ -475,9 +472,8 @@ Answer in both English and Hindi for each point.`;
         synth.speak(u);
     }
 
-    // EVENT LISTENERS
     voiceTrigger.addEventListener('click', () => {
-        primeAudio(); // Unlock audio
+        primeAudio();
         voiceModal.classList.remove('hidden');
         if (recognition) {
             recognition.lang = currentVoiceLang;
@@ -490,14 +486,12 @@ Answer in both English and Hindi for each point.`;
             langChips.forEach(c => c.classList.remove('active'));
             chip.classList.add('active');
             currentVoiceLang = chip.dataset.lang;
-            
-            // ⚡ SYNC FIX: Restart listening immediately in the new language
             if (recognition) { 
                 try { recognition.stop(); } catch(e){} 
                 setTimeout(() => {
                     recognition.lang = currentVoiceLang;
                     recognition.start();
-                }, 400); // Wait for recognition to stop before restarting
+                }, 400);
             }
             voiceStatus.textContent = `Switching to ${langNames[currentVoiceLang].native}...`;
         });
