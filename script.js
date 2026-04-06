@@ -354,25 +354,41 @@ Answer in both English and Hindi for each point.`;
 
 
     /* ===================================================
-       6. LIVE VOICE ASSISTANT
+       6. LIVE VOICE ASSISTANT (MULTI-LINGUAL)
     =================================================== */
     const voiceTrigger = document.getElementById('voice-trigger');
     const voiceModal = document.getElementById('voice-overlay');
     const voiceStatus = document.getElementById('voice-status');
     const voiceTranscript = document.getElementById('voice-transcript');
     const closeVoice = document.getElementById('close-voice');
+    const langChips = document.querySelectorAll('.lang-chip');
 
+    let currentVoiceLang = 'hi-IN'; // Default
     let recognition = null;
     const SpeechReco = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    // Language Mapping for Prompts & Status
+    const langNames = {
+        'hi-IN': { en: 'Hindi', native: 'हिन्दी', prompt: 'Listen in Hindi and reply ONLY in Hindi.' },
+        'en-IN': { en: 'English', native: 'English', prompt: 'Listen in English and reply ONLY in English.' },
+        'pa-IN': { en: 'Punjabi', native: 'ਪੰਜਾਬੀ', prompt: 'Listen in Punjabi and reply ONLY in Punjabi.' },
+        'mr-IN': { en: 'Marathi', native: 'मराठी', prompt: 'Listen in Marathi and reply ONLY in Marathi.' },
+        'bn-IN': { en: 'Bengali', native: 'বাংলা', prompt: 'Listen in Bengali and reply ONLY in Bengali.' },
+        'te-IN': { en: 'Telugu', native: 'తెలుగు', prompt: 'Listen in Telugu and reply ONLY in Telugu.' },
+        'ta-IN': { en: 'Tamil', native: 'தமிழ்', prompt: 'Listen in Tamil and reply ONLY in Tamil.' },
+        'kn-IN': { en: 'Kannada', native: 'ಕನ್ನಡ', prompt: 'Listen in Kannada and reply ONLY in Kannada.' },
+        'ml-IN': { en: 'Malayalam', native: 'മലയാളം', prompt: 'Listen in Malayalam and reply ONLY in Malayalam.' }
+    };
+
     if (SpeechReco) {
         recognition = new SpeechReco();
         recognition.continuous = false;
         recognition.interimResults = false;
-        recognition.lang = 'hi-IN';
 
         recognition.onstart = () => {
-            voiceStatus.textContent = '🎙️ Listening... बोलिए...';
-            voiceTranscript.textContent = 'Ask anything about farming | खेती के बारे में पूछिए';
+            const name = langNames[currentVoiceLang].native;
+            voiceStatus.textContent = `🎙️ Listening (${name})...`;
+            voiceTranscript.textContent = `Ask about crops in ${name} | खेती के बारे में पूछें`;
         };
 
         recognition.onresult = async e => {
@@ -380,18 +396,20 @@ Answer in both English and Hindi for each point.`;
             voiceTranscript.textContent = `"${q}"`;
             voiceStatus.textContent = '🧠 Thinking...';
 
+            const langMeta = langNames[currentVoiceLang];
+
             try {
                 const res = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         type: 'text',
-                        contents: [{ parts: [{ text: `You are BHUMIIQ farming assistant. Answer in both English and Hindi (each sentence bilingual). Question: ${q}` }] }]
+                        contents: [{ parts: [{ text: `You are BHUMIIQ farming assistant. ${langMeta.prompt} Provide a concise, high-value answer. Question: ${q}` }] }]
                     })
                 });
                 const data = await res.json();
-                const answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'नमस्ते! कृपया फसल के बारे में पूछें।';
-                voiceStatus.textContent = '🌿 BHUMIIQ Speaking...';
+                const answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'I am processing your query.';
+                voiceStatus.textContent = `🌿 BHUMIIQ (${langMeta.en})`;
                 voiceTranscript.textContent = answer.substring(0, 300) + '...';
                 speak(answer);
             } catch {
@@ -399,26 +417,46 @@ Answer in both English and Hindi for each point.`;
             }
         };
 
-        recognition.onerror = () => { voiceStatus.textContent = 'Mic error. Please allow microphone access.'; };
-        recognition.onend = () => { if (voiceStatus.textContent === '🎙️ Listening... बोलिए...') voiceStatus.textContent = 'Done!'; };
+        recognition.onerror = () => { voiceStatus.textContent = 'Mic error. Please allow access.'; };
+        recognition.onend = () => { 
+            if (voiceStatus.textContent.includes('Listening')) voiceStatus.textContent = 'Ready'; 
+        };
     }
 
     function speak(text) {
         if (!('speechSynthesis' in window)) return;
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text.substring(0, 500));
-        u.lang = 'hi-IN'; u.rate = 0.9; u.pitch = 1.1;
+        u.lang = currentVoiceLang; 
+        u.rate = 0.95; u.pitch = 1.05;
         window.speechSynthesis.speak(u);
     }
+
+    // Handle Language Selection
+    langChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            langChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            currentVoiceLang = chip.dataset.lang;
+            if (recognition) recognition.stop();
+            setTimeout(() => {
+                if (recognition) {
+                    recognition.lang = currentVoiceLang;
+                    recognition.start();
+                }
+            }, 300);
+        });
+    });
 
     voiceTrigger.addEventListener('click', () => {
         voiceModal.classList.remove('hidden');
         if (recognition) {
+            recognition.lang = currentVoiceLang;
             try { recognition.start(); }
-            catch (e) { voiceStatus.textContent = 'Click to retry...'; }
+            catch (e) { console.log("Recognition already active"); }
         } else {
-            voiceStatus.textContent = 'Voice not supported in this browser.';
-            voiceTranscript.textContent = 'Please use Chrome or Edge for voice features.';
+            voiceStatus.textContent = 'Voice not supported.';
+            voiceTranscript.textContent = 'Please use Chrome/Edge for voice IQ.';
         }
     });
 

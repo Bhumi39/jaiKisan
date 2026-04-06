@@ -27,13 +27,29 @@
         </div>
     </div>
 
-    <!-- 🎙️ LIVE VOICE ASSISTANT MODAL (ALIVE) -->
+    <!-- 🎙️ LIVE VOICE ASSISTANT MODAL (MULTI-LINGUAL) -->
     <div id="voice-overlay" class="voice-modal hidden">
         <div class="voice-modal-content">
+            <!-- Language Selector Chips -->
+            <div class="voice-lang-picker mb-32">
+                <p class="text-muted mb-12" style="font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase;">Select Language | भाषा चुनें</p>
+                <div class="lang-chips">
+                    <button class="lang-chip active" data-lang="hi-IN">हिन्दी</button>
+                    <button class="lang-chip" data-lang="en-IN">English</button>
+                    <button class="lang-chip" data-lang="pa-IN">ਪੰਜਾਬੀ</button>
+                    <button class="lang-chip" data-lang="mr-IN">मराठी</button>
+                    <button class="lang-chip" data-lang="bn-IN">বাংলা</button>
+                    <button class="lang-chip" data-lang="te-IN">తెలుగు</button>
+                    <button class="lang-chip" data-lang="ta-IN">தமிழ்</button>
+                    <button class="lang-chip" data-lang="kn-IN">ಕನ್ನಡ</button>
+                    <button class="lang-chip" data-lang="ml-IN">മലയാളം</button>
+                </div>
+            </div>
+
             <div class="voice-waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
             <h2 id="voice-status">Listening...</h2>
             <p id="voice-transcript" class="bilingual-voice-text">Please ask your farming query.</p>
-            <button id="close-voice" class="btn btn-secondary btn-pill mt-32">Cancel</button>
+            <button id="close-voice" class="btn btn-secondary btn-pill mt-32">Cancel | रद्द करें</button>
         </div>
     </div>
 

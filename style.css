@@ -167,6 +167,21 @@ body.enterprise-ui {
 .voice-modal-content h2 { font-size: 28px; color: var(--green-dark); margin-bottom: 16px; }
 .voice-modal-content p { font-size: 16px; color: var(--muted); line-height: 1.6; }
 
+/* 🌐 Language Selector Chips */
+.lang-chips {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+}
+.lang-chip {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7); padding: 8px 16px; border-radius: 100px;
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.3s;
+}
+.lang-chip:hover { background: rgba(255,255,255,0.1); color: white; border-color: var(--green-bright); }
+.lang-chip.active {
+  background: var(--green-bright); border-color: var(--green-bright);
+  color: var(--green-dark); box-shadow: 0 0 20px rgba(16,185,129,0.4);
+}
+
 /* ========================
    HERO V9 (CINEMATIC VIDEO BG)
 ======================== */
