@@ -339,20 +339,7 @@ Answer in both English and Hindi for each point.`;
                 body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
             });
             if (!res.ok) throw new Error('Network error');
-            const data = await res.json();
-            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No results.';
-            sowingResults.innerHTML = `
-        <div class="sowing-result-card">
-          ${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:#012A1A;">$1</strong>')}
-        </div>`;
-        } catch (e) {
-            sowingResults.innerHTML = `<div style="padding:24px;background:#FFF1F2;border-radius:16px;color:#9F1239;font-weight:700;">Intelligence error. Please try again.</div>`;
-        } finally {
-            hideLoader();
-        }
-    });
-
-
+            
     /* ===================================================
        6. LIVE VOICE ASSISTANT (CONVERSATIONAL IQ)
     =================================================== */
@@ -385,7 +372,6 @@ Answer in both English and Hindi for each point.`;
         'ml-IN': { en: 'Malayalam', native: 'മലയാളം', prompt: 'You MUST reply in both Malayalam and English. Format: NA: [Malayalam Text] | EN: [English Text]' }
     };
 
-    // 🗄️ STORAGE LOGIC
     function loadChatHistory() {
         const saved = localStorage.getItem('bhumiIqVoiceChat');
         if (saved) {
@@ -406,18 +392,18 @@ Answer in both English and Hindi for each point.`;
             bubble.innerHTML = `<span class="bubble-meta">Farmer</span><span class="native-voice-text">"${content}"</span>`;
         } else {
             const parts = content.split('|');
-            const native = (parts[0] || '').replace('NA:', '').trim();
-            const english = (parts[1] || '').replace('EN:', '').trim();
+            const native = (parts[0] || '').replace('NA:', '').trim() || 'Translation...';
+            const english = (parts[1] || '').replace('EN:', '').trim() || 'Translation...';
 
             bubble.innerHTML = `
                 <div class="bubble-meta">BHUMIIQ</div>
                 <span class="native-voice-text">${native}</span>
                 <span class="english-voice-text">${english}</span>
                 <div style="display:flex; gap:8px; margin-top:12px;">
-                    <button class="btn btn-outline btn-pill btn-small-listen" onclick="playbackText('${native.replace(/'/g, "\\'")}', '${langCode}')">
+                    <button class="btn btn-outline btn-pill btn-small-listen" data-text="${native.replace(/"/g, '&quot;')}" data-lang="${langCode}">
                         <span class="material-symbols-outlined" style="font-size:12px;">volume_up</span> Hear
                     </button>
-                    <button class="btn btn-outline btn-pill btn-small-listen" onclick="playbackText('${english.replace(/'/g, "\\'")}', 'en-IN')">
+                    <button class="btn btn-outline btn-pill btn-small-listen" data-text="${english.replace(/"/g, '&quot;')}" data-lang="en-IN">
                         <span class="material-symbols-outlined" style="font-size:12px;">translate</span> English
                     </button>
                 </div>
@@ -439,6 +425,8 @@ Answer in both English and Hindi for each point.`;
         const u = new SpeechSynthesisUtterance(text);
         u.lang = lang;
         u.voice = getRegionalVoice(lang);
+        u.onstart = () => voiceWaves.classList.add('speaking-pulse');
+        u.onend = () => voiceWaves.classList.remove('speaking-pulse');
         synth.speak(u);
     };
 
@@ -479,11 +467,9 @@ Answer in both English and Hindi for each point.`;
             voiceStatus.textContent = '🧠 Thinking...';
             voiceWaves.classList.remove('speaking-pulse');
             
-            // Add Farmer Bubble
             voiceChatHistory.push({ sender: 'farmer', content: q, langCode: currentVoiceLang });
             addBubble('farmer', q);
 
-            // Context: Last 3 exchanges
             const historyContext = voiceChatHistory.slice(-4).map(h => `${h.sender}: ${h.content}`).join('\n');
 
             try {
@@ -492,7 +478,7 @@ Answer in both English and Hindi for each point.`;
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         type: 'text',
-                        contents: [{ parts: [{ text: `You are BHUMIIQ assistant. Conversation History:\n${historyContext}\n\nLatest question: "${q}". ${langNames[currentVoiceLang].prompt}. No extra words.` }] }]
+                        contents: [{ parts: [{ text: `You are BHUMIIQ assistant. Context:\n${historyContext}\n\nQuestion: "${q}". ${langNames[currentVoiceLang].prompt}.` }] }]
                     })
                 });
                 const data = await res.json();
@@ -505,16 +491,12 @@ Answer in both English and Hindi for each point.`;
                 voiceStatus.textContent = 'Ready';
                 voiceActions.classList.remove('hidden');
 
-                // Auto-speak Native
                 const nativeReply = reply.split('|')[0].replace('NA:', '').trim();
-                playbackText(nativeReply, currentVoiceLang);
+                window.playbackText(nativeReply, currentVoiceLang);
             } catch (err) { voiceStatus.textContent = 'Connection Error'; }
         };
 
-        recognition.onerror = () => { 
-            voiceStatus.textContent = 'Mic Error. Tap to Retry.'; 
-            voiceActions.classList.add('hidden');
-        };
+        recognition.onerror = () => {  voiceStatus.textContent = 'Mic Error. Tap to Retry.'; voiceActions.classList.remove('hidden'); };
     }
 
     voiceTrigger.addEventListener('click', () => {
@@ -522,10 +504,7 @@ Answer in both English and Hindi for each point.`;
         voiceModal.classList.remove('hidden');
         loadChatHistory();
         updateVoiceEngineStatus();
-        if (recognition) { 
-            recognition.lang = currentVoiceLang; 
-            try { recognition.start(); } catch(e) { recognition.stop(); setTimeout(() => recognition.start(), 200); }
-        }
+        if (recognition) { recognition.lang = currentVoiceLang; try { recognition.start(); } catch(e) { recognition.stop(); setTimeout(() => recognition.start(), 200); } }
     });
 
     langChips.forEach(chip => {
@@ -534,16 +513,31 @@ Answer in both English and Hindi for each point.`;
             chip.classList.add('active');
             currentVoiceLang = chip.dataset.lang;
             updateVoiceEngineStatus();
-    repeatEnglishBtn.addEventListener('click', () => speak(lastEnglishResponse, 'en-IN'));
-    
-    askAgainBtn.addEventListener('click', () => {
-        if (recognition) {
-            recognition.lang = currentVoiceLang;
-            recognition.start();
-        }
+            if (recognition) { try { recognition.stop(); } catch(e){} setTimeout(() => { recognition.lang = currentVoiceLang; recognition.start(); }, 400); }
+            voiceStatus.textContent = `Switched to ${langNames[currentVoiceLang].native}`;
+        });
     });
 
-    closeVoice.addEventListener('click', () => {
+    clearHistoryBtn.addEventListener('click', () => {
+        voiceChatHistory = [];
+        localStorage.removeItem('bhumiIqVoiceChat');
+        renderHistory();
+        voiceStatus.textContent = 'History Cleared';
+    });
+
+    askAgainBtn.addEventListener('click', () => {
+        if (recognition) { recognition.lang = currentVoiceLang; try { recognition.start(); } catch(e) { recognition.stop(); setTimeout(() => recognition.start(), 200); } }
+    });
+
+    chatHistoryBox.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-small-listen');
+        if (!btn) return;
+        
+        chatHistoryBox.appendChild(bubble);
+        chatHistoryBox.scrollTop = chatHistoryBox.scrollHeight;
+    }
+
+    document.getElementById('close-voice').addEventListener('click', () => {
         voiceModal.classList.add('hidden');
         if (recognition) try { recognition.stop(); } catch (e) { }
         synth.cancel();
