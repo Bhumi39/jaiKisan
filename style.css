@@ -236,10 +236,17 @@ body.enterprise-ui {
   font-size: 80px; font-weight: 900; color: white;
   line-height: 1.05; letter-spacing: -4px; margin-bottom: 28px;
 }
-.gradient-text {
-  background: linear-gradient(90deg, var(--green-bright), var(--gold));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+.gradient-text { 
+  background: linear-gradient(90deg, #10B981, #F59E0B); 
+  -webkit-background-clip: text; 
+  background-clip: text; /* Fix lint */
+  -webkit-text-fill-color: transparent; 
 }
+
+.loader-spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .hero-desc-v9 { font-size: 20px; color: rgba(255,255,255,0.65); max-width: 680px; line-height: 1.7; }
 .hero-btns-v9 { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
 
