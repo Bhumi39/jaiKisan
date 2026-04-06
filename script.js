@@ -430,12 +430,79 @@ Answer in both English and Hindi for each point.`;
 
 
   /* ===================================================
-     7. CONTACT FORM
+     7. CONTACT FORM — EMAIL + WHATSAPP REDIRECT
   =================================================== */
-  const contactBtn = document.querySelector('#section-contact .btn-primary');
-  if (contactBtn) {
-    contactBtn.addEventListener('click', () => {
-      alert('✅ Success! Your request has been submitted.\n\nAman Kumar will contact you at +91 6206000925 shortly.');
+  const AMAN_EMAIL = 'amankumar6206000925@gmail.com'; // ← Replace with your real email
+  const AMAN_WHATSAPP = '916206000925'; // Country code + number, no +
+
+  const emailBtn = document.getElementById('btn-send-email');
+  const waBtn = document.getElementById('btn-send-whatsapp');
+  const successBox = document.getElementById('contact-success');
+
+  function getFormData() {
+    return {
+      name:  document.getElementById('contact-name')?.value?.trim() || '',
+      email: document.getElementById('contact-email')?.value?.trim() || '',
+      farm:  document.getElementById('contact-farm')?.value?.trim() || '',
+      phone: document.getElementById('contact-phone')?.value?.trim() || '',
+      msg:   document.getElementById('contact-msg')?.value?.trim() || ''
+    };
+  }
+
+  function validateForm(d) {
+    if (!d.name)  { alert('Please enter your name.'); return false; }
+    if (!d.email) { alert('Please enter your email address.'); return false; }
+    if (!d.msg)   { alert('Please describe how we can help you.'); return false; }
+    return true;
+  }
+
+  if (emailBtn) {
+    emailBtn.addEventListener('click', () => {
+      const d = getFormData();
+      if (!validateForm(d)) return;
+
+      const subject = encodeURIComponent(`BHUMIIQ Enquiry from ${d.name}`);
+      const body = encodeURIComponent(
+        `New Farm Transformation Request\n\n` +
+        `Name:        ${d.name}\n` +
+        `Email:       ${d.email}\n` +
+        `Farm/Company:${d.farm || 'Not provided'}\n` +
+        `Phone:       ${d.phone || 'Not provided'}\n\n` +
+        `Message:\n${d.msg}\n\n` +
+        `---\nSent from BHUMIIQ Enterprise Portal`
+      );
+
+      // Opens the user's default mail app with everything pre-filled
+      window.location.href = `mailto:${AMAN_EMAIL}?subject=${subject}&body=${body}`;
+
+      // Show success after short delay
+      setTimeout(() => {
+        successBox.classList.remove('hidden');
+        successBox.scrollIntoView({ behavior: 'smooth' });
+      }, 800);
+    });
+  }
+
+  if (waBtn) {
+    waBtn.addEventListener('click', () => {
+      const d = getFormData();
+      if (!validateForm(d)) return;
+
+      const waMsg = encodeURIComponent(
+        `🌿 *BHUMIIQ Farm Enquiry*\n\n` +
+        `*Name:* ${d.name}\n` +
+        `*Email:* ${d.email}\n` +
+        `*Farm:* ${d.farm || 'N/A'}\n` +
+        `*Phone:* ${d.phone || 'N/A'}\n\n` +
+        `*Message:*\n${d.msg}`
+      );
+
+      // Opens WhatsApp with message pre-filled to Aman's number
+      window.open(`https://wa.me/${AMAN_WHATSAPP}?text=${waMsg}`, '_blank');
+
+      // Show success
+      successBox.classList.remove('hidden');
+      successBox.scrollIntoView({ behavior: 'smooth' });
     });
   }
 

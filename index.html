@@ -186,18 +186,50 @@
                 </div>
             </section>
 
-            <!-- CONTACT FORM (ALIVE) -->
+            <!-- CONTACT FORM (ALIVE — Sends to Aman's Email + WhatsApp) -->
             <section id="section-contact" class="py-120 reveal-up">
                 <div class="container-xl max-w-1000 mx-auto contact-card-v9">
-                    <h2 class="text-center mb-60">Ready to <span class="gradient-text">Transform Your Farm?</span></h2>
+                    <h2 class="text-center mb-24">Ready to <span class="gradient-text">Transform Your Farm?</span></h2>
+                    <p class="text-center text-muted mb-60">Get in touch — your message will be sent directly to our team.</p>
                     <div class="form-grid-v9">
-                        <div class="input-pair"><label>Your Name</label><input type="text" placeholder="John Doe"></div>
-                        <div class="input-pair"><label>Email Address</label><input type="email" placeholder="john@farm.com"></div>
-                        <div class="input-pair"><label>Farm/Company Name</label><input type="text" placeholder="Green Fields Ltd"></div>
-                        <div class="input-pair"><label>Phone Number</label><input type="tel" placeholder="+91 000 000 0000"></div>
-                        <div class="input-pair span-2-v9"><label>How can we help you?</label><textarea placeholder="Tell us about your crops..."></textarea></div>
+                        <div class="input-pair">
+                            <label>Your Name</label>
+                            <input type="text" id="contact-name" placeholder="John Doe" required>
+                        </div>
+                        <div class="input-pair">
+                            <label>Email Address</label>
+                            <input type="email" id="contact-email" placeholder="john@farm.com" required>
+                        </div>
+                        <div class="input-pair">
+                            <label>Farm/Company Name</label>
+                            <input type="text" id="contact-farm" placeholder="Green Fields Ltd">
+                        </div>
+                        <div class="input-pair">
+                            <label>Phone Number</label>
+                            <input type="tel" id="contact-phone" placeholder="+91 000 000 0000">
+                        </div>
+                        <div class="input-pair span-2-v9">
+                            <label>How can we help you?</label>
+                            <textarea id="contact-msg" placeholder="Tell us about your crops, problems, or questions..."></textarea>
+                        </div>
                     </div>
-                    <button class="btn btn-primary full-btn py-24 mt-40 btn-pill btn-glow">Submit Enterprise Request</button>
+
+                    <!-- Dual Send Options -->
+                    <div class="contact-send-row mt-40">
+                        <button id="btn-send-email" class="btn btn-primary btn-pill btn-xl btn-glow flex-1">
+                            <span class="material-symbols-outlined">mail</span> Send via Email
+                        </button>
+                        <button id="btn-send-whatsapp" class="btn btn-whatsapp btn-pill btn-xl flex-1">
+                            <span class="material-symbols-outlined">chat</span> Send via WhatsApp
+                        </button>
+                    </div>
+
+                    <!-- Success Message (hidden by default) -->
+                    <div id="contact-success" class="contact-success-msg hidden">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <h3>Message Sent!</h3>
+                        <p>Aman Kumar will contact you shortly at <strong>+91 6206000925</strong></p>
+                    </div>
                 </div>
             </section>
         </section>
