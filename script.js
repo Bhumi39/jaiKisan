@@ -2,116 +2,116 @@ const API_URL = '/api/gemini';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ===================================================
-     1. SPA NAVIGATION + BACK BUTTON
-  =================================================== */
-  const screens = document.querySelectorAll('.screen');
-  const allNavLinks = document.querySelectorAll('[data-target]');
-  const backBtn = document.getElementById('back-home-btn');
+    /* ===================================================
+       1. SPA NAVIGATION + BACK BUTTON
+    =================================================== */
+    const screens = document.querySelectorAll('.screen');
+    const allNavLinks = document.querySelectorAll('[data-target]');
+    const backBtn = document.getElementById('back-home-btn');
 
-  function goTo(id) {
-    if (!id) return;
-    screens.forEach(s => s.classList.remove('active'));
-    const target = document.getElementById(id);
-    if (target) target.classList.add('active');
-    backBtn.classList.toggle('hidden', id === 'screen-home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  allNavLinks.forEach(el => el.addEventListener('click', e => {
-    const t = el.dataset.target;
-    if (t) { e.preventDefault(); goTo(t); }
-  }));
-
-  backBtn.addEventListener('click', () => goTo('screen-home'));
-  goTo('screen-home');
-
-
-  /* ===================================================
-     2. SCROLL REVEAL (IntersectionObserver)
-  =================================================== */
-  const reveals = document.querySelectorAll('.reveal-up');
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('active'); } });
-  }, { threshold: 0.12 });
-  reveals.forEach(el => revealObserver.observe(el));
-
-
-  /* ===================================================
-     3. PROGRESSIVE CINEMATIC LOADER
-  =================================================== */
-  const loader = document.getElementById('cinematic-loader');
-  const loaderStatus = document.getElementById('loader-status-text');
-  const loaderSub = document.getElementById('loader-sub-text');
-  const progressFill = loader.querySelector('.progress-fill');
-
-  const scanSteps = [
-    [10, 'Capturing Leaf Structure...', 'पत्ती की संरचना पहचान रहे हैं...'],
-    [30, 'Analyzing Chlorophyll Levels...', 'क्लोरोफिल स्तर विश्लेषण...'],
-    [55, 'Detecting Pathogens & Pests...', 'रोगाणु और कीटों की पहचान...'],
-    [75, 'Calculating Survival Probability...', 'जीवित रहने की संभावना गणना...'],
-    [90, 'Preparing Bilingual Roadmap...', 'द्विभाषी रोडमैप तैयार हो रहा है...'],
-    [100, 'Intelligence Ready!', 'विश्लेषण पूर्ण!']
-  ];
-  let stepTimer;
-
-  function showLoader() {
-    loader.classList.remove('hidden');
-    progressFill.style.width = '0%';
-    let i = 0;
-    stepTimer = setInterval(() => {
-      if (i >= scanSteps.length) { clearInterval(stepTimer); return; }
-      const [pct, en, hi] = scanSteps[i];
-      progressFill.style.width = pct + '%';
-      loaderStatus.textContent = en;
-      loaderSub.textContent = hi;
-      i++;
-    }, 600);
-  }
-  function hideLoader() {
-    clearInterval(stepTimer);
-    loader.classList.add('hidden');
-    progressFill.style.width = '0%';
-  }
-
-
-  /* ===================================================
-     4. AI CROP SCAN (Gemini Vision)
-  =================================================== */
-  const uploadArea = document.getElementById('upload-clickable');
-  const galInput = document.getElementById('doctor-gallery');
-  const leafImg = document.getElementById('leaf-image-v9');
-  const uploadPrompt = document.getElementById('upload-prompt-v9');
-  const analyzeBtn = document.getElementById('btn-analyze-v9');
-  const resultsBox = document.getElementById('doctor-results-v9');
-
-  let imgBase64 = null, imgMime = null;
-
-  uploadArea.addEventListener('click', () => galInput.click());
-
-  galInput.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      imgBase64 = evt.target.result.split(',')[1];
-      imgMime = file.type;
-      uploadPrompt.style.display = 'none';
-      leafImg.src = evt.target.result;
-      leafImg.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  });
-
-  analyzeBtn.addEventListener('click', async () => {
-    if (!imgBase64) {
-      resultsBox.innerHTML = `<div style="padding:24px;background:#FFF1F2;border-radius:16px;color:#9F1239;font-weight:700;">Please upload a leaf image first.</div>`;
-      return;
+    function goTo(id) {
+        if (!id) return;
+        screens.forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(id);
+        if (target) target.classList.add('active');
+        backBtn.classList.toggle('hidden', id === 'screen-home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    showLoader();
-    resultsBox.innerHTML = '';
 
-    const prompt = `You are BHUMIIQ, the world's most advanced crop intelligence system. Analyze this plant image and provide a professional diagnosis structured as follows:
+    allNavLinks.forEach(el => el.addEventListener('click', e => {
+        const t = el.dataset.target;
+        if (t) { e.preventDefault(); goTo(t); }
+    }));
+
+    backBtn.addEventListener('click', () => goTo('screen-home'));
+    goTo('screen-home');
+
+
+    /* ===================================================
+       2. SCROLL REVEAL (IntersectionObserver)
+    =================================================== */
+    const reveals = document.querySelectorAll('.reveal-up');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('active'); } });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => revealObserver.observe(el));
+
+
+    /* ===================================================
+       3. PROGRESSIVE CINEMATIC LOADER
+    =================================================== */
+    const loader = document.getElementById('cinematic-loader');
+    const loaderStatus = document.getElementById('loader-status-text');
+    const loaderSub = document.getElementById('loader-sub-text');
+    const progressFill = loader.querySelector('.progress-fill');
+
+    const scanSteps = [
+        [10, 'Capturing Leaf Structure...', 'पत्ती की संरचना पहचान रहे हैं...'],
+        [30, 'Analyzing Chlorophyll Levels...', 'क्लोरोफिल स्तर विश्लेषण...'],
+        [55, 'Detecting Pathogens & Pests...', 'रोगाणु और कीटों की पहचान...'],
+        [75, 'Calculating Survival Probability...', 'जीवित रहने की संभावना गणना...'],
+        [90, 'Preparing Bilingual Roadmap...', 'द्विभाषी रोडमैप तैयार हो रहा है...'],
+        [100, 'Intelligence Ready!', 'विश्लेषण पूर्ण!']
+    ];
+    let stepTimer;
+
+    function showLoader() {
+        loader.classList.remove('hidden');
+        progressFill.style.width = '0%';
+        let i = 0;
+        stepTimer = setInterval(() => {
+            if (i >= scanSteps.length) { clearInterval(stepTimer); return; }
+            const [pct, en, hi] = scanSteps[i];
+            progressFill.style.width = pct + '%';
+            loaderStatus.textContent = en;
+            loaderSub.textContent = hi;
+            i++;
+        }, 600);
+    }
+    function hideLoader() {
+        clearInterval(stepTimer);
+        loader.classList.add('hidden');
+        progressFill.style.width = '0%';
+    }
+
+
+    /* ===================================================
+       4. AI CROP SCAN (Gemini Vision)
+    =================================================== */
+    const uploadArea = document.getElementById('upload-clickable');
+    const galInput = document.getElementById('doctor-gallery');
+    const leafImg = document.getElementById('leaf-image-v9');
+    const uploadPrompt = document.getElementById('upload-prompt-v9');
+    const analyzeBtn = document.getElementById('btn-analyze-v9');
+    const resultsBox = document.getElementById('doctor-results-v9');
+
+    let imgBase64 = null, imgMime = null;
+
+    uploadArea.addEventListener('click', () => galInput.click());
+
+    galInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = evt => {
+            imgBase64 = evt.target.result.split(',')[1];
+            imgMime = file.type;
+            uploadPrompt.style.display = 'none';
+            leafImg.src = evt.target.result;
+            leafImg.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    analyzeBtn.addEventListener('click', async () => {
+        if (!imgBase64) {
+            resultsBox.innerHTML = `<div style="padding:24px;background:#FFF1F2;border-radius:16px;color:#9F1239;font-weight:700;">Please upload a leaf image first.</div>`;
+            return;
+        }
+        showLoader();
+        resultsBox.innerHTML = '';
+
+        const prompt = `You are BHUMIIQ, the world's most advanced crop intelligence system. Analyze this plant image and provide a professional diagnosis structured as follows:
 
 **DISEASE NAME:** (Name in English)
 **रोग का नाम:** (Same name in Hindi)
@@ -150,64 +150,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
 Follow this structure EXACTLY.`;
 
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'vision',
-          contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: imgMime, data: imgBase64 } }] }]
-        })
-      });
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'vision',
+                    contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: imgMime, data: imgBase64 } }] }]
+                })
+            });
 
-      if (!res.ok) throw new Error(`API error: ${res.status}`);
-      const data = await res.json();
-      const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!raw) throw new Error('No response from intelligence engine.');
+            if (!res.ok) throw new Error(`API error: ${res.status}`);
+            const data = await res.json();
+            const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!raw) throw new Error('No response from intelligence engine.');
 
-      renderResults(raw);
-    } catch (err) {
-      resultsBox.innerHTML = `
+            renderResults(raw);
+        } catch (err) {
+            resultsBox.innerHTML = `
         <div style="padding:32px;background:#FFF1F2;border:2px solid #FECDD3;border-radius:20px;">
           <h4 style="color:#9F1239;margin-bottom:8px;">⚠ Intelligence Engine Error</h4>
           <p style="color:#BE123C;font-size:14px;">${err.message}</p>
           <p style="color:#BE123C;font-size:13px;margin-top:8px;">Check that your GEMINI_API_KEY is set in the .env file and the server is running.</p>
         </div>`;
-    } finally {
-      hideLoader();
-    }
-  });
+        } finally {
+            hideLoader();
+        }
+    });
 
-  function renderResults(raw) {
-    // Extract survival chance
-    const survivalMatch = raw.match(/SURVIVAL CHANCE[:\s]*\[?(\d+)\]?%/i);
-    const chance = survivalMatch ? parseInt(survivalMatch[1]) : 75;
-    const chanceColor = chance >= 70 ? '#10B981' : chance >= 40 ? '#F59E0B' : '#EF4444';
+    function renderResults(raw) {
+        // Extract survival chance
+        const survivalMatch = raw.match(/SURVIVAL CHANCE[:\s]*\[?(\d+)\]?%/i);
+        const chance = survivalMatch ? parseInt(survivalMatch[1]) : 75;
+        const chanceColor = chance >= 70 ? '#10B981' : chance >= 40 ? '#F59E0B' : '#EF4444';
 
-    // Extract disease name
-    const diseaseMatch = raw.match(/DISEASE NAME[:\s]*(.+)/i);
-    const diseaseName = diseaseMatch ? diseaseMatch[1].trim() : 'Crop Health Analysis';
+        // Extract disease name
+        const diseaseMatch = raw.match(/DISEASE NAME[:\s]*(.+)/i);
+        const diseaseName = diseaseMatch ? diseaseMatch[1].trim() : 'Crop Health Analysis';
 
-    // Extract Hindi disease name
-    const hindiDiseaseMatch = raw.match(/रोग का नाम[:\s]*(.+)/i);
-    const hindiDisease = hindiDiseaseMatch ? hindiDiseaseMatch[1].trim() : '';
+        // Extract Hindi disease name
+        const hindiDiseaseMatch = raw.match(/रोग का नाम[:\s]*(.+)/i);
+        const hindiDisease = hindiDiseaseMatch ? hindiDiseaseMatch[1].trim() : '';
 
-    // Extract dos
-    const dosMatch = raw.match(/DO'S[^:]*:([\s\S]*?)(?:DON'TS|$)/i);
-    const dosText = dosMatch ? dosMatch[1].trim() : '';
-    const dosItems = dosText.split('\n').filter(l => l.trim().startsWith('-')).map(l => l.replace(/^-\s*/, '').trim()).slice(0, 4);
+        // Extract dos
+        const dosMatch = raw.match(/DO'S[^:]*:([\s\S]*?)(?:DON'TS|$)/i);
+        const dosText = dosMatch ? dosMatch[1].trim() : '';
+        const dosItems = dosText.split('\n').filter(l => l.trim().startsWith('-')).map(l => l.replace(/^-\s*/, '').trim()).slice(0, 4);
 
-    // Extract don'ts
-    const dontsMatch = raw.match(/DON'TS[^:]*:([\s\S]*?)(?:FERTILIZER|$)/i);
-    const dontsText = dontsMatch ? dontsMatch[1].trim() : '';
-    const dontsItems = dontsText.split('\n').filter(l => l.trim().startsWith('-')).map(l => l.replace(/^-\s*/, '').trim()).slice(0, 4);
+        // Extract don'ts
+        const dontsMatch = raw.match(/DON'TS[^:]*:([\s\S]*?)(?:FERTILIZER|$)/i);
+        const dontsText = dontsMatch ? dontsMatch[1].trim() : '';
+        const dontsItems = dontsText.split('\n').filter(l => l.trim().startsWith('-')).map(l => l.replace(/^-\s*/, '').trim()).slice(0, 4);
 
-    // Extract fertilizers
-    const fertMatch = raw.match(/FERTILIZER[^:]*PORTFOLIO[^:]*:([\s\S]*?)(?:\n\n\n|$)/i);
-    const fertText = fertMatch ? fertMatch[1] : raw;
-    const fertLines = fertText.split('\n').filter(l => /^\d+\./.test(l.trim())).slice(0, 10);
+        // Extract fertilizers
+        const fertMatch = raw.match(/FERTILIZER[^:]*PORTFOLIO[^:]*:([\s\S]*?)(?:\n\n\n|$)/i);
+        const fertText = fertMatch ? fertMatch[1] : raw;
+        const fertLines = fertText.split('\n').filter(l => /^\d+\./.test(l.trim())).slice(0, 10);
 
-    resultsBox.innerHTML = `
+        resultsBox.innerHTML = `
       <div class="health-cert">
         <div class="cert-top">
           <div>
@@ -254,9 +254,9 @@ Follow this structure EXACTLY.`;
                     const [num, ...rest] = f.split('.');
                     const [name, ...desc] = rest.join('.').split('-');
                     return `<div class="fert-item"><h5>${name?.trim() || f}</h5><p>${desc.join('-').trim() || 'Apply as directed'}</p></div>`;
-                  }).join('')
+                }).join('')
                 : '<div class="fert-item" style="grid-column:span 2"><p>Full portfolio available in detailed roadmap below.</p></div>'
-              }
+            }
             </div>
           </div>
 
@@ -269,34 +269,34 @@ Follow this structure EXACTLY.`;
         </div>
       </div>`;
 
-    // Animate bar
-    setTimeout(() => {
-      const bar = document.getElementById('bar-fill');
-      if (bar) bar.style.width = chance + '%';
-    }, 200);
-  }
+        // Animate bar
+        setTimeout(() => {
+            const bar = document.getElementById('bar-fill');
+            if (bar) bar.style.width = chance + '%';
+        }, 200);
+    }
 
 
-  /* ===================================================
-     5. WEATHER + SOWING IQ
-  =================================================== */
-  const weatherBox = document.getElementById('weather-display-v9');
-  const sowingBtn = document.getElementById('btn-get-sowing-v9');
-  const sowingResults = document.getElementById('sowing-results-v9');
-  let currentWeatherContext = '';
+    /* ===================================================
+       5. WEATHER + SOWING IQ
+    =================================================== */
+    const weatherBox = document.getElementById('weather-display-v9');
+    const sowingBtn = document.getElementById('btn-get-sowing-v9');
+    const sowingResults = document.getElementById('sowing-results-v9');
+    let currentWeatherContext = '';
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(async pos => {
-      try {
-        const { latitude: lat, longitude: lon } = pos.coords;
-        const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,rain_sum&timezone=auto`);
-        const d = await r.json();
-        const cw = d.current_weather;
-        const daily = d.daily;
-        currentWeatherContext = `Temperature: ${cw.temperature}°C, Windspeed: ${cw.windspeed} km/h, Max: ${daily.temperature_2m_max[0]}°C, Min: ${daily.temperature_2m_min[0]}°C, Rain: ${daily.rain_sum[0]}mm`;
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async pos => {
+            try {
+                const { latitude: lat, longitude: lon } = pos.coords;
+                const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,rain_sum&timezone=auto`);
+                const d = await r.json();
+                const cw = d.current_weather;
+                const daily = d.daily;
+                currentWeatherContext = `Temperature: ${cw.temperature}°C, Windspeed: ${cw.windspeed} km/h, Max: ${daily.temperature_2m_max[0]}°C, Min: ${daily.temperature_2m_min[0]}°C, Rain: ${daily.rain_sum[0]}mm`;
 
-        weatherBox.classList.remove('shimmer');
-        weatherBox.innerHTML = `
+                weatherBox.classList.remove('shimmer');
+                weatherBox.innerHTML = `
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;text-align:center;padding:20px;">
             <div>
               <div style="font-size:72px;font-weight:900;color:#10B981;">${cw.temperature}°C</div>
@@ -311,20 +311,20 @@ Follow this structure EXACTLY.`;
               <div style="font-size:14px;font-weight:700;color:#6B7280;margin-top:8px;">Wind Speed</div>
             </div>
           </div>`;
-      } catch (e) {
-        weatherBox.textContent = 'Could not load weather data.';
-        weatherBox.classList.remove('shimmer');
-      }
-    }, () => {
-      weatherBox.textContent = 'Location access denied.';
-      weatherBox.classList.remove('shimmer');
-    });
-  }
+            } catch (e) {
+                weatherBox.textContent = 'Could not load weather data.';
+                weatherBox.classList.remove('shimmer');
+            }
+        }, () => {
+            weatherBox.textContent = 'Location access denied.';
+            weatherBox.classList.remove('shimmer');
+        });
+    }
 
-  sowingBtn.addEventListener('click', async () => {
-    showLoader();
-    try {
-      const prompt = `You are BHUMIIQ Sowing Advisor. Based on this weather: ${currentWeatherContext || 'current season conditions in India'},
+    sowingBtn.addEventListener('click', async () => {
+        showLoader();
+        try {
+            const prompt = `You are BHUMIIQ Sowing Advisor. Based on this weather: ${currentWeatherContext || 'current season conditions in India'},
 recommend exactly 3 crops with high bilingual detail:
 For each crop provide:
 - Crop Name (English + Hindi)
@@ -333,177 +333,177 @@ For each crop provide:
 - Sowing Window
 Answer in both English and Hindi for each point.`;
 
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
-      });
-      if (!res.ok) throw new Error('Network error');
-      const data = await res.json();
-      const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No results.';
-      sowingResults.innerHTML = `
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
+            });
+            if (!res.ok) throw new Error('Network error');
+            const data = await res.json();
+            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No results.';
+            sowingResults.innerHTML = `
         <div class="sowing-result-card">
           ${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:#012A1A;">$1</strong>')}
         </div>`;
-    } catch (e) {
-      sowingResults.innerHTML = `<div style="padding:24px;background:#FFF1F2;border-radius:16px;color:#9F1239;font-weight:700;">Intelligence error. Please try again.</div>`;
-    } finally {
-      hideLoader();
+        } catch (e) {
+            sowingResults.innerHTML = `<div style="padding:24px;background:#FFF1F2;border-radius:16px;color:#9F1239;font-weight:700;">Intelligence error. Please try again.</div>`;
+        } finally {
+            hideLoader();
+        }
+    });
+
+
+    /* ===================================================
+       6. LIVE VOICE ASSISTANT
+    =================================================== */
+    const voiceTrigger = document.getElementById('voice-trigger');
+    const voiceModal = document.getElementById('voice-overlay');
+    const voiceStatus = document.getElementById('voice-status');
+    const voiceTranscript = document.getElementById('voice-transcript');
+    const closeVoice = document.getElementById('close-voice');
+
+    let recognition = null;
+    const SpeechReco = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechReco) {
+        recognition = new SpeechReco();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'hi-IN';
+
+        recognition.onstart = () => {
+            voiceStatus.textContent = '🎙️ Listening... बोलिए...';
+            voiceTranscript.textContent = 'Ask anything about farming | खेती के बारे में पूछिए';
+        };
+
+        recognition.onresult = async e => {
+            const q = e.results[0][0].transcript;
+            voiceTranscript.textContent = `"${q}"`;
+            voiceStatus.textContent = '🧠 Thinking...';
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'text',
+                        contents: [{ parts: [{ text: `You are BHUMIIQ farming assistant. Answer in both English and Hindi (each sentence bilingual). Question: ${q}` }] }]
+                    })
+                });
+                const data = await res.json();
+                const answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'नमस्ते! कृपया फसल के बारे में पूछें।';
+                voiceStatus.textContent = '🌿 BHUMIIQ Speaking...';
+                voiceTranscript.textContent = answer.substring(0, 300) + '...';
+                speak(answer);
+            } catch {
+                voiceStatus.textContent = 'Connection Error';
+            }
+        };
+
+        recognition.onerror = () => { voiceStatus.textContent = 'Mic error. Please allow microphone access.'; };
+        recognition.onend = () => { if (voiceStatus.textContent === '🎙️ Listening... बोलिए...') voiceStatus.textContent = 'Done!'; };
     }
-  });
+
+    function speak(text) {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text.substring(0, 500));
+        u.lang = 'hi-IN'; u.rate = 0.9; u.pitch = 1.1;
+        window.speechSynthesis.speak(u);
+    }
+
+    voiceTrigger.addEventListener('click', () => {
+        voiceModal.classList.remove('hidden');
+        if (recognition) {
+            try { recognition.start(); }
+            catch (e) { voiceStatus.textContent = 'Click to retry...'; }
+        } else {
+            voiceStatus.textContent = 'Voice not supported in this browser.';
+            voiceTranscript.textContent = 'Please use Chrome or Edge for voice features.';
+        }
+    });
+
+    closeVoice.addEventListener('click', () => {
+        voiceModal.classList.add('hidden');
+        if (recognition) try { recognition.stop(); } catch (e) { }
+        window.speechSynthesis.cancel();
+    });
 
 
-  /* ===================================================
-     6. LIVE VOICE ASSISTANT
-  =================================================== */
-  const voiceTrigger = document.getElementById('voice-trigger');
-  const voiceModal = document.getElementById('voice-overlay');
-  const voiceStatus = document.getElementById('voice-status');
-  const voiceTranscript = document.getElementById('voice-transcript');
-  const closeVoice = document.getElementById('close-voice');
+    /* ===================================================
+       7. CONTACT FORM — EMAIL + WHATSAPP REDIRECT
+    =================================================== */
+    const AMAN_EMAIL = 'krishiisetu@gmail.com';
+    const AMAN_WHATSAPP = '916206000925'; // Country code + number, no +
 
-  let recognition = null;
-  const SpeechReco = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SpeechReco) {
-    recognition = new SpeechReco();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'hi-IN';
+    const emailBtn = document.getElementById('btn-send-email');
+    const waBtn = document.getElementById('btn-send-whatsapp');
+    const successBox = document.getElementById('contact-success');
 
-    recognition.onstart = () => {
-      voiceStatus.textContent = '🎙️ Listening... बोलिए...';
-      voiceTranscript.textContent = 'Ask anything about farming | खेती के बारे में पूछिए';
-    };
+    function getFormData() {
+        return {
+            name: document.getElementById('contact-name')?.value?.trim() || '',
+            email: document.getElementById('contact-email')?.value?.trim() || '',
+            farm: document.getElementById('contact-farm')?.value?.trim() || '',
+            phone: document.getElementById('contact-phone')?.value?.trim() || '',
+            msg: document.getElementById('contact-msg')?.value?.trim() || ''
+        };
+    }
 
-    recognition.onresult = async e => {
-      const q = e.results[0][0].transcript;
-      voiceTranscript.textContent = `"${q}"`;
-      voiceStatus.textContent = '🧠 Thinking...';
+    function validateForm(d) {
+        if (!d.name) { alert('Please enter your name.'); return false; }
+        if (!d.email) { alert('Please enter your email address.'); return false; }
+        if (!d.msg) { alert('Please describe how we can help you.'); return false; }
+        return true;
+    }
 
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'text',
-            contents: [{ parts: [{ text: `You are BHUMIIQ farming assistant. Answer in both English and Hindi (each sentence bilingual). Question: ${q}` }] }]
-          })
+    if (emailBtn) {
+        emailBtn.addEventListener('click', () => {
+            const d = getFormData();
+            if (!validateForm(d)) return;
+
+            const subject = encodeURIComponent(`BHUMIIQ Enquiry from ${d.name}`);
+            const body = encodeURIComponent(
+                `New Farm Transformation Request\n\n` +
+                `Name:        ${d.name}\n` +
+                `Email:       ${d.email}\n` +
+                `Farm/Company:${d.farm || 'Not provided'}\n` +
+                `Phone:       ${d.phone || 'Not provided'}\n\n` +
+                `Message:\n${d.msg}\n\n` +
+                `---\nSent from BHUMIIQ Enterprise Portal`
+            );
+
+            // Opens the user's default mail app with everything pre-filled
+            window.location.href = `mailto:${AMAN_EMAIL}?subject=${subject}&body=${body}`;
+
+            // Show success after short delay
+            setTimeout(() => {
+                successBox.classList.remove('hidden');
+                successBox.scrollIntoView({ behavior: 'smooth' });
+            }, 800);
         });
-        const data = await res.json();
-        const answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'नमस्ते! कृपया फसल के बारे में पूछें।';
-        voiceStatus.textContent = '🌿 BHUMIIQ Speaking...';
-        voiceTranscript.textContent = answer.substring(0, 300) + '...';
-        speak(answer);
-      } catch {
-        voiceStatus.textContent = 'Connection Error';
-      }
-    };
-
-    recognition.onerror = () => { voiceStatus.textContent = 'Mic error. Please allow microphone access.'; };
-    recognition.onend = () => { if (voiceStatus.textContent === '🎙️ Listening... बोलिए...') voiceStatus.textContent = 'Done!'; };
-  }
-
-  function speak(text) {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text.substring(0, 500));
-    u.lang = 'hi-IN'; u.rate = 0.9; u.pitch = 1.1;
-    window.speechSynthesis.speak(u);
-  }
-
-  voiceTrigger.addEventListener('click', () => {
-    voiceModal.classList.remove('hidden');
-    if (recognition) {
-      try { recognition.start(); }
-      catch (e) { voiceStatus.textContent = 'Click to retry...'; }
-    } else {
-      voiceStatus.textContent = 'Voice not supported in this browser.';
-      voiceTranscript.textContent = 'Please use Chrome or Edge for voice features.';
     }
-  });
 
-  closeVoice.addEventListener('click', () => {
-    voiceModal.classList.add('hidden');
-    if (recognition) try { recognition.stop(); } catch(e) {}
-    window.speechSynthesis.cancel();
-  });
+    if (waBtn) {
+        waBtn.addEventListener('click', () => {
+            const d = getFormData();
+            if (!validateForm(d)) return;
 
+            const waMsg = encodeURIComponent(
+                `🌿 *BHUMIIQ Farm Enquiry*\n\n` +
+                `*Name:* ${d.name}\n` +
+                `*Email:* ${d.email}\n` +
+                `*Farm:* ${d.farm || 'N/A'}\n` +
+                `*Phone:* ${d.phone || 'N/A'}\n\n` +
+                `*Message:*\n${d.msg}`
+            );
 
-  /* ===================================================
-     7. CONTACT FORM — EMAIL + WHATSAPP REDIRECT
-  =================================================== */
-  const AMAN_EMAIL = 'amankumar6206000925@gmail.com'; // ← Replace with your real email
-  const AMAN_WHATSAPP = '916206000925'; // Country code + number, no +
+            // Opens WhatsApp with message pre-filled to Aman's number
+            window.open(`https://wa.me/${AMAN_WHATSAPP}?text=${waMsg}`, '_blank');
 
-  const emailBtn = document.getElementById('btn-send-email');
-  const waBtn = document.getElementById('btn-send-whatsapp');
-  const successBox = document.getElementById('contact-success');
-
-  function getFormData() {
-    return {
-      name:  document.getElementById('contact-name')?.value?.trim() || '',
-      email: document.getElementById('contact-email')?.value?.trim() || '',
-      farm:  document.getElementById('contact-farm')?.value?.trim() || '',
-      phone: document.getElementById('contact-phone')?.value?.trim() || '',
-      msg:   document.getElementById('contact-msg')?.value?.trim() || ''
-    };
-  }
-
-  function validateForm(d) {
-    if (!d.name)  { alert('Please enter your name.'); return false; }
-    if (!d.email) { alert('Please enter your email address.'); return false; }
-    if (!d.msg)   { alert('Please describe how we can help you.'); return false; }
-    return true;
-  }
-
-  if (emailBtn) {
-    emailBtn.addEventListener('click', () => {
-      const d = getFormData();
-      if (!validateForm(d)) return;
-
-      const subject = encodeURIComponent(`BHUMIIQ Enquiry from ${d.name}`);
-      const body = encodeURIComponent(
-        `New Farm Transformation Request\n\n` +
-        `Name:        ${d.name}\n` +
-        `Email:       ${d.email}\n` +
-        `Farm/Company:${d.farm || 'Not provided'}\n` +
-        `Phone:       ${d.phone || 'Not provided'}\n\n` +
-        `Message:\n${d.msg}\n\n` +
-        `---\nSent from BHUMIIQ Enterprise Portal`
-      );
-
-      // Opens the user's default mail app with everything pre-filled
-      window.location.href = `mailto:${AMAN_EMAIL}?subject=${subject}&body=${body}`;
-
-      // Show success after short delay
-      setTimeout(() => {
-        successBox.classList.remove('hidden');
-        successBox.scrollIntoView({ behavior: 'smooth' });
-      }, 800);
-    });
-  }
-
-  if (waBtn) {
-    waBtn.addEventListener('click', () => {
-      const d = getFormData();
-      if (!validateForm(d)) return;
-
-      const waMsg = encodeURIComponent(
-        `🌿 *BHUMIIQ Farm Enquiry*\n\n` +
-        `*Name:* ${d.name}\n` +
-        `*Email:* ${d.email}\n` +
-        `*Farm:* ${d.farm || 'N/A'}\n` +
-        `*Phone:* ${d.phone || 'N/A'}\n\n` +
-        `*Message:*\n${d.msg}`
-      );
-
-      // Opens WhatsApp with message pre-filled to Aman's number
-      window.open(`https://wa.me/${AMAN_WHATSAPP}?text=${waMsg}`, '_blank');
-
-      // Show success
-      successBox.classList.remove('hidden');
-      successBox.scrollIntoView({ behavior: 'smooth' });
-    });
-  }
+            // Show success
+            successBox.classList.remove('hidden');
+            successBox.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
 
 });
