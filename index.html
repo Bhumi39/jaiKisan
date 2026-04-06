@@ -47,8 +47,14 @@
             </div>
 
             <div class="voice-waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-            <h2 id="voice-status">Listening...</h2>
-            <p id="voice-transcript" class="bilingual-voice-text">Please ask your farming query.</p>
+            <h2 id="voice-status" style="color:var(--green-dark);">Listening...</h2>
+            <p id="voice-transcript" class="bilingual-voice-text" style="color:var(--muted); font-size:18px;">Please ask your farming query.</p>
+            
+            <!-- Repeat Audio Action -->
+            <button id="repeat-voice" class="btn btn-outline btn-pill mt-24 hidden">
+                <span class="material-symbols-outlined">volume_up</span> Hear Again | फिर से सुनें
+            </button>
+
             <button id="close-voice" class="btn btn-secondary btn-pill mt-32">Cancel | रद्द करें</button>
         </div>
     </div>

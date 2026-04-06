@@ -361,23 +361,25 @@ Answer in both English and Hindi for each point.`;
     const voiceStatus = document.getElementById('voice-status');
     const voiceTranscript = document.getElementById('voice-transcript');
     const closeVoice = document.getElementById('close-voice');
+    const repeatBtn = document.getElementById('repeat-voice');
     const langChips = document.querySelectorAll('.lang-chip');
 
     let currentVoiceLang = 'hi-IN'; // Default
+    let lastAIResponse = ''; // Track for repeating
     let recognition = null;
     const SpeechReco = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     // Language Mapping for Prompts & Status
     const langNames = {
-        'hi-IN': { en: 'Hindi', native: 'हिन्दी', prompt: 'Listen in Hindi and reply ONLY in Hindi.' },
-        'en-IN': { en: 'English', native: 'English', prompt: 'Listen in English and reply ONLY in English.' },
-        'pa-IN': { en: 'Punjabi', native: 'ਪੰਜਾਬੀ', prompt: 'Listen in Punjabi and reply ONLY in Punjabi.' },
-        'mr-IN': { en: 'Marathi', native: 'मराठी', prompt: 'Listen in Marathi and reply ONLY in Marathi.' },
-        'bn-IN': { en: 'Bengali', native: 'বাংলা', prompt: 'Listen in Bengali and reply ONLY in Bengali.' },
-        'te-IN': { en: 'Telugu', native: 'తెలుగు', prompt: 'Listen in Telugu and reply ONLY in Telugu.' },
-        'ta-IN': { en: 'Tamil', native: 'தமிழ்', prompt: 'Listen in Tamil and reply ONLY in Tamil.' },
-        'kn-IN': { en: 'Kannada', native: 'ಕನ್ನಡ', prompt: 'Listen in Kannada and reply ONLY in Kannada.' },
-        'ml-IN': { en: 'Malayalam', native: 'മലയാളം', prompt: 'Listen in Malayalam and reply ONLY in Malayalam.' }
+        'hi-IN': { en: 'Hindi', native: 'हिन्दी', prompt: 'Listen and reply ONLY in Hindi.' },
+        'en-IN': { en: 'English', native: 'English', prompt: 'Listen and reply ONLY in English.' },
+        'pa-IN': { en: 'Punjabi', native: 'ਪੰਜਾਬੀ', prompt: 'Listen and reply ONLY in Punjabi.' },
+        'mr-IN': { en: 'Marathi', native: 'मराठी', prompt: 'Listen and reply ONLY in Marathi.' },
+        'bn-IN': { en: 'Bengali', native: 'বাংলা', prompt: 'Listen and reply ONLY in Bengali.' },
+        'te-IN': { en: 'Telugu', native: 'తెలుగు', prompt: 'Listen and reply ONLY in Telugu.' },
+        'ta-IN': { en: 'Tamil', native: 'தமிழ்', prompt: 'Listen and reply ONLY in Tamil.' },
+        'kn-IN': { en: 'Kannada', native: 'ಕನ್ನಡ', prompt: 'Listen and reply ONLY in Kannada.' },
+        'ml-IN': { en: 'Malayalam', native: 'മലയാളം', prompt: 'Listen and reply ONLY in Malayalam.' }
     };
 
     if (SpeechReco) {
@@ -388,7 +390,8 @@ Answer in both English and Hindi for each point.`;
         recognition.onstart = () => {
             const name = langNames[currentVoiceLang].native;
             voiceStatus.textContent = `🎙️ Listening (${name})...`;
-            voiceTranscript.textContent = `Ask about crops in ${name} | खेती के बारे में पूछें`;
+            voiceTranscript.textContent = `Ask about crops in ${name}...`;
+            repeatBtn.classList.add('hidden');
         };
 
         recognition.onresult = async e => {
@@ -404,32 +407,55 @@ Answer in both English and Hindi for each point.`;
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         type: 'text',
-                        contents: [{ parts: [{ text: `You are BHUMIIQ farming assistant. ${langMeta.prompt} Provide a concise, high-value answer. Question: ${q}` }] }]
+                        contents: [{ parts: [{ text: `You are BHUMIIQ assistant. ${langMeta.prompt} Provide a concise, high-value answer. Question: ${q}` }] }]
                     })
                 });
                 const data = await res.json();
-                const answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'I am processing your query.';
+                lastAIResponse = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Processing query...';
+                
                 voiceStatus.textContent = `🌿 BHUMIIQ (${langMeta.en})`;
-                voiceTranscript.textContent = answer.substring(0, 300) + '...';
-                speak(answer);
+                voiceTranscript.textContent = lastAIResponse;
+                
+                // Show repeat button
+                repeatBtn.classList.remove('hidden');
+                
+                // Speak response immediately
+                speak(lastAIResponse);
             } catch {
                 voiceStatus.textContent = 'Connection Error';
             }
         };
 
-        recognition.onerror = () => { voiceStatus.textContent = 'Mic error. Please allow access.'; };
+        recognition.onerror = () => { voiceStatus.textContent = 'Mic error. Click Retry.'; };
         recognition.onend = () => { 
-            if (voiceStatus.textContent.includes('Listening')) voiceStatus.textContent = 'Ready'; 
+            if (voiceStatus.textContent.includes('Listening')) {
+                voiceStatus.textContent = 'Ready to Listen | सुनने के लिए तैयार';
+            }
         };
     }
 
     function speak(text) {
         if (!('speechSynthesis' in window)) return;
+        
+        // ⚡ RELIABILITY FIX: Cancel any existing speech
         window.speechSynthesis.cancel();
+        
         const u = new SpeechSynthesisUtterance(text.substring(0, 500));
         u.lang = currentVoiceLang; 
-        u.rate = 0.95; u.pitch = 1.05;
+        u.rate = 0.95; 
+        u.pitch = 1.0; 
+        
+        // Error handling for synthesis
+        u.onerror = (e) => console.error("SpeechSynthesis Error:", e);
+        
         window.speechSynthesis.speak(u);
+    }
+
+    // Handle Repeat Button
+    if (repeatBtn) {
+        repeatBtn.addEventListener('click', () => {
+            if (lastAIResponse) speak(lastAIResponse);
+        });
     }
 
     // Handle Language Selection
@@ -438,13 +464,14 @@ Answer in both English and Hindi for each point.`;
             langChips.forEach(c => c.classList.remove('active'));
             chip.classList.add('active');
             currentVoiceLang = chip.dataset.lang;
-            if (recognition) recognition.stop();
-            setTimeout(() => {
-                if (recognition) {
-                    recognition.lang = currentVoiceLang;
-                    recognition.start();
-                }
-            }, 300);
+            
+            // Stop current recognition and show feedback
+            if (recognition) {
+                try { recognition.stop(); } catch(err) {}
+            }
+            voiceStatus.textContent = `Language: ${langNames[currentVoiceLang].native}`;
+            voiceTranscript.textContent = `Click below to start speaking in ${langNames[currentVoiceLang].native}.`;
+            repeatBtn.classList.add('hidden');
         });
     });
 
@@ -453,10 +480,14 @@ Answer in both English and Hindi for each point.`;
         if (recognition) {
             recognition.lang = currentVoiceLang;
             try { recognition.start(); }
-            catch (e) { console.log("Recognition already active"); }
+            catch (e) {
+                // If already running, stop then start
+                recognition.stop();
+                setTimeout(() => recognition.start(), 200);
+            }
         } else {
             voiceStatus.textContent = 'Voice not supported.';
-            voiceTranscript.textContent = 'Please use Chrome/Edge for voice IQ.';
+            voiceTranscript.textContent = 'Please use Chrome/Edge for voice features.';
         }
     });
 
