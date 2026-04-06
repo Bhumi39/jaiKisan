@@ -50,12 +50,16 @@
             <h2 id="voice-status" style="color:var(--green-dark);">Listening...</h2>
             <p id="voice-transcript" class="bilingual-voice-text" style="color:var(--muted); font-size:18px;">Please ask your farming query.</p>
             
-            <!-- Repeat Audio Action -->
-            <button id="repeat-voice" class="btn btn-outline btn-pill mt-24 hidden">
-                <span class="material-symbols-outlined">volume_up</span> Hear Again | फिर से सुनें
-            </button>
+            <div id="voice-actions" class="mt-24 hidden" style="display:flex; flex-direction:column; gap:12px; align-items:center;">
+                <button id="repeat-voice" class="btn btn-outline btn-pill full-btn">
+                    <span class="material-symbols-outlined">volume_up</span> Hear Again | फिर से सुनें
+                </button>
+                <button id="ask-again-voice" class="btn btn-primary btn-pill full-btn btn-glow">
+                    <span class="material-symbols-outlined">add_circle</span> Next Question | अगला सवाल
+                </button>
+            </div>
 
-            <button id="close-voice" class="btn btn-secondary btn-pill mt-32">Cancel | रद्द करें</button>
+            <button id="close-voice" class="btn btn-secondary btn-pill mt-32">Close | बंद करें</button>
         </div>
     </div>
 
