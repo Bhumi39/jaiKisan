@@ -1,16 +1,21 @@
 <!-- BHUMIIQ PRO - V2.1.0 - 2026-04-07 -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BHUMIIQ - Enterprise Sustainable Agri-Intelligence</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="enterprise-ui">
 
     <!-- 🏔️ GLOBAL CINEMATIC BACKGROUND -->
@@ -23,7 +28,9 @@
             <div class="scan-line"></div>
             <span class="material-symbols-outlined loader-icon-v9">psychology_alt</span>
             <h2 id="loader-status-text">INITIATING SCAN...</h2>
-            <div class="mini-progress-bar"><div class="progress-fill"></div></div>
+            <div class="mini-progress-bar">
+                <div class="progress-fill"></div>
+            </div>
             <p id="loader-sub-text" class="text-muted">Analyzing Leaf Structure...</p>
         </div>
     </div>
@@ -33,7 +40,9 @@
         <div class="voice-modal-content">
             <!-- Language Selector Chips -->
             <div class="voice-lang-picker mb-32">
-                <p class="text-muted mb-12" style="font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase;">Select Language | भाषा चुनें</p>
+                <p class="text-muted mb-12"
+                    style="font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase;">Select
+                    Language | भाषा चुनें</p>
                 <div class="lang-chips">
                     <button class="lang-chip active" data-lang="hi-IN">हिन्दी</button>
                     <button class="lang-chip" data-lang="en-IN">English</button>
@@ -47,13 +56,19 @@
                 </div>
                 <!-- 📡 Voice Ready Indicator -->
                 <div id="voice-engine-status" class="mt-16 text-muted" style="font-size:11px; font-weight:700;">
-                    <span class="material-symbols-outlined" style="vertical-align:middle; font-size:14px;">sync</span> Checking Voice Engine...
+                    <span class="material-symbols-outlined" style="vertical-align:middle; font-size:14px;">sync</span>
+                    Checking Voice Engine...
                 </div>
             </div>
 
-            <div class="voice-waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+            <div class="voice-waves">
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+            </div>
             <h2 id="voice-status" style="color:var(--green-dark);">Listening...</h2>
-            
+
             <!-- 💬 SCROLLABLE CHAT HISTORY -->
             <div id="voice-chat-history" class="chat-container mb-24">
                 <div class="chat-bubble ai-bubble intro">
@@ -67,10 +82,12 @@
                     <span class="material-symbols-outlined">add_circle</span> Next Question | अगला सवाल
                 </button>
                 <div style="display:flex; gap:8px; justify-content:center;">
-                    <button id="clear-voice-history" class="btn btn-outline btn-pill" style="font-size:11px; padding:8px 16px;">
+                    <button id="clear-voice-history" class="btn btn-outline btn-pill"
+                        style="font-size:11px; padding:8px 16px;">
                         <span class="material-symbols-outlined" style="font-size:14px;">delete</span> Clear History
                     </button>
-                    <button id="close-voice" class="btn btn-secondary btn-pill" style="font-size:11px; padding:8px 16px;">Close</button>
+                    <button id="close-voice" class="btn btn-secondary btn-pill"
+                        style="font-size:11px; padding:8px 16px;">Close</button>
                 </div>
             </div>
         </div>
@@ -95,22 +112,25 @@
                 <a href="#section-contact">CONTACT</a>
             </nav>
             <div class="nav-actions">
-                <button data-target="screen-photo" class="btn btn-primary btn-pill px-32 btn-glow">START DISCOVERY</button>
+                <button data-target="screen-photo" class="btn btn-primary btn-pill px-32 btn-glow">START
+                    DISCOVERY</button>
             </div>
         </div>
     </header>
 
     <main id="screens">
-        
+
         <!-- 1. HOME SCREEN (ALIVE REVEAL) -->
         <section id="screen-home" class="screen active">
-            
+
             <!-- HERO V9 (Cinematic Video Background) -->
             <section id="section-hero" class="hero-v9">
                 <!-- 🎬 BACKGROUND VIDEO -->
                 <video class="hero-video-bg" autoplay muted loop playsinline>
-                    <source src="https://videos.pexels.com/video-files/3629116/3629116-uhd_2560_1440_25fps.mp4" type="video/mp4">
-                    <source src="https://videos.pexels.com/video-files/2169880/2169880-hd_1920_1080_30fps.mp4" type="video/mp4">
+                    <source src="https://videos.pexels.com/video-files/3629116/3629116-uhd_2560_1440_25fps.mp4"
+                        type="video/mp4">
+                    <source src="https://videos.pexels.com/video-files/2169880/2169880-hd_1920_1080_30fps.mp4"
+                        type="video/mp4">
                 </video>
                 <!-- Dark overlay so text is readable -->
                 <div class="hero-video-overlay"></div>
@@ -121,10 +141,13 @@
                     <div class="hero-text-v9 reveal-up">
                         <div class="iq-enterprise-tag">VERSION 9.0 ENTERPRISE</div>
                         <h1>Cultivating the Future <br>with <span class="gradient-text">BHUMIIQ Intelligence</span></h1>
-                        <p class="hero-desc-v9">The world's most advanced agricultural discovery portal. High-res disease scanning with 10-item fertilizer roadmaps.</p>
+                        <p class="hero-desc-v9">The world's most advanced agricultural discovery portal. High-res
+                            disease scanning with 10-item fertilizer roadmaps.</p>
                         <div class="hero-btns-v9 mt-40">
-                             <a href="https://play.google.com/store/apps/details?id=com.rcc.jai_kisan" class="btn btn-primary btn-xl btn-pill btn-glow">Download Pro App</a>
-                             <a href="#section-ai-guide" class="btn btn-outline btn-xl btn-pill ml-16">See AI in Action</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.rcc.jai_kisan"
+                                class="btn btn-primary btn-xl btn-pill btn-glow">Download Pro App</a>
+                            <a href="#section-ai-guide" class="btn btn-outline btn-xl btn-pill ml-16">See AI in
+                                Action</a>
                         </div>
                     </div>
                 </div>
@@ -133,7 +156,8 @@
             <!-- SMART FARMER SERVICES (ALIVE CARDS) -->
             <section id="section-services" class="py-120 reveal-up">
                 <div class="container-xl text-center mb-80">
-                    <h2 class="section-title-v9">EVERYTHING YOU NEED TO START <span class="underline">SMART FARMING</span></h2>
+                    <h2 class="section-title-v9">EVERYTHING YOU NEED TO START <span class="underline">SMART
+                            FARMING</span></h2>
                     <p class="section-subtitle">Stunning High-Resolution Intelligence Discovery.</p>
                 </div>
                 <div class="container-xl grid-8-v9">
@@ -209,18 +233,31 @@
                 <div class="container-xl dual-flex">
                     <div class="guide-image-showcase">
                         <div class="mockup-frame">
-                             <img src="https://images.unsplash.com/photo-1558449028-b53a39d100fc?w=1200" alt="Guide">
+                            <img src="https://images.unsplash.com/photo-1558449028-b53a39d100fc?w=1200" alt="Guide">
                         </div>
                     </div>
                     <div class="guide-text-v9">
                         <h2 class="mb-40">HOW OUR <span class="gradient-text">AI SCAN</span> WORKS</h2>
                         <div class="steps-v9">
-                            <div class="step-line"><p class="num">01</p><p>Identify Crop Disease</p></div>
-                            <div class="step-line"><p class="num">02</p><p>Take a Clear High-Res Picture</p></div>
-                            <div class="step-line"><p class="num">03</p><p>Scan with BHUMIIQ Brain</p></div>
-                            <div class="step-line"><p class="num">04</p><p>Instant Diagnosis & Bilingual Roadmaps</p></div>
+                            <div class="step-line">
+                                <p class="num">01</p>
+                                <p>Identify Crop Disease</p>
+                            </div>
+                            <div class="step-line">
+                                <p class="num">02</p>
+                                <p>Take a Clear High-Res Picture</p>
+                            </div>
+                            <div class="step-line">
+                                <p class="num">03</p>
+                                <p>Scan with BHUMIIQ Brain</p>
+                            </div>
+                            <div class="step-line">
+                                <p class="num">04</p>
+                                <p>Instant Diagnosis & Bilingual Roadmaps</p>
+                            </div>
                         </div>
-                        <button class="btn btn-primary btn-xl mt-40 btn-pill btn-glow" data-target="screen-photo">Try Pro Scanner Now</button>
+                        <button class="btn btn-primary btn-xl mt-40 btn-pill btn-glow" data-target="screen-photo">Try
+                            Pro Scanner Now</button>
                     </div>
                 </div>
             </section>
@@ -229,7 +266,8 @@
             <section id="section-contact" class="py-120 reveal-up">
                 <div class="container-xl max-w-1000 mx-auto contact-card-v9">
                     <h2 class="text-center mb-24">Ready to <span class="gradient-text">Transform Your Farm?</span></h2>
-                    <p class="text-center text-muted mb-60">Get in touch — your message will be sent directly to our team.</p>
+                    <p class="text-center text-muted mb-60">Get in touch — your message will be sent directly to our
+                        team.</p>
                     <div class="form-grid-v9">
                         <div class="input-pair">
                             <label>Your Name</label>
@@ -249,7 +287,8 @@
                         </div>
                         <div class="input-pair span-2-v9">
                             <label>How can we help you?</label>
-                            <textarea id="contact-msg" placeholder="Tell us about your crops, problems, or questions..."></textarea>
+                            <textarea id="contact-msg"
+                                placeholder="Tell us about your crops, problems, or questions..."></textarea>
                         </div>
                     </div>
 
@@ -259,7 +298,8 @@
                             <span class="material-symbols-outlined">send</span> Submit Enterprise Request
                         </button>
                         <p class="text-center mt-16 text-muted" style="font-size:12px;">
-                            Or chat with us on <a href="https://wa.me/916206000925" target="_blank" style="color:var(--brand-emerald); font-weight:700; text-decoration:none;">WhatsApp</a>
+                            Or chat with us on <a href="https://wa.me/916206000925" target="_blank"
+                                style="color:var(--brand-emerald); font-weight:700; text-decoration:none;">WhatsApp</a>
                         </p>
                     </div>
 
@@ -267,12 +307,13 @@
                     <div id="contact-success" class="contact-success-msg hidden">
                         <span class="material-symbols-outlined">check_circle</span>
                         <h3>Message Sent Automatically!</h3>
-                        <p>Aman Kumar will contact you at <strong>krishiisetu@gmail.com</strong> or your phone shortly.</p>
+                        <p>Aman Kumar will contact you at <strong>krishiisetu@gmail.com</strong> or your phone shortly.
+                        </p>
                     </div>
                 </div>
             </section>
-                </div>
-            </section>
+            </div>
+        </section>
         </section>
 
         <!-- 2. AI CROP SCANNER DASHBOARD (DASHBOARD RESULTS) -->
@@ -293,7 +334,8 @@
                     </div>
                     <div class="analysis-results-v9">
                         <div style="display:flex; gap:12px;">
-                            <button class="btn btn-primary btn-glow btn-lg flex-1" id="btn-analyze-v9">INITIATE SCAN</button>
+                            <button class="btn btn-primary btn-glow btn-lg flex-1" id="btn-analyze-v9">INITIATE
+                                SCAN</button>
                             <button class="btn btn-secondary btn-lg hidden" id="btn-report-v9">
                                 <span class="material-symbols-outlined">picture_as_pdf</span> REPORT
                             </button>
@@ -309,7 +351,8 @@
             <div class="glass-dashboard-v9 p-80 text-center">
                 <h2>Hyperlocal Weather Intelligence</h2>
                 <div id="weather-display-v9" class="weather-box-v9 shimmer mt-40">Calculating Coordinates...</div>
-                <button class="btn btn-primary btn-xl mt-40 btn-pill" id="btn-get-sowing-v9">Generate Sowing Roadmap</button>
+                <button class="btn btn-primary btn-xl mt-40 btn-pill" id="btn-get-sowing-v9">Generate Sowing
+                    Roadmap</button>
                 <div id="sowing-results-v9" class="mt-40"></div>
 
                 <!-- 🌤️ Weather Q&A Section -->
@@ -332,31 +375,38 @@
                     <h1>Live Mandi Price Discovery</h1>
                     <p class="text-muted">Real-time market trends structured for precision farming.</p>
                 </div>
-                <div id="mandi-search-form" class="mandi-search-header card-glass" style="margin-bottom:40px; padding:40px; border-radius:32px; background: white !important; border: 2px solid var(--green-bright); position:relative; z-index:999 !important; display: block !important;">
-                    <h2 style="font-size:26px; font-weight:900; margin-bottom:24px; color: #012A1A;">Market Discovery IQ (V2.1)</h2>
+                <div id="mandi-search-form" class="mandi-search-header card-glass"
+                    style="margin-bottom:40px; padding:40px; border-radius:32px; background: white !important; border: 2px solid var(--green-bright); position:relative; z-index:999 !important; display: block !important;">
+                    <h2 style="font-size:26px; font-weight:900; margin-bottom:24px; color: #012A1A;">Market Discovery IQ
+                        (V2.1)</h2>
                     <div class="form-grid-v9" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                         <div class="input-pair">
                             <label style="color:#012A1A; font-weight:700;">State</label>
-                            <input type="text" id="mandi-state" placeholder="e.g., Punjab" style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
+                            <input type="text" id="mandi-state" placeholder="e.g., Punjab"
+                                style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
                         </div>
                         <div class="input-pair">
                             <label style="color:#012A1A; font-weight:700;">District</label>
-                            <input type="text" id="mandi-district" placeholder="e.g., Ludhiana" style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
+                            <input type="text" id="mandi-district" placeholder="e.g., Ludhiana"
+                                style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
                         </div>
                         <div class="input-pair">
                             <label style="color:#012A1A; font-weight:700;">Specific Date</label>
-                            <input type="date" id="mandi-date" style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
+                            <input type="date" id="mandi-date"
+                                style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
                         </div>
                         <div class="input-pair">
                             <label style="color:#012A1A; font-weight:700;">Crop Type</label>
-                            <input type="text" id="mandi-crop-type" placeholder="e.g., Wheat" style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
+                            <input type="text" id="mandi-crop-type" placeholder="e.g., Wheat"
+                                style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
                         </div>
                     </div>
-                    <button class="btn btn-primary btn-pill full-btn mt-24" id="btn-search-mandi" style="background:var(--green-bright) !important; color: white !important; font-weight: 800; padding: 16px; width: 100%; cursor: pointer;">
+                    <button class="btn btn-primary btn-pill full-btn mt-24" id="btn-search-mandi"
+                        style="background:var(--green-bright) !important; color: white !important; font-weight: 800; padding: 16px; width: 100%; cursor: pointer;">
                         <span class="material-symbols-outlined">analytics</span> DISCOVER PRECISION PRICES
                     </button>
                 </div>
-                
+
                 <div id="mandi-results-v9" class="mandi-results-container" style="min-height: 200px;">
                     <!-- Search results will appear here -->
                 </div>
@@ -405,7 +455,8 @@
         <div class="container-xl footer-flex">
             <div class="footer-branding">
                 <h3 class="gradient-text">BHUMIIQ PRO</h3>
-                <p>Global leader in High-Resolution Agri-Intelligence. Transforming agriculture through machine learning.</p>
+                <p>Global leader in High-Resolution Agri-Intelligence. Transforming agriculture through machine
+                    learning.</p>
                 <div class="footer-socials mt-32">
                     <span class="material-symbols-outlined">public</span>
                     <span class="material-symbols-outlined">video_library</span>
@@ -414,14 +465,20 @@
             </div>
             <div class="footer-nav-col">
                 <h4>QUICK IQ LINKS</h4>
-                <ul><li>Agri AI App</li><li>Discovery IQ</li><li>Contact Us</li><li>Support Link</li></ul>
+                <ul>
+                    <li>Agri AI App</li>
+                    <li>Discovery IQ</li>
+                    <li>Contact Us</li>
+                    <li>Support Link</li>
+                </ul>
             </div>
             <div class="footer-contact-v9">
                 <h4>OFFICIAL CONTACT</h4>
                 <p>support@agriai.live</p>
                 <p class="brand-emerald-text mt-12">Aman Kumar | +91 6206000925</p>
                 <div class="google-google-play mt-24">
-                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" style="height:40px;" alt="Play Store">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                        style="height:40px;" alt="Play Store">
                 </div>
             </div>
         </div>
@@ -438,4 +495,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
