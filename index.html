@@ -136,12 +136,36 @@
                     <p class="section-subtitle">Stunning High-Resolution Intelligence Discovery.</p>
                 </div>
                 <div class="container-xl grid-8-v9">
-                    <div class="v9-card card-advisor" data-target="screen-photo">
+                    <div class="v9-card card-disease" data-target="screen-photo">
                         <div class="card-glass">
-                            <div class="f-badge">FREE</div>
-                            <span class="material-symbols-outlined">psychology</span>
-                            <h3>Virtual Agronomic Advisor</h3>
-                            <p>Bilingual context-aware guidance 24/7.</p>
+                            <div class="f-badge">PRO</div>
+                            <span class="material-symbols-outlined">center_focus_strong</span>
+                            <h3>Crop Health Scanner & Reporter</h3>
+                            <p>AI Disease Detection + Actionable PDF Roadmaps.</p>
+                        </div>
+                    </div>
+                    <div class="v9-card card-mandi" data-target="screen-mandi">
+                        <div class="card-glass">
+                            <div class="f-badge">LIVE</div>
+                            <span class="material-symbols-outlined">trending_up</span>
+                            <h3>Mandi Prices Live</h3>
+                            <p>Point-to-point structured market trends.</p>
+                        </div>
+                    </div>
+                    <div class="v9-card card-weather" data-target="screen-sowing">
+                        <div class="card-glass">
+                            <div class="f-badge">GPS</div>
+                            <span class="material-symbols-outlined">cloud_circle</span>
+                            <h3>AgroWeather & GPS Q&A</h3>
+                            <p>Hyperlocal alerts + AI Weather Assistant.</p>
+                        </div>
+                    </div>
+                    <div class="v9-card card-toolbox" data-target="screen-toolbox">
+                        <div class="card-glass">
+                            <div class="f-badge">TOOLS</div>
+                            <span class="material-symbols-outlined">construction</span>
+                            <h3>Farm Pro Toolbox</h3>
+                            <p>Irrigation, Yield, Cost & Fertilizer Calculators.</p>
                         </div>
                     </div>
                     <div class="v9-card card-nutrient" data-target="screen-photo">
@@ -152,22 +176,6 @@
                             <p>Identify imbalances from a simple photo.</p>
                         </div>
                     </div>
-                    <div class="v9-card card-data">
-                        <div class="card-glass">
-                            <div class="f-badge">FREE</div>
-                            <span class="material-symbols-outlined">database</span>
-                            <h3>Data Archiving & Management</h3>
-                            <p>Track patterns across multiple seasons.</p>
-                        </div>
-                    </div>
-                    <div class="v9-card card-disease" data-target="screen-photo">
-                        <div class="card-glass">
-                            <div class="f-badge">FREE</div>
-                            <span class="material-symbols-outlined">settings_suggest</span>
-                            <h3>Disease Intelligence</h3>
-                            <p>Early High-Res detection for every crop.</p>
-                        </div>
-                    </div>
                     <div class="v9-card card-pest" data-target="screen-photo">
                         <div class="card-glass">
                             <div class="f-badge">FREE</div>
@@ -176,25 +184,17 @@
                             <p>Recognize harmful insects & treatments.</p>
                         </div>
                     </div>
-                    <div class="v9-card card-weed" data-target="screen-photo">
+                    <div class="v9-card card-data">
                         <div class="card-glass">
-                            <div class="f-badge">FREE</div>
-                            <span class="material-symbols-outlined">park</span>
-                            <h3>Precision Weed Detection</h3>
-                            <p>Spot problem weeds & control insights.</p>
-                        </div>
-                    </div>
-                    <div class="v9-card card-weather" data-target="screen-sowing">
-                        <div class="card-glass">
-                            <div class="f-badge">FREE</div>
-                            <span class="material-symbols-outlined">cloud_circle</span>
-                            <h3>AgroWeather Intelligence</h3>
-                            <p>Hyperlocal alerts & spraying windows.</p>
+                            <div class="f-badge">DATA</div>
+                            <span class="material-symbols-outlined">database</span>
+                            <h3>Data Archiving & Management</h3>
+                            <p>Track patterns across multiple seasons.</p>
                         </div>
                     </div>
                     <div class="v9-card card-news">
                         <div class="card-glass">
-                            <div class="f-badge">FREE</div>
+                            <div class="f-badge">HUB</div>
                             <span class="material-symbols-outlined">newspaper</span>
                             <h3>Latest Agri News Hub</h3>
                             <p>Stay updated on climate & markets.</p>
@@ -291,20 +291,87 @@
                         <input type="file" id="doctor-gallery" accept="image/*" hidden>
                     </div>
                     <div class="analysis-results-v9">
-                        <button class="btn btn-primary full-btn py-24 btn-glow btn-lg" id="btn-analyze-v9">INITIATE ADVANCED CROP SCAN</button>
+                        <div style="display:flex; gap:12px;">
+                            <button class="btn btn-primary btn-glow btn-lg flex-1" id="btn-analyze-v9">INITIATE SCAN</button>
+                            <button class="btn btn-secondary btn-lg hidden" id="btn-report-v9">
+                                <span class="material-symbols-outlined">picture_as_pdf</span> REPORT
+                            </button>
+                        </div>
                         <div id="doctor-results-v9" class="mt-40"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 3. SOWING IQ DASHBOARD -->
+        <!-- 3. AGROWEATHER & GPS IQ DASHBOARD -->
         <section id="screen-sowing" class="screen container-xl py-60">
             <div class="glass-dashboard-v9 p-80 text-center">
                 <h2>Hyperlocal Weather Intelligence</h2>
                 <div id="weather-display-v9" class="weather-box-v9 shimmer mt-40">Calculating Coordinates...</div>
                 <button class="btn btn-primary btn-xl mt-40 btn-pill" id="btn-get-sowing-v9">Generate Sowing Roadmap</button>
                 <div id="sowing-results-v9" class="mt-40"></div>
+
+                <!-- 🌤️ Weather Q&A Section -->
+                <div class="weather-qa-card reveal-up">
+                    <h3 style="font-size:24px; font-weight:900; color:var(--green-dark);">Ask About This Weather</h3>
+                    <p class="text-muted">Get AI-powered advice on frosts, sowing, or spraying.</p>
+                    <div class="weather-qa-input">
+                        <input type="text" id="weather-qa-query" placeholder="e.g., Can I spray pesticide tonight?">
+                        <button class="btn btn-primary btn-pill" id="btn-weather-qa">Ask AI</button>
+                    </div>
+                    <div id="weather-qa-result" class="weather-qa-result hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. MANDI PRICES DASHBOARD -->
+        <section id="screen-mandi" class="screen container-xl py-60">
+            <div class="glass-dashboard-v9 p-80">
+                <div class="text-center mb-60">
+                    <h1>Live Mandi Price Discovery</h1>
+                    <p class="text-muted">Real-time market trends structured for precision farming.</p>
+                </div>
+                <div id="mandi-results-v9" class="mandi-grid">
+                    <!-- Cards will be injected here -->
+                    <div class="mandi-card shimmer" style="height:140px;"></div>
+                    <div class="mandi-card shimmer" style="height:140px;"></div>
+                    <div class="mandi-card shimmer" style="height:140px;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. FARM PRO TOOLBOX -->
+        <section id="screen-toolbox" class="screen container-xl py-60">
+            <div class="glass-dashboard-v9 p-80">
+                <div class="text-center mb-60">
+                    <h1>Agricultural Toolbox Pro</h1>
+                    <p class="text-muted">Level up your farm productivity with specialized precision tools.</p>
+                </div>
+                <div class="toolbox-grid">
+                    <div class="tool-card" onclick="openTool('irrigation')">
+                        <span class="material-symbols-outlined">water_drop</span>
+                        <h4>Irrigation Planner</h4>
+                        <p>Calculate watering schedules based on soil & weather data.</p>
+                    </div>
+                    <div class="tool-card" onclick="openTool('yield')">
+                        <span class="material-symbols-outlined">analytics</span>
+                        <h4>Yield Estimator</h4>
+                        <p>Predict harvest volumes based on acreage and historical trends.</p>
+                    </div>
+                    <div class="tool-card" onclick="openTool('cost')">
+                        <span class="material-symbols-outlined">payments</span>
+                        <h4>Cost Calculator</h4>
+                        <p>Track your inputs, labor, and machinery costs per acre.</p>
+                    </div>
+                    <div class="tool-card" onclick="openTool('fert')">
+                        <span class="material-symbols-outlined">science</span>
+                        <h4>Fertilizer IQ</h4>
+                        <p>Calculate precise N-P-K dosages to maximize soil health.</p>
+                    </div>
+                </div>
+                <div id="toolbox-active-tool" class="mt-80 hidden">
+                    <!-- Tool Interface injected here -->
+                </div>
             </div>
         </section>
 

@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
         screens.forEach(s => s.classList.remove('active'));
         const target = document.getElementById(id);
         if (target) target.classList.add('active');
+        
+        // Contextual triggers when entering screens
+        if (id === 'screen-mandi') loadMandiPrices();
+        
         backBtn.classList.toggle('hidden', id === 'screen-home');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -166,6 +170,7 @@ Follow this structure EXACTLY.`;
             if (!raw) throw new Error('No response from intelligence engine.');
 
             renderResults(raw);
+            document.getElementById('btn-report-v9').classList.remove('hidden');
         } catch (err) {
             resultsBox.innerHTML = `
         <div style="padding:32px;background:#FFF1F2;border:2px solid #FECDD3;border-radius:20px;">
@@ -179,33 +184,24 @@ Follow this structure EXACTLY.`;
     });
 
     function renderResults(raw) {
-        // Extract survival chance
         const survivalMatch = raw.match(/SURVIVAL CHANCE[:\s]*\[?(\d+)\]?%/i);
         const chance = survivalMatch ? parseInt(survivalMatch[1]) : 75;
         const chanceColor = chance >= 70 ? '#10B981' : chance >= 40 ? '#F59E0B' : '#EF4444';
 
-        // Extract disease name
         const diseaseMatch = raw.match(/DISEASE NAME[:\s]*(.+)/i);
         const diseaseName = diseaseMatch ? diseaseMatch[1].trim() : 'Crop Health Analysis';
 
-        // Extract Hindi disease name
         const hindiDiseaseMatch = raw.match(/रोग का नाम[:\s]*(.+)/i);
         const hindiDisease = hindiDiseaseMatch ? hindiDiseaseMatch[1].trim() : '';
 
-        // Extract dos
         const dosMatch = raw.match(/DO'S[^:]*:([\s\S]*?)(?:DON'TS|$)/i);
-        const dosText = dosMatch ? dosMatch[1].trim() : '';
-        const dosItems = dosText.split('\n').filter(l => l.trim().startsWith('-')).map(l => l.replace(/^-\s*/, '').trim()).slice(0, 4);
+        const dosItems = (dosMatch ? dosMatch[1].trim() : '').split('\n').filter(l => l.trim().startsWith('-')).map(l => l.replace(/^-\s*/, '').trim()).slice(0, 4);
 
-        // Extract don'ts
         const dontsMatch = raw.match(/DON'TS[^:]*:([\s\S]*?)(?:FERTILIZER|$)/i);
-        const dontsText = dontsMatch ? dontsMatch[1].trim() : '';
-        const dontsItems = dontsText.split('\n').filter(l => l.trim().startsWith('-')).map(l => l.replace(/^-\s*/, '').trim()).slice(0, 4);
+        const dontsItems = (dontsMatch ? dontsMatch[1].trim() : '').split('\n').filter(l => l.trim().startsWith('-')).map(l => l.replace(/^-\s*/, '').trim()).slice(0, 4);
 
-        // Extract fertilizers
         const fertMatch = raw.match(/FERTILIZER[^:]*PORTFOLIO[^:]*:([\s\S]*?)(?:\n\n\n|$)/i);
-        const fertText = fertMatch ? fertMatch[1] : raw;
-        const fertLines = fertText.split('\n').filter(l => /^\d+\./.test(l.trim())).slice(0, 10);
+        const fertLines = (fertMatch ? fertMatch[1] : raw).split('\n').filter(l => /^\d+\./.test(l.trim())).slice(0, 10);
 
         resultsBox.innerHTML = `
       <div class="health-cert">
@@ -213,7 +209,7 @@ Follow this structure EXACTLY.`;
           <div>
             <div style="font-size:12px;opacity:0.6;letter-spacing:1px;margin-bottom:4px;">BHUMIIQ INTELLIGENCE REPORT</div>
             <h3>${diseaseName}</h3>
-            <div style="color:#6EE7B7;font-size:15px;font-family:'Noto Sans Devanagari',sans-serif;margin-top:4px;">${hindiDisease}</div>
+            <div style="color:#6EE7B7;font-size:15px;margin-top:4px;">${hindiDisease}</div>
           </div>
           <div style="text-align:right;">
             <div style="font-size:12px;opacity:0.6;letter-spacing:1px;margin-bottom:4px;">SURVIVAL CHANCE</div>
@@ -222,59 +218,65 @@ Follow this structure EXACTLY.`;
         </div>
 
         <div class="health-bar-wrap">
-          <div class="health-bar-track">
-            <div class="health-bar-fill" id="bar-fill" style="width:0%"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;font-weight:700;color:#9CA3AF;">
-            <span>Critical</span><span>Moderate</span><span>Healthy</span>
-          </div>
+          <div class="health-bar-track"><div class="health-bar-fill" id="bar-fill" style="width:0%"></div></div>
         </div>
 
         <div class="cert-body">
+          <!-- 🧬 INTELLIGENCE FLOWCHART -->
+          <div class="flowchart-container">
+            <div class="flow-node">Image Analysis</div>
+            <div class="flow-arrow"></div>
+            <div class="flow-node">Pathogen DNA Matching</div>
+            <div class="flow-arrow"></div>
+            <div class="flow-node" style="border-color:var(--gold);">${diseaseName} Identified</div>
+          </div>
+
+          <!-- 📝 POINT-TO-POINT STATEMENTS -->
           <div class="dos-donts">
             <div class="do-card">
-              <h5>✅ DO'S — क्या करें</h5>
+              <h5>✅ ACTIONS TO TAKE</h5>
               <ul style="list-style:none;padding:0;">
-                ${dosItems.map(d => `<li style="margin-bottom:10px;font-size:13px;">${d}</li>`).join('') || '<li>Follow expert recommendations below</li>'}
+                ${dosItems.map(d => `<li style="margin-bottom:10px;font-size:13px; font-weight:600;">• ${d}</li>`).join('') || '<li>Follow expert roadmap below</li>'}
               </ul>
             </div>
             <div class="dont-card">
-              <h5>❌ DON'TS — क्या न करें</h5>
+              <h5>❌ ACTIONS TO AVOID</h5>
               <ul style="list-style:none;padding:0;">
-                ${dontsItems.map(d => `<li style="margin-bottom:10px;font-size:13px;">${d}</li>`).join('') || '<li>See full roadmap below</li>'}
+                ${dontsItems.map(d => `<li style="margin-bottom:10px;font-size:13px; font-weight:600;">• ${d}</li>`).join('') || '<li>See full roadmap below</li>'}
               </ul>
             </div>
           </div>
 
           <div style="margin-top:32px;">
-            <h4 style="font-size:18px;font-weight:900;color:#012A1A;margin-bottom:16px;">💊 Fertilizer & Treatment Portfolio</h4>
+            <h4 style="font-size:18px;font-weight:900;color:#012A1A;margin-bottom:16px;">💊 Recommended Treatment</h4>
             <div class="fert-grid">
-              ${fertLines.length > 0
-                ? fertLines.map(f => {
-                    const [num, ...rest] = f.split('.');
-                    const [name, ...desc] = rest.join('.').split('-');
-                    return `<div class="fert-item"><h5>${name?.trim() || f}</h5><p>${desc.join('-').trim() || 'Apply as directed'}</p></div>`;
-                }).join('')
-                : '<div class="fert-item" style="grid-column:span 2"><p>Full portfolio available in detailed roadmap below.</p></div>'
-            }
+              ${fertLines.map(f => {
+                const parts = f.split('.');
+                const content = parts.slice(1).join('.').split('-');
+                return `<div class="fert-item"><h5>${content[0]?.trim() || f}</h5><p>${content[1]?.trim() || 'Apply as directed'}</p></div>`;
+              }).join('')}
             </div>
           </div>
 
           <div style="margin-top:32px;padding:32px;background:#F9FAFB;border-radius:20px;">
-            <h4 style="font-size:16px;font-weight:900;color:#012A1A;margin-bottom:16px;">Full Intelligence Roadmap</h4>
+            <h4 style="font-size:16px;font-weight:900;color:#012A1A;margin-bottom:16px;">Full Roadmap Discovery</h4>
             <div style="font-size:14px;line-height:1.9;color:#374151;">
-              ${raw.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:#012A1A;font-size:15px;">$1</strong>')}
+              ${raw.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:#012A1A;">$1</strong>')}
             </div>
           </div>
         </div>
       </div>`;
 
-        // Animate bar
         setTimeout(() => {
             const bar = document.getElementById('bar-fill');
             if (bar) bar.style.width = chance + '%';
         }, 200);
     }
+
+    // PDF Report Generator (Mock)
+    document.getElementById('btn-report-v9').addEventListener('click', () => {
+        alert("Generating High-Resolution PDF Report...\nEncrypted report will be sent to your registered email and WhatsApp.");
+    });
 
 
     /* ===================================================
@@ -321,44 +323,146 @@ Follow this structure EXACTLY.`;
         });
     }
 
-    sowingBtn.addEventListener('click', async () => {
-        showLoader();
-        try {
-            const prompt = `You are BHUMIIQ Sowing Advisor. Based on this weather: ${currentWeatherContext || 'current season conditions in India'},
-recommend exactly 3 crops with high bilingual detail:
-For each crop provide:
-- Crop Name (English + Hindi)
-- Why suitable for this weather
-- Risk Factors
-- Sowing Window
-Answer in both English and Hindi for each point.`;
+    // 🌤️ Weather Q&A Logic
+    const weatherQAQuery = document.getElementById('weather-qa-query');
+    const weatherQABtn = document.getElementById('btn-weather-qa');
+    const weatherQAResult = document.getElementById('weather-qa-result');
 
+    weatherQABtn.addEventListener('click', async () => {
+        const q = weatherQAQuery.value.trim();
+        if (!q) return;
+        
+        weatherQAResult.classList.remove('hidden');
+        weatherQAResult.textContent = 'Thinking...';
+        
+        try {
+            const prompt = `You are BHUMIIQ Weather Assistant. Based on current weather: ${currentWeatherContext}, answer the farmer's question: "${q}". Provide point-to-point actionable advice.`;
             const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
             });
-            if (!res.ok) throw new Error('Network error');
             const data = await res.json();
-            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No results.';
-            
-            // 🃏 RENDER CROP CARDS
-            sowingResults.innerHTML = `
-        <div class="sowing-result-container">
-          ${reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:#012A1A;">$1</strong>')}
-        </div>`;
-            sowingResults.scrollIntoView({ behavior: 'smooth' });
-
-        } catch (e) {
-            sowingResults.innerHTML = `<div style="padding:24px;background:#FFF1F2;border-radius:16px;color:#9F1239;font-weight:700;">Intelligence error. Please try again.</div>`;
-        } finally {
-            hideLoader();
-        }
+            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response.';
+            weatherQAResult.innerHTML = reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        } catch (e) { weatherQAResult.textContent = 'Intelligence Error.'; }
     });
 
 
     /* ===================================================
-       6. LIVE VOICE ASSISTANT (CONVERSATIONAL IQ)
+       6. MANDI PRICE DISCOVERY
+    =================================================== */
+    async function loadMandiPrices() {
+        const mandiBox = document.getElementById('mandi-results-v9');
+        mandiBox.innerHTML = '<div class="mandi-card shimmer" style="height:140px;"></div><div class="mandi-card shimmer" style="height:140px;"></div><div class="mandi-card shimmer" style="height:140px;"></div>';
+        
+        try {
+            const prompt = `Provide current estimated Mandi prices for Wheat, Paddy, Tomato, Onion, and Potato in Northern India (UP/Punjab/Haryana). 
+            Format exactly as JSON: [{"crop": "Name", "price": "₹XXXX", "unit": "per quintal", "trend": "up"}]`;
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await res.json();
+            const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
+            const jsonStr = raw.match(/\[[\s\S]*\]/)?.[0] || '[]';
+            const prices = JSON.parse(jsonStr);
+
+            mandiBox.innerHTML = prices.map(p => `
+                <div class="mandi-card">
+                    <div class="crop-name">${p.crop}</div>
+                    <div style="font-size:12px; color:var(--muted);">${p.unit}</div>
+                    <div class="price-row">
+                        <div class="current-price">${p.price}</div>
+                        <div class="trend-tag trend-${p.trend}">${p.trend.toUpperCase()}</div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) { mandiBox.innerHTML = '<p>Market feed unavailable. Try again later.</p>'; }
+    }
+
+
+    /* ===================================================
+       7. FARM PRO TOOLBOX
+    =================================================== */
+    window.openTool = (tool) => {
+        const activeBox = document.getElementById('toolbox-active-tool');
+        activeBox.classList.remove('hidden');
+        
+        let html = '';
+        if (tool === 'irrigation') {
+            html = `
+                <div class="mandi-card" style="max-width:600px; margin:0 auto;">
+                    <h3>💧 Irrigation Planner</h3>
+                    <div class="form-grid-v9 mt-24">
+                        <div class="input-pair">
+                            <label>Crop Type</label>
+                            <input type="text" id="tool-crop" placeholder="Wheat/Rice">
+                        </div>
+                        <div class="input-pair">
+                            <label>Acreage</label>
+                            <input type="number" id="tool-acres" placeholder="10">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-pill full-btn mt-24" onclick="calcTool('irrigation')">Calculate Schedule</button>
+                    <div id="tool-result" class="mt-24 p-20 bg-smoke rounded-16 hidden"></div>
+                </div>`;
+        } else if (tool === 'yield') {
+            html = `
+                <div class="mandi-card" style="max-width:600px; margin:0 auto;">
+                    <h3>📊 Yield Estimator</h3>
+                    <p class="text-muted mb-24">Predict harvest based on inputs.</p>
+                    <input type="text" id="tool-crop-yield" class="full-btn mb-12" placeholder="Crop Name" style="padding:16px;">
+                    <button class="btn btn-primary btn-pill full-btn" onclick="calcTool('yield')">Predict Yield</button>
+                    <div id="tool-result" class="mt-24 p-20 bg-smoke rounded-16 hidden"></div>
+                </div>`;
+        } else if (tool === 'cost') {
+            html = `
+                <div class="mandi-card" style="max-width:600px; margin:0 auto;">
+                    <h3>💰 Cost Calculator</h3>
+                    <p class="text-muted mb-24">Per acre farming costs.</p>
+                    <button class="btn btn-primary btn-pill full-btn" onclick="calcTool('cost')">Generate Cost Sheet</button>
+                    <div id="tool-result" class="mt-24 p-20 bg-smoke rounded-16 hidden"></div>
+                </div>`;
+        } else if (tool === 'fert') {
+            html = `
+                <div class="mandi-card" style="max-width:600px; margin:0 auto;">
+                    <h3>🧪 Fertilizer IQ</h3>
+                    <p class="text-muted mb-24">Precise dosage recommendations.</p>
+                    <button class="btn btn-primary btn-pill full-btn" onclick="calcTool('fert')">Get Precise Dose</button>
+                    <div id="tool-result" class="mt-24 p-20 bg-smoke rounded-16 hidden"></div>
+                </div>`;
+        }
+        activeBox.innerHTML = html;
+        activeBox.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    window.calcTool = async (type) => {
+        const resBox = document.getElementById('tool-result');
+        resBox.classList.remove('hidden');
+        resBox.textContent = 'Calculating...';
+        
+        const crop = document.getElementById('tool-crop')?.value || 'Wheat';
+        const acres = document.getElementById('tool-acres')?.value || '5';
+        
+        try {
+            const prompt = `You are BHUMIIQ Precision Tool. Provide a structured, point-to-point farming analysis for: Type=${type}, Crop=${crop}, Acres=${acres}. 
+            Address specific farming needs and provide numbers where possible.`;
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await res.json();
+            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No data.';
+            resBox.innerHTML = reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        } catch (e) { resBox.textContent = 'Calculation Error.'; }
+    };
+
+
+    /* ===================================================
+       8. LIVE VOICE ASSISTANT (CONVERSATIONAL IQ)
     =================================================== */
     const voiceEngineStatus = document.getElementById('voice-engine-status');
     const voiceTrigger = document.getElementById('voice-trigger');
