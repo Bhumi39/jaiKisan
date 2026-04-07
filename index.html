@@ -1,3 +1,4 @@
+<!-- BHUMIIQ PRO - V2.1.0 - 2026-04-07 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -331,32 +332,32 @@
                     <h1>Live Mandi Price Discovery</h1>
                     <p class="text-muted">Real-time market trends structured for precision farming.</p>
                 </div>
-                <div class="mandi-search-header card-glass" style="margin-bottom:32px; padding:32px; border-radius:24px;">
-                    <h2 style="font-size:24px; font-weight:900; margin-bottom:24px;">Market Discovery IQ</h2>
-                    <div class="form-grid-v9">
+                <div id="mandi-search-form" class="mandi-search-header card-glass" style="margin-bottom:40px; padding:40px; border-radius:32px; background: white !important; border: 2px solid var(--green-bright); position:relative; z-index:999 !important; display: block !important;">
+                    <h2 style="font-size:26px; font-weight:900; margin-bottom:24px; color: #012A1A;">Market Discovery IQ (V2.1)</h2>
+                    <div class="form-grid-v9" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                         <div class="input-pair">
-                            <label>State</label>
-                            <input type="text" id="mandi-state" placeholder="e.g., Punjab">
+                            <label style="color:#012A1A; font-weight:700;">State</label>
+                            <input type="text" id="mandi-state" placeholder="e.g., Punjab" style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
                         </div>
                         <div class="input-pair">
-                            <label>District</label>
-                            <input type="text" id="mandi-district" placeholder="e.g., Ludhiana">
+                            <label style="color:#012A1A; font-weight:700;">District</label>
+                            <input type="text" id="mandi-district" placeholder="e.g., Ludhiana" style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
                         </div>
                         <div class="input-pair">
-                            <label>Specific Date</label>
-                            <input type="date" id="mandi-date">
+                            <label style="color:#012A1A; font-weight:700;">Specific Date</label>
+                            <input type="date" id="mandi-date" style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
                         </div>
                         <div class="input-pair">
-                            <label>Crop Type</label>
-                            <input type="text" id="mandi-crop-type" placeholder="e.g., Wheat">
+                            <label style="color:#012A1A; font-weight:700;">Crop Type</label>
+                            <input type="text" id="mandi-crop-type" placeholder="e.g., Wheat" style="background:#F3F4F6 !important; color:#012A1A !important; border: 1px solid #D1D5DB !important; width: 100%; padding: 12px; border-radius: 8px;">
                         </div>
                     </div>
-                    <button class="btn btn-primary btn-pill full-btn mt-24" id="btn-search-mandi">
+                    <button class="btn btn-primary btn-pill full-btn mt-24" id="btn-search-mandi" style="background:var(--green-bright) !important; color: white !important; font-weight: 800; padding: 16px; width: 100%; cursor: pointer;">
                         <span class="material-symbols-outlined">analytics</span> DISCOVER PRECISION PRICES
                     </button>
                 </div>
                 
-                <div id="mandi-results-v9" class="mandi-results-container">
+                <div id="mandi-results-v9" class="mandi-results-container" style="min-height: 200px;">
                     <!-- Search results will appear here -->
                 </div>
             </div>

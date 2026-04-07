@@ -1,3 +1,6 @@
+// BHUMIIQ CORE ENGINE - V2.1.1 - 2026-04-07
+window.BHUMIIQ_VERSION = "2.1.1";
+console.log("BHUMIIQ V2.1.1 Loaded Successfully");
 const API_URL = '/api/gemini';
 
 document.addEventListener('DOMContentLoaded', () => {
