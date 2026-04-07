@@ -665,6 +665,34 @@ body.enterprise-ui {
 }
 
 /* ========================
+   POINT-TO-POINT RESULTS (BULLET-IQ)
+======================= */
+.point-card {
+  display: flex; flex-direction: column; gap: 16px; margin: 32px 0; animation: fadeIn 0.5s ease;
+}
+.point-item {
+  background: white; border: 1.5px solid #F3F4F6; border-radius: 20px; padding: 20px 24px;
+  display: flex; align-items: flex-start; gap: 20px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+.point-item:hover { border-color: var(--green-bright); transform: translateX(8px); background: #F0FDF4; }
+.point-icon {
+  width: 44px; height: 44px; border-radius: 12px; background: #ECFDF5;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green-bright); flex-shrink: 0;
+}
+.point-text { font-size: 14.5px; line-height: 1.7; color: var(--green-dark); font-weight: 500; }
+.point-text strong { text-transform: uppercase; font-size: 11px; letter-spacing: 1px; color: var(--green-bright); display: block; margin-bottom: 4px; }
+
+/* REFINED WEATHER LOCATION HEADER */
+.location-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(16,185,129,0.1); color: var(--green-bright);
+  padding: 8px 16px; border-radius: 100px; font-size: 13px; font-weight: 900;
+  margin-bottom: 24px; letter-spacing: 1.5px; text-transform: uppercase;
+}
+
+/* ========================
    SCREENS (SPA)
 ======================== */
 .screen { display: none; }

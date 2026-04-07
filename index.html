@@ -331,11 +331,33 @@
                     <h1>Live Mandi Price Discovery</h1>
                     <p class="text-muted">Real-time market trends structured for precision farming.</p>
                 </div>
-                <div id="mandi-results-v9" class="mandi-grid">
-                    <!-- Cards will be injected here -->
-                    <div class="mandi-card shimmer" style="height:140px;"></div>
-                    <div class="mandi-card shimmer" style="height:140px;"></div>
-                    <div class="mandi-card shimmer" style="height:140px;"></div>
+                <div class="mandi-search-header card-glass" style="margin-bottom:32px; padding:32px; border-radius:24px;">
+                    <h2 style="font-size:24px; font-weight:900; margin-bottom:24px;">Market Discovery IQ</h2>
+                    <div class="form-grid-v9">
+                        <div class="input-pair">
+                            <label>State</label>
+                            <input type="text" id="mandi-state" placeholder="e.g., Punjab">
+                        </div>
+                        <div class="input-pair">
+                            <label>District</label>
+                            <input type="text" id="mandi-district" placeholder="e.g., Ludhiana">
+                        </div>
+                        <div class="input-pair">
+                            <label>Specific Date</label>
+                            <input type="date" id="mandi-date">
+                        </div>
+                        <div class="input-pair">
+                            <label>Crop Type</label>
+                            <input type="text" id="mandi-crop-type" placeholder="e.g., Wheat">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-pill full-btn mt-24" id="btn-search-mandi">
+                        <span class="material-symbols-outlined">analytics</span> DISCOVER PRECISION PRICES
+                    </button>
+                </div>
+                
+                <div id="mandi-results-v9" class="mandi-results-container">
+                    <!-- Search results will appear here -->
                 </div>
             </div>
         </section>

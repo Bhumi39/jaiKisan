@@ -231,20 +231,20 @@ Follow this structure EXACTLY.`;
             <div class="flow-node" style="border-color:var(--gold);">${diseaseName} Identified</div>
           </div>
 
-          <!-- 📝 POINT-TO-POINT STATEMENTS -->
-          <div class="dos-donts">
-            <div class="do-card">
-              <h5>✅ ACTIONS TO TAKE</h5>
-              <ul style="list-style:none;padding:0;">
-                ${dosItems.map(d => `<li style="margin-bottom:10px;font-size:13px; font-weight:600;">• ${d}</li>`).join('') || '<li>Follow expert roadmap below</li>'}
-              </ul>
-            </div>
-            <div class="dont-card">
-              <h5>❌ ACTIONS TO AVOID</h5>
-              <ul style="list-style:none;padding:0;">
-                ${dontsItems.map(d => `<li style="margin-bottom:10px;font-size:13px; font-weight:600;">• ${d}</li>`).join('') || '<li>See full roadmap below</li>'}
-              </ul>
-            </div>
+          <!-- 📝 POINT-TO-POINT BULLET-IQ -->
+          <div class="point-card">
+            ${dosItems.map(d => `
+                <div class="point-item">
+                    <div class="point-icon"><span class="material-symbols-outlined">check_circle</span></div>
+                    <div class="point-text"><strong>Action Required</strong>${d}</div>
+                </div>
+            `).join('')}
+            ${dontsItems.map(d => `
+                <div class="point-item" style="border-color:#FECDD3;">
+                    <div class="point-icon" style="background:#FFF1F2; color:#EF4444;"><span class="material-symbols-outlined">cancel</span></div>
+                    <div class="point-text"><strong style="color:#EF4444;">Warning</strong>${d}</div>
+                </div>
+            `).join('')}
           </div>
 
           <div style="margin-top:32px;">
@@ -291,6 +291,15 @@ Follow this structure EXACTLY.`;
         navigator.geolocation.getCurrentPosition(async pos => {
             try {
                 const { latitude: lat, longitude: lon } = pos.coords;
+                
+                // 📍 REVERSE GEOCODING
+                try {
+                    const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+                    const geoData = await geoRes.json();
+                    const locationName = geoData.city || geoData.locality || "Region India";
+                    weatherBox.innerHTML = `<div class="location-tag reveal-up active"><span class="material-symbols-outlined">location_on</span> ${locationName}</div>` + weatherBox.innerHTML;
+                } catch(ge) { console.log('Location name fetch failed'); }
+
                 const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,rain_sum&timezone=auto`);
                 const d = await r.json();
                 const cw = d.current_weather;
@@ -323,6 +332,41 @@ Follow this structure EXACTLY.`;
         });
     }
 
+    sowingBtn.addEventListener('click', async () => {
+        showLoader();
+        try {
+            const prompt = `You are BHUMIIQ Sowing Advisor. Based on this weather: ${currentWeatherContext || 'current season conditions in India'}, recommend exactly 3 crops. For each crop provide: Crop Name (English + Hindi), Why suitable, and Risk Factors. Format: [CROP_NAME]: [DETAILS].`;
+
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await res.json();
+            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No results.';
+            
+            // 🃏 RENDER IN BULLET-IQ
+            const lines = reply.split('\n').filter(l => l.includes(':'));
+            sowingResults.innerHTML = `
+                <div class="point-card">
+                    ${lines.map(line => {
+                        const [title, desc] = line.split(':');
+                        return `
+                        <div class="point-item">
+                            <div class="point-icon"><span class="material-symbols-outlined">eco</span></div>
+                            <div class="point-text"><strong>${title.replace(/^-\s*/, '').trim()}</strong>${desc?.trim() || ''}</div>
+                        </div>`;
+                    }).join('')}
+                </div>`;
+            sowingResults.scrollIntoView({ behavior: 'smooth' });
+
+        } catch (e) {
+            sowingResults.innerHTML = `<div style="padding:24px;background:#FFF1F2;border-radius:16px;color:#9F1239;font-weight:700;">Intelligence error.</div>`;
+        } finally {
+            hideLoader();
+        }
+    });
+
     // 🌤️ Weather Q&A Logic
     const weatherQAQuery = document.getElementById('weather-qa-query');
     const weatherQABtn = document.getElementById('btn-weather-qa');
@@ -350,41 +394,61 @@ Follow this structure EXACTLY.`;
 
 
     /* ===================================================
-       6. MANDI PRICE DISCOVERY
+       6. PRECISION MANDI PRICE DISCOVERY
     =================================================== */
     async function loadMandiPrices() {
         const mandiBox = document.getElementById('mandi-results-v9');
-        mandiBox.innerHTML = '<div class="mandi-card shimmer" style="height:140px;"></div><div class="mandi-card shimmer" style="height:140px;"></div><div class="mandi-card shimmer" style="height:140px;"></div>';
-        
-        try {
-            const prompt = `Provide current estimated Mandi prices for Wheat, Paddy, Tomato, Onion, and Potato in Northern India (UP/Punjab/Haryana). 
-            Format exactly as JSON: [{"crop": "Name", "price": "₹XXXX", "unit": "per quintal", "trend": "up"}]`;
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
-            });
-            const data = await res.json();
-            const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
-            const jsonStr = raw.match(/\[[\s\S]*\]/)?.[0] || '[]';
-            const prices = JSON.parse(jsonStr);
+        const searchBtn = document.getElementById('btn-search-mandi');
 
-            mandiBox.innerHTML = prices.map(p => `
-                <div class="mandi-card">
-                    <div class="crop-name">${p.crop}</div>
-                    <div style="font-size:12px; color:var(--muted);">${p.unit}</div>
-                    <div class="price-row">
-                        <div class="current-price">${p.price}</div>
-                        <div class="trend-tag trend-${p.trend}">${p.trend.toUpperCase()}</div>
-                    </div>
-                </div>
-            `).join('');
-        } catch (e) { mandiBox.innerHTML = '<p>Market feed unavailable. Try again later.</p>'; }
+        searchBtn.onclick = async () => {
+            const state = document.getElementById('mandi-state').value;
+            const district = document.getElementById('mandi-district').value;
+            const date = document.getElementById('mandi-date').value;
+            const crop = document.getElementById('mandi-crop-type').value;
+
+            if (!state || !district || !crop) {
+                alert("Please specify State, District and Crop Type.");
+                return;
+            }
+
+            mandiBox.innerHTML = `
+                <div class="point-item shimmer" style="height:60px; margin-bottom:12px;"></div>
+                <div class="point-item shimmer" style="height:60px;"></div>
+            `;
+
+            try {
+                const prompt = `You are BHUMIIQ Market Discovery. Provide current estimated Mandi prices for: 
+                State=${state}, District=${district}, Date=${date || 'Today'}, Crop=${crop}. 
+                Provide 4-5 precision points: [POINT_NAME]: [Price/Trend Detail]. Reply in English twice (high-precision professional language).`;
+                
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'text', contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await res.json();
+                const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No data.';
+                
+                const lines = raw.split('\n').filter(l => l.includes(':'));
+                mandiBox.innerHTML = `
+                    <div class="point-card">
+                        ${lines.map(line => {
+                            const [title, desc] = line.split(':');
+                            const trend = desc.toLowerCase().includes('up') ? 'trending_up' : 'trending_down';
+                            return `
+                            <div class="point-item">
+                                <div class="point-icon"><span class="material-symbols-outlined">${trend}</span></div>
+                                <div class="point-text"><strong>${title.replace(/^-\s*/, '').trim()}</strong>${desc?.trim() || ''}</div>
+                            </div>`;
+                        }).join('')}
+                    </div>`;
+            } catch (e) { mandiBox.innerHTML = '<p>Market feed unavailable. Try again later.</p>'; }
+        };
     }
 
 
     /* ===================================================
-       7. FARM PRO TOOLBOX
+       7. FARM PRO TOOLBOX (EXPANDED DUAL-INPUTS)
     =================================================== */
     window.openTool = (tool) => {
         const activeBox = document.getElementById('toolbox-active-tool');
@@ -393,45 +457,58 @@ Follow this structure EXACTLY.`;
         let html = '';
         if (tool === 'irrigation') {
             html = `
-                <div class="mandi-card" style="max-width:600px; margin:0 auto;">
-                    <h3>💧 Irrigation Planner</h3>
-                    <div class="form-grid-v9 mt-24">
-                        <div class="input-pair">
-                            <label>Crop Type</label>
-                            <input type="text" id="tool-crop" placeholder="Wheat/Rice">
-                        </div>
-                        <div class="input-pair">
-                            <label>Acreage</label>
-                            <input type="number" id="tool-acres" placeholder="10">
-                        </div>
+                <div class="mandi-card" style="max-width:700px; margin:0 auto;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3>💧 Irrigation Planner IQ</h3>
+                        <span class="material-symbols-outlined" style="opacity:0.3; cursor:pointer;" onclick="this.closest('.hidden').classList.add('hidden')">close</span>
                     </div>
-                    <button class="btn btn-primary btn-pill full-btn mt-24" onclick="calcTool('irrigation')">Calculate Schedule</button>
-                    <div id="tool-result" class="mt-24 p-20 bg-smoke rounded-16 hidden"></div>
+                    <div class="form-grid-v9 mt-24">
+                        <div class="input-pair"><label>Crop Type</label><input type="text" id="tool-crop" placeholder="e.g., Rice"></div>
+                        <div class="input-pair"><label>Acreage</label><input type="number" id="tool-acres" placeholder="10"></div>
+                        <div class="input-pair"><label>Soil Type</label><input type="text" id="tool-soil" placeholder="Clay/Sandy"></div>
+                        <div class="input-pair"><label>Crop Age (Days)</label><input type="number" id="tool-age" placeholder="30"></div>
+                    </div>
+                    <button class="btn btn-primary btn-pill full-btn mt-24" onclick="calcTool('irrigation')">Optimize Water Schedule</button>
+                    <div id="tool-result" class="mt-24 hidden"></div>
                 </div>`;
         } else if (tool === 'yield') {
             html = `
-                <div class="mandi-card" style="max-width:600px; margin:0 auto;">
-                    <h3>📊 Yield Estimator</h3>
-                    <p class="text-muted mb-24">Predict harvest based on inputs.</p>
-                    <input type="text" id="tool-crop-yield" class="full-btn mb-12" placeholder="Crop Name" style="padding:16px;">
-                    <button class="btn btn-primary btn-pill full-btn" onclick="calcTool('yield')">Predict Yield</button>
-                    <div id="tool-result" class="mt-24 p-20 bg-smoke rounded-16 hidden"></div>
+                <div class="mandi-card" style="max-width:700px; margin:0 auto;">
+                    <h3>📊 Deep Yield Predictor</h3>
+                    <div class="form-grid-v9 mt-24">
+                        <div class="input-pair"><label>Crop Variety</label><input type="text" id="tool-variety" placeholder="e.g., Basmati"></div>
+                        <div class="input-pair"><label>Fertilizer Strategy</label><input type="text" id="tool-fertilizer" placeholder="DAP/Urea"></div>
+                        <div class="input-pair"><label>Last Season Yield</label><input type="number" id="tool-last" placeholder="2000kg"></div>
+                        <div class="input-pair"><label>Sowing Date</label><input type="date" id="tool-sowing"></div>
+                    </div>
+                    <button class="btn btn-primary btn-pill full-btn mt-24" onclick="calcTool('yield')">Generate Probability Report</button>
+                    <div id="tool-result" class="mt-24 hidden"></div>
                 </div>`;
         } else if (tool === 'cost') {
             html = `
-                <div class="mandi-card" style="max-width:600px; margin:0 auto;">
-                    <h3>💰 Cost Calculator</h3>
-                    <p class="text-muted mb-24">Per acre farming costs.</p>
-                    <button class="btn btn-primary btn-pill full-btn" onclick="calcTool('cost')">Generate Cost Sheet</button>
-                    <div id="tool-result" class="mt-24 p-20 bg-smoke rounded-16 hidden"></div>
+                <div class="mandi-card" style="max-width:700px; margin:0 auto;">
+                    <h3>💰 Enterprise Cost Sheet</h3>
+                    <div class="form-grid-v9 mt-24">
+                        <div class="input-pair"><label>Labor Count</label><input type="number" id="tool-labor" placeholder="5"></div>
+                        <div class="input-pair"><label>Seed Price/kg</label><input type="number" id="tool-seed-price" placeholder="40"></div>
+                        <div class="input-pair"><label>Fuel/Machinery</label><input type="number" id="tool-fuel" placeholder="5000"></div>
+                        <div class="input-pair"><label>Total Acres</label><input type="number" id="tool-total-acres" placeholder="5"></div>
+                    </div>
+                    <button class="btn btn-primary btn-pill full-btn mt-24" onclick="calcTool('cost')">Calculate Profit Margin</button>
+                    <div id="tool-result" class="mt-24 hidden"></div>
                 </div>`;
         } else if (tool === 'fert') {
             html = `
-                <div class="mandi-card" style="max-width:600px; margin:0 auto;">
-                    <h3>🧪 Fertilizer IQ</h3>
-                    <p class="text-muted mb-24">Precise dosage recommendations.</p>
-                    <button class="btn btn-primary btn-pill full-btn" onclick="calcTool('fert')">Get Precise Dose</button>
-                    <div id="tool-result" class="mt-24 p-20 bg-smoke rounded-16 hidden"></div>
+                <div class="mandi-card" style="max-width:700px; margin:0 auto;">
+                    <h3>🧪 Precision Fertilizer IQ</h3>
+                    <div class="form-grid-v9 mt-24">
+                        <div class="input-pair"><label>Soil Nitrogen (N)</label><input type="text" id="tool-n" placeholder="High/Low"></div>
+                        <div class="input-pair"><label>Phosphorus (P)</label><input type="text" id="tool-p" placeholder="High/Low"></div>
+                        <div class="input-pair"><label>Potassium (K)</label><input type="text" id="tool-k" placeholder="High/Low"></div>
+                        <div class="input-pair"><label>Preferred Source</label><input type="text" id="tool-source" placeholder="Organic/NPK"></div>
+                    </div>
+                    <button class="btn btn-primary btn-pill full-btn mt-24" onclick="calcTool('fert')">Get Precise Formula</button>
+                    <div id="tool-result" class="mt-24 hidden"></div>
                 </div>`;
         }
         activeBox.innerHTML = html;
@@ -441,14 +518,25 @@ Follow this structure EXACTLY.`;
     window.calcTool = async (type) => {
         const resBox = document.getElementById('tool-result');
         resBox.classList.remove('hidden');
-        resBox.textContent = 'Calculating...';
+        resBox.innerHTML = `
+            <div class="point-item shimmer" style="height:60px; margin-bottom:12px;"></div>
+            <div class="point-item shimmer" style="height:60px;"></div>
+        `;
         
-        const crop = document.getElementById('tool-crop')?.value || 'Wheat';
-        const acres = document.getElementById('tool-acres')?.value || '5';
+        let context = '';
+        if (type === 'irrigation') {
+            context = `CROP: ${document.getElementById('tool-crop').value}, ACERS: ${document.getElementById('tool-acres').value}, SOIL: ${document.getElementById('tool-soil').value}, AGE: ${document.getElementById('tool-age').value}`;
+        } else if (type === 'yield') {
+            context = `VARIETY: ${document.getElementById('tool-variety').value}, FERT: ${document.getElementById('tool-fertilizer').value}, LAST_YIELD: ${document.getElementById('tool-last').value}, SOWING: ${document.getElementById('tool-sowing').value}`;
+        } else if (type === 'cost') {
+            context = `LABOR: ${document.getElementById('tool-labor').value}, SEED_PRICE: ${document.getElementById('tool-seed-price').value}, FUEL: ${document.getElementById('tool-fuel').value}, ACERS: ${document.getElementById('tool-total-acres').value}`;
+        } else if (type === 'fert') {
+            context = `N: ${document.getElementById('tool-n').value}, P: ${document.getElementById('tool-p').value}, K: ${document.getElementById('tool-k').value}, SOURCE: ${document.getElementById('tool-source').value}`;
+        }
         
         try {
-            const prompt = `You are BHUMIIQ Precision Tool. Provide a structured, point-to-point farming analysis for: Type=${type}, Crop=${crop}, Acres=${acres}. 
-            Address specific farming needs and provide numbers where possible.`;
+            const prompt = `You are BHUMIIQ Precision Tool. Provide a structured Point-to-Point report for: Type=${type}. Details: ${context}. 
+            Format the answer as 4-5 clearly defined bullet points using the structure: [POINT_NAME]: [detailed insight]. Reply in English twice (high-precision professional language).`;
             const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -456,7 +544,20 @@ Follow this structure EXACTLY.`;
             });
             const data = await res.json();
             const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No data.';
-            resBox.innerHTML = reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // RENDER IN POINT-TO-POINT FORMAT
+            const lines = reply.split('\n').filter(l => l.includes(':'));
+            resBox.innerHTML = `
+                <div class="point-card">
+                    ${lines.map(line => {
+                        const [title, desc] = line.split(':');
+                        return `
+                        <div class="point-item">
+                            <div class="point-icon"><span class="material-symbols-outlined">auto_graph</span></div>
+                            <div class="point-text"><strong>${title.replace(/^-\s*/, '').trim()}</strong>${desc?.trim() || ''}</div>
+                        </div>`;
+                    }).join('')}
+                </div>`;
         } catch (e) { resBox.textContent = 'Calculation Error.'; }
     };
 
