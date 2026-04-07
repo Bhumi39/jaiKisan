@@ -1,5 +1,4 @@
-const fetch = require('node-fetch');
-
+// No extra imports needed for Node 18+ global fetch
 exports.handler = async (event, context) => {
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };

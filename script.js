@@ -823,4 +823,288 @@ Follow this structure EXACTLY.`;
         });
     }
 
+
+    /* ===================================================
+       9. ORGANIC WASTE SCANNER
+    =================================================== */
+    const wasteUploadZone = document.getElementById('waste-upload-clickable');
+    const wasteGallery = document.getElementById('waste-gallery');
+    const wastePreview = document.getElementById('waste-image-preview');
+    const wasteUploadPrompt = document.getElementById('waste-upload-prompt');
+    const wasteAnalyzeBtn = document.getElementById('btn-analyze-waste');
+    const wasteResults = document.getElementById('waste-results');
+    const cropChips = document.querySelectorAll('.crop-chip');
+
+    let wasteBase64 = null, wasteMime = null, selectedCrop = null;
+
+    if (wasteUploadZone) {
+        wasteUploadZone.addEventListener('click', () => wasteGallery.click());
+
+        wasteGallery.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = evt => {
+                wasteBase64 = evt.target.result.split(',')[1];
+                wasteMime = file.type;
+                wasteUploadPrompt.style.display = 'none';
+                wastePreview.src = evt.target.result;
+                wastePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        cropChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                cropChips.forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                selectedCrop = chip.dataset.crop;
+            });
+        });
+
+        wasteAnalyzeBtn.addEventListener('click', async () => {
+            const customCrop = document.getElementById('waste-custom-crop')?.value?.trim();
+            const crop = customCrop || selectedCrop;
+
+            if (!wasteBase64) {
+                wasteResults.classList.remove('hidden');
+                wasteResults.innerHTML = `<div style="padding:24px;background:#FFF1F2;border-radius:16px;color:#9F1239;font-weight:700;">⚠ Please upload a photo of the waste first.</div>`;
+                return;
+            }
+            if (!crop) {
+                wasteResults.classList.remove('hidden');
+                wasteResults.innerHTML = `<div style="padding:24px;background:#FFFBEB;border-radius:16px;color:#92400E;font-weight:700;">🌾 Please select or type a target crop.</div>`;
+                return;
+            }
+
+            showLoader();
+            wasteResults.classList.add('hidden');
+
+            const prompt = `You are BHUMIIQ Organic Waste Intelligence. Analyze this farm waste/biomass image and generate a complete composting process specifically for ${crop} crop.
+
+WASTE TYPE: (identify the waste from image — stub, leaves, kitchen waste, manure, etc.)
+
+NUTRIENT VALUE: (what nutrients this waste provides)
+
+TIMELINE PROCESS (provide exactly 6 steps):
+STEP_1|Day 1-5|STEP_TITLE|STEP_DESCRIPTION|ICON (use one of: compost, recycling, water_drop, eco, science, timer, grass, sunny, thermostat, check_circle)
+STEP_2|Day 6-15|STEP_TITLE|STEP_DESCRIPTION|ICON
+STEP_3|Day 16-30|STEP_TITLE|STEP_DESCRIPTION|ICON
+STEP_4|Day 31-45|STEP_TITLE|STEP_DESCRIPTION|ICON
+STEP_5|Day 46-55|STEP_TITLE|STEP_DESCRIPTION|ICON
+STEP_6|Day 56-60|STEP_TITLE|STEP_DESCRIPTION|ICON
+
+HOW TO APPLY TO ${crop}: (2-3 sentences — quantity, timing, method)
+
+ECO BENEFIT: (1 sentence on environmental benefit)
+
+TOTAL TIMELINE: X days
+
+Follow this exact pipe-delimited format for the 6 steps.`;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'vision',
+                        contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: wasteMime, data: wasteBase64 } }] }]
+                    })
+                });
+                if (!res.ok) throw new Error(`API Error: ${res.status}`);
+                const data = await res.json();
+                const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!raw) throw new Error('No response from Waste Intelligence engine.');
+                renderWasteTimeline(raw, crop);
+            } catch (err) {
+                wasteResults.classList.remove('hidden');
+                wasteResults.innerHTML = `<div style="padding:32px;background:#FFF1F2;border:2px solid #FECDD3;border-radius:20px;"><h4 style="color:#9F1239;">⚠ Analysis Error</h4><p style="color:#BE123C;margin-top:8px;font-size:14px;">${err.message}</p></div>`;
+            } finally {
+                hideLoader();
+            }
+        });
+    }
+
+    function renderWasteTimeline(raw, crop) {
+        const wasteTypeMatch = raw.match(/WASTE TYPE[:\s]*(.+)/i);
+        const wasteType = wasteTypeMatch ? wasteTypeMatch[1].trim() : 'Organic Farm Waste';
+
+        const nutrientMatch = raw.match(/NUTRIENT VALUE[:\s]*(.+)/i);
+        const nutrientValue = nutrientMatch ? nutrientMatch[1].trim() : 'Rich in organic matter';
+
+        const totalTimeMatch = raw.match(/TOTAL TIMELINE[:\s]*(\d+)\s*days?/i);
+        const totalDays = totalTimeMatch ? totalTimeMatch[1] : '60';
+
+        const applyMatch = raw.match(/HOW TO APPLY[^:]*:[:\s]*([\s\S]*?)(?:ECO BENEFIT|TOTAL|$)/i);
+        const applyText = applyMatch ? applyMatch[1].trim() : '';
+
+        const ecoMatch = raw.match(/ECO BENEFIT[:\s]*(.+)/i);
+        const ecoText = ecoMatch ? ecoMatch[1].trim() : 'Reduces chemical fertilizer use by up to 40%.';
+
+        // Parse timeline steps
+        const stepLines = raw.split('\n').filter(l => /^STEP_\d+\|/.test(l.trim()));
+        const steps = stepLines.map(line => {
+            const parts = line.split('|');
+            return {
+                label: parts[0]?.replace(/^-?\s*/, '').trim(),
+                time: parts[1]?.trim() || '',
+                title: parts[2]?.trim() || '',
+                desc: parts[3]?.trim() || '',
+                icon: parts[4]?.trim() || 'compost'
+            };
+        });
+
+        wasteResults.classList.remove('hidden');
+        wasteResults.innerHTML = `
+        <div class="waste-report-header">
+            <div>
+                <div style="font-size:12px;opacity:0.6;letter-spacing:1px;margin-bottom:8px;">BHUMIIQ COMPOST INTELLIGENCE</div>
+                <h2>♻ ${wasteType}</h2>
+                <p>Optimized composting process for <strong style="color:var(--green-bright);">${crop}</strong> crop</p>
+                <p style="margin-top:8px; opacity:0.65; font-size:13px;">${nutrientValue}</p>
+            </div>
+            <div class="waste-eco-badge">⏱ ${totalDays} Days Total</div>
+        </div>
+
+        <div class="process-timeline">
+            ${steps.map(step => `
+            <div class="timeline-step">
+                <div class="tl-dot">
+                    <span class="material-symbols-outlined">${step.icon}</span>
+                </div>
+                <div class="tl-body">
+                    <div class="tl-time">${step.time}</div>
+                    <h4>${step.title}</h4>
+                    <p>${step.desc}</p>
+                </div>
+            </div>`).join('')}
+        </div>
+
+        ${applyText ? `
+        <div style="background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-radius:20px;padding:32px;margin-top:32px;border:1.5px solid #a7f3d0;">
+            <h4 style="font-size:16px;font-weight:900;color:var(--green-dark);margin-bottom:12px;">
+                <span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;color:var(--green-bright);">agriculture</span>
+                How to Apply to ${crop}
+            </h4>
+            <p style="font-size:14px;line-height:1.8;color:#065F46;">${applyText}</p>
+        </div>` : ''}
+
+        <div style="background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border-radius:20px;padding:24px 32px;margin-top:20px;border:1.5px solid #bae6fd;display:flex;align-items:center;gap:16px;">
+            <span class="material-symbols-outlined" style="color:#0284c7;font-size:32px!important;flex-shrink:0;">eco</span>
+            <p style="font-size:14px;line-height:1.7;color:#0c4a6e;font-weight:600;">🌍 <strong>Eco Benefit:</strong> ${ecoText}</p>
+        </div>
+
+        <div style="margin-top:32px;padding:24px;background:#f8fafc;border-radius:16px;border:1px solid #e5e7eb;">
+            <h4 style="font-size:13px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Full AI Analysis</h4>
+            <div style="font-size:13px;line-height:1.9;color:#374151;">${raw.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+        </div>`;
+
+        wasteResults.scrollIntoView({ behavior: 'smooth' });
+    }
+
+
+    /* ===================================================
+       10. AGRICONNECT CHAT PLATFORM
+    =================================================== */
+    // Tab Switching
+    const agriTabs = document.querySelectorAll('.agri-tab');
+    agriTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            agriTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const target = tab.dataset.tab;
+            document.querySelectorAll('.agri-chat-panel').forEach(panel => panel.classList.add('hidden'));
+            document.getElementById(`chat-${target}`)?.classList.remove('hidden');
+        });
+    });
+
+    // Generic send message function
+    function sendAgriMessage(chatId, roleSelectId, inputId, chatBoxId, nameInputs) {
+        const roleSelect = document.getElementById(roleSelectId);
+        const msgInput = document.getElementById(inputId);
+        const chatBox = document.getElementById(chatBoxId);
+
+        if (!roleSelect || !msgInput || !chatBox) return;
+
+        const send = () => {
+            const msg = msgInput.value.trim();
+            if (!msg) return;
+
+            const role = roleSelect.value;
+            const senderEl = document.getElementById(nameInputs[role]);
+            const senderName = senderEl?.value?.trim() || roleSelect.options[roleSelect.selectedIndex].text.replace(/^[^\s]+\s/, '');
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+            const bubble = document.createElement('div');
+            bubble.className = `agri-msg from-${role}`;
+            bubble.innerHTML = `
+                <div class="msg-sender">${senderName}</div>
+                <div>${msg}</div>
+                <div class="msg-time">${time}</div>`;
+
+            chatBox.appendChild(bubble);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            msgInput.value = '';
+
+            // Save to localStorage
+            saveChatToStorage(chatId, { role, senderName, msg, time });
+        };
+
+        document.getElementById(inputId).addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+        document.getElementById(chatId.replace('chat-', '') === 'coldstorage' ? 'cs-send-btn' : 'sm-send-btn').addEventListener('click', send);
+    }
+
+    function saveChatToStorage(chatId, entry) {
+        const key = `bhumiiq_chat_${chatId}`;
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        existing.push(entry);
+        if (existing.length > 80) existing.shift();
+        localStorage.setItem(key, JSON.stringify(existing));
+    }
+
+    function loadChatFromStorage(chatId, chatBoxId, nameInputs) {
+        const key = `bhumiiq_chat_${chatId}`;
+        const messages = JSON.parse(localStorage.getItem(key) || '[]');
+        const chatBox = document.getElementById(chatBoxId);
+        if (!chatBox || !messages.length) return;
+        messages.forEach(entry => {
+            const bubble = document.createElement('div');
+            bubble.className = `agri-msg from-${entry.role}`;
+            bubble.innerHTML = `
+                <div class="msg-sender">${entry.senderName}</div>
+                <div>${entry.msg}</div>
+                <div class="msg-time">${entry.time}</div>`;
+            chatBox.appendChild(bubble);
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Init Cold Storage Chat
+    if (document.getElementById('cs-send-btn')) {
+        loadChatFromStorage('coldstorage', 'cs-chat-box', { farmer: 'cs-farmer-name', storage: 'cs-storage-name' });
+        sendAgriMessage('coldstorage', 'cs-role-select', 'cs-msg-input', 'cs-chat-box', { farmer: 'cs-farmer-name', storage: 'cs-storage-name' });
+    }
+
+    // Init School Mess Chat
+    if (document.getElementById('sm-send-btn')) {
+        loadChatFromStorage('schoolmess', 'sm-chat-box', { farmer: 'sm-farmer-name', mess: 'sm-mess-name' });
+        sendAgriMessage('schoolmess', 'sm-role-select', 'sm-msg-input', 'sm-chat-box', { farmer: 'sm-farmer-name', mess: 'sm-mess-name' });
+    }
+
+    // Quick Reply Tags
+    document.addEventListener('click', e => {
+        const tag = e.target.closest('.quick-tag');
+        if (!tag) return;
+        const chatType = tag.dataset.chat;
+        const msg = tag.dataset.msg;
+        if (chatType === 'coldstorage') {
+            const inp = document.getElementById('cs-msg-input');
+            if (inp) { inp.value = msg; inp.focus(); }
+        } else if (chatType === 'schoolmess') {
+            const inp = document.getElementById('sm-msg-input');
+            if (inp) { inp.value = msg; inp.focus(); }
+        }
+    });
+
 });

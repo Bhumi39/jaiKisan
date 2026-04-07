@@ -209,20 +209,20 @@
                             <p>Recognize harmful insects & treatments.</p>
                         </div>
                     </div>
-                    <div class="v9-card card-data">
+                    <div class="v9-card card-waste" data-target="screen-waste">
                         <div class="card-glass">
-                            <div class="f-badge">DATA</div>
-                            <span class="material-symbols-outlined">database</span>
-                            <h3>Data Archiving & Management</h3>
-                            <p>Track patterns across multiple seasons.</p>
+                            <div class="f-badge">NEW</div>
+                            <span class="material-symbols-outlined">compost</span>
+                            <h3>Organic Waste Scanner</h3>
+                            <p>Scan farm waste & get crop-specific composting timelines.</p>
                         </div>
                     </div>
-                    <div class="v9-card card-news">
+                    <div class="v9-card card-agriconnect" data-target="screen-agriconnect">
                         <div class="card-glass">
-                            <div class="f-badge">HUB</div>
-                            <span class="material-symbols-outlined">newspaper</span>
-                            <h3>Latest Agri News Hub</h3>
-                            <p>Stay updated on climate & markets.</p>
+                            <div class="f-badge">LIVE</div>
+                            <span class="material-symbols-outlined">forum</span>
+                            <h3>AgriConnect Chat Platform</h3>
+                            <p>Farmer ↔ Cold Storage & Direct School Mess Supply.</p>
                         </div>
                     </div>
                 </div>
@@ -445,6 +445,206 @@
                 <div id="toolbox-active-tool" class="mt-80 hidden">
                     <!-- Tool Interface injected here -->
                 </div>
+            </div>
+        </section>
+
+        <!-- 6. ORGANIC WASTE SCANNER -->
+        <section id="screen-waste" class="screen container-xl py-60">
+            <div class="glass-dashboard-v9">
+                <div class="dashboard-header text-center mb-60">
+                    <div class="waste-badge-tag">♻️ ECO INTELLIGENCE</div>
+                    <h1>Organic Waste Scanner</h1>
+                    <p class="text-muted">Scan your farm waste — get crop-specific composting processes & timelines.</p>
+                </div>
+
+                <!-- STEP 1: Upload Waste Image -->
+                <div class="waste-workflow">
+                    <div class="waste-step-panel">
+                        <div class="waste-step-header">
+                            <div class="waste-step-num">01</div>
+                            <div>
+                                <h3>Scan Your Waste</h3>
+                                <p class="text-muted">Upload a photo of your farm waste or biomass</p>
+                            </div>
+                        </div>
+                        <div class="upload-focus waste-upload-zone" id="waste-upload-clickable">
+                            <div id="waste-upload-prompt" class="upload-v9">
+                                <span class="material-symbols-outlined upload-mic-pulse">add_a_photo</span>
+                                <h3>Click to Scan Waste</h3>
+                                <p style="color:var(--muted); font-size:13px; margin-top:8px;">Crop stubble, kitchen waste, dry leaves, etc.</p>
+                            </div>
+                            <img id="waste-image-preview" class="hidden-img-v9">
+                            <input type="file" id="waste-gallery" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <div class="waste-step-panel">
+                        <div class="waste-step-header">
+                            <div class="waste-step-num">02</div>
+                            <div>
+                                <h3>Select Your Crop</h3>
+                                <p class="text-muted">Which crop will benefit from this compost?</p>
+                            </div>
+                        </div>
+                        <div class="crop-selector-grid" id="crop-selector">
+                            <button class="crop-chip" data-crop="Wheat">🌾 Wheat</button>
+                            <button class="crop-chip" data-crop="Rice">🍚 Rice</button>
+                            <button class="crop-chip" data-crop="Maize">🌽 Maize</button>
+                            <button class="crop-chip" data-crop="Tomato">🍅 Tomato</button>
+                            <button class="crop-chip" data-crop="Potato">🥔 Potato</button>
+                            <button class="crop-chip" data-crop="Sugarcane">🎋 Sugarcane</button>
+                            <button class="crop-chip" data-crop="Cotton">🪴 Cotton</button>
+                            <button class="crop-chip" data-crop="Soybean">🫘 Soybean</button>
+                            <button class="crop-chip" data-crop="Mustard">🌼 Mustard</button>
+                            <button class="crop-chip" data-crop="Onion">🧅 Onion</button>
+                        </div>
+                        <div class="input-pair mt-24">
+                            <label>Or type your crop</label>
+                            <input type="text" id="waste-custom-crop" placeholder="e.g., Bitter Gourd, Chilli...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-40">
+                    <button class="btn btn-primary btn-xl btn-pill btn-glow" id="btn-analyze-waste">
+                        <span class="material-symbols-outlined">biotech</span> Analyze Waste & Generate Process
+                    </button>
+                </div>
+
+                <!-- STEP 3: Timeline Results -->
+                <div id="waste-results" class="mt-60 hidden">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. AGRICONNECT CHAT PLATFORM -->
+        <section id="screen-agriconnect" class="screen container-xl py-60">
+            <div class="glass-dashboard-v9">
+                <div class="dashboard-header text-center mb-60">
+                    <div class="waste-badge-tag" style="background:rgba(59,130,246,0.12); border-color:rgba(59,130,246,0.4); color:#3B82F6;">💬 AGRICONNECT LIVE</div>
+                    <h1>AgriConnect Chat Platform</h1>
+                    <p class="text-muted">Connect directly — farmers, cold storage managers & school mess suppliers.</p>
+                </div>
+
+                <!-- TWO CHAT TABS -->
+                <div class="agri-tabs">
+                    <button class="agri-tab active" id="tab-coldstorage" data-tab="coldstorage">
+                        <span class="material-symbols-outlined">ac_unit</span> Cold Storage Connect
+                    </button>
+                    <button class="agri-tab" id="tab-schoolmess" data-tab="schoolmess">
+                        <span class="material-symbols-outlined">school</span> School Mess Direct Supply
+                    </button>
+                </div>
+
+                <!-- COLD STORAGE CHAT -->
+                <div id="chat-coldstorage" class="agri-chat-panel">
+                    <div class="chat-info-banner">
+                        <span class="material-symbols-outlined">ac_unit</span>
+                        <div>
+                            <strong>Farmer ↔ Cold Storage Manager</strong>
+                            <p>Discuss storage rates, availability, pickup schedules & price negotiations directly.</p>
+                        </div>
+                        <div class="online-badge">● LIVE</div>
+                    </div>
+
+                    <div class="agri-users-strip">
+                        <div class="agri-user-card" data-role="farmer" id="cs-farmer-card">
+                            <div class="agri-avatar farmer-av">🧑‍🌾</div>
+                            <div>
+                                <div class="agri-role">Farmer</div>
+                                <input class="agri-name-input" id="cs-farmer-name" type="text" placeholder="Your Name">
+                            </div>
+                            <div class="agri-status-dot"></div>
+                        </div>
+                        <div class="agri-connector">↔</div>
+                        <div class="agri-user-card" data-role="storage" id="cs-storage-card">
+                            <div class="agri-avatar storage-av">🏭</div>
+                            <div>
+                                <div class="agri-role">Cold Storage Manager</div>
+                                <input class="agri-name-input" id="cs-storage-name" type="text" placeholder="Storage Name">
+                            </div>
+                            <div class="agri-status-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="agri-chat-box" id="cs-chat-box">
+                        <div class="agri-system-msg">🌿 Channel open — Start your negotiation. Both parties can type below.</div>
+                    </div>
+
+                    <div class="agri-input-row">
+                        <select class="agri-role-select" id="cs-role-select">
+                            <option value="farmer">🧑‍🌾 Send as Farmer</option>
+                            <option value="storage">🏭 Send as Storage</option>
+                        </select>
+                        <input type="text" class="agri-msg-input" id="cs-msg-input" placeholder="Type your message...">
+                        <button class="btn btn-primary btn-pill" id="cs-send-btn">
+                            <span class="material-symbols-outlined">send</span>
+                        </button>
+                    </div>
+                    <div class="agri-quick-replies">
+                        <span class="quick-tag" data-chat="coldstorage" data-msg="What is your storage capacity and current availability?">Available Capacity?</span>
+                        <span class="quick-tag" data-chat="coldstorage" data-msg="What are your cold storage rates per quintal per month?">Storage Rates</span>
+                        <span class="quick-tag" data-chat="coldstorage" data-msg="Can you arrange pickup from my farm location?">Farm Pickup</span>
+                        <span class="quick-tag" data-chat="coldstorage" data-msg="What temperature is maintained for potato/onion storage?">Temperature Info</span>
+                        <span class="quick-tag" data-chat="coldstorage" data-msg="I am ready to bring 50 quintals of wheat this week.">Ready to Store</span>
+                    </div>
+                </div>
+
+                <!-- SCHOOL MESS DIRECT SUPPLY CHAT -->
+                <div id="chat-schoolmess" class="agri-chat-panel hidden">
+                    <div class="chat-info-banner mess-banner">
+                        <span class="material-symbols-outlined">school</span>
+                        <div>
+                            <strong>Farmer ↔ School Mess / Canteen</strong>
+                            <p>Cut out middlemen — supply fresh vegetables & grains directly to school mess coordinators.</p>
+                        </div>
+                        <div class="online-badge mess-live">● LIVE</div>
+                    </div>
+
+                    <div class="agri-users-strip">
+                        <div class="agri-user-card" data-role="farmer" id="sm-farmer-card">
+                            <div class="agri-avatar farmer-av">🧑‍🌾</div>
+                            <div>
+                                <div class="agri-role">Farmer</div>
+                                <input class="agri-name-input" id="sm-farmer-name" type="text" placeholder="Your Name">
+                            </div>
+                            <div class="agri-status-dot"></div>
+                        </div>
+                        <div class="agri-connector">↔</div>
+                        <div class="agri-user-card" data-role="mess" id="sm-mess-card">
+                            <div class="agri-avatar mess-av">🍽️</div>
+                            <div>
+                                <div class="agri-role">School Mess / Canteen</div>
+                                <input class="agri-name-input" id="sm-mess-name" type="text" placeholder="School / Mess Name">
+                            </div>
+                            <div class="agri-status-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="agri-chat-box" id="sm-chat-box">
+                        <div class="agri-system-msg">🍃 Direct supply channel open — Discuss quantity, price & delivery schedule.</div>
+                    </div>
+
+                    <div class="agri-input-row">
+                        <select class="agri-role-select" id="sm-role-select">
+                            <option value="farmer">🧑‍🌾 Send as Farmer</option>
+                            <option value="mess">🍽️ Send as Mess</option>
+                        </select>
+                        <input type="text" class="agri-msg-input" id="sm-msg-input" placeholder="Type your message...">
+                        <button class="btn btn-primary btn-pill" id="sm-send-btn">
+                            <span class="material-symbols-outlined">send</span>
+                        </button>
+                    </div>
+                    <div class="agri-quick-replies">
+                        <span class="quick-tag" data-chat="schoolmess" data-msg="I can supply fresh vegetables daily — what are your requirements?">Daily Supply Offer</span>
+                        <span class="quick-tag" data-chat="schoolmess" data-msg="What is the weekly demand for tomatoes, potatoes and onions?">Weekly Demand</span>
+                        <span class="quick-tag" data-chat="schoolmess" data-msg="I can deliver directly to your school every morning.">Morning Delivery</span>
+                        <span class="quick-tag" data-chat="schoolmess" data-msg="My current harvest rate for tomatoes is ₹18/kg. Can we finalize a contract?">Price Negotiation</span>
+                        <span class="quick-tag" data-chat="schoolmess" data-msg="We need 100kg of mixed vegetables every Monday and Thursday.">Delivery Schedule</span>
+                    </div>
+                </div>
+
             </div>
         </section>
 
